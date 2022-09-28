@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "jurusan": "AKL"
+    },
+    {
+        "id": 2,
+        "jurusan": "BDP"
+    },
+    {
+        "id": 3,
+        "jurusan": "MM"
+    },
+    {
+        "id": 4,
+        "jurusan": "OTKP"
+    },
+    {
+        "id": 5,
+        "jurusan": "PKM"
+    },
+    {
+        "id": 6,
+        "jurusan": "RPL"
+    },
+    {
+        "id": 7,
+        "jurusan": "TKJ"
+    }
+]
