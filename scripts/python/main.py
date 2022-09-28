@@ -2534,6 +2534,9 @@ class Utility:
     def dateToUnix(date):
         return str(int(datetime.strptime(date, "%Y/%m/%d").timestamp()))
 
+    def currentDate():
+        return str(int(datetime.today().timestamp()))
+
     tempatLahirArray = readJSON("scripts/json/tempat_lahir.json")
     jenisKelaminArray = readJSON("scripts/json/jenis_kelamin.json")
     tahunMasukArray = readJSON("scripts/json/tahun_masuk.json")
@@ -2676,6 +2679,8 @@ class Main:
                         "id_tingkat": tingkat["id"],
                         "id_jurusan": jurusan["id"],
                         "id_rombel": rombelValue["id"],
+                        "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                        "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
                     }
 
                     siswaCount += 1
