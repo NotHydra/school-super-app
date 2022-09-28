@@ -2,6 +2,8 @@ import json
 import random
 import time
 
+from datetime import datetime
+
 
 class Dependency:
     tempatLahirArray = [
@@ -2497,7 +2499,7 @@ class Utility:
         idkNumber = str(719)
         countNumber = str(Utility.nisnObject[enrollmentNumber]).zfill(3)
 
-        nis = enrollmentNumber + idkNumber + countNumber
+        nis = int(enrollmentNumber + idkNumber + countNumber)
 
         return nis
 
@@ -2505,7 +2507,7 @@ class Utility:
         return (random.choice(Utility.tempatLahirArray))["id"]
 
     def randomBirthDate(start, end):
-        timeFormat = "%Y-%m-%d"
+        timeFormat = "%Y/%m/%d"
 
         stime = time.mktime(time.strptime(start, timeFormat))
         etime = time.mktime(time.strptime(end, timeFormat))
@@ -2528,6 +2530,9 @@ class Utility:
 
     def randomRombel():
         return (random.choice(Utility.rombelArray))["id"]
+
+    def dateToUnix(date):
+        return str(int(datetime.strptime(date, "%Y/%m/%d").timestamp()))
 
     tempatLahirArray = readJSON("scripts/json/tempat_lahir.json")
     jenisKelaminArray = readJSON("scripts/json/jenis_kelamin.json")
@@ -2629,8 +2634,8 @@ class Main:
         for tahunMasuk in Utility.tahunMasukArray:
             tahunMasukValue = tahunMasuk["tahun_masuk"]
             tahunMasuk2Digit = int(str(tahunMasukValue)[-2:])
-            birthDateStart = f"{2004 - 20 + tahunMasuk2Digit}-01-01"
-            birthDateEnd = f"{2006 - 20 + tahunMasuk2Digit}-12-31"
+            birthDateStart = f"{2004 - 20 + tahunMasuk2Digit}/01/01"
+            birthDateEnd = f"{2006 - 20 + tahunMasuk2Digit}/12/31"
 
             tingkatValue = Utility.tahunMasukToTingkat[tahunMasukValue]
 
@@ -2657,9 +2662,15 @@ class Main:
                         "nisn": Utility.randomNISN(tahunMasuk2Digit, tahunMasuk2Digit),
                         "nama_lengkap": namaUnique,
                         "id_tempat_lahir": Utility.randomTempatLahir(),
-                        "tanggal_lahir": Utility.randomBirthDate(
-                            birthDateStart, birthDateEnd
-                        ),
+                        "tanggal_lahir": {
+                            "$date": {
+                                "$numberLong": Utility.dateToUnix(
+                                    Utility.randomBirthDate(
+                                        birthDateStart, birthDateEnd
+                                    )
+                                )
+                            }
+                        },
                         "id_jenis_kelamin": Utility.randomJenisKelamin(),
                         "id_tahun_masuk": tahunMasuk["id"],
                         "id_tingkat": tingkat["id"],
