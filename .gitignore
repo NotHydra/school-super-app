@@ -1,3 +1,7 @@
-node_modules
-dist
-note.txt
+/node_modules
+/dist
+
+/sources/public/dist
+/sources/public/plugins
+
+/note.txt
