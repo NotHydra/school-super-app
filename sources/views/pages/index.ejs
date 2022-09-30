@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <%- include("./../partials/head.ejs"); -%>
+        <%- include(`${partialPath}/partials/head.ejs`); -%>
     </head>
 
-    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed layout-footer-fixed text-smq">
+    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
         <div class="wrapper">
-            <%- include("./../partials/nav.ejs"); -%> <%- include("./../partials/side.ejs"); -%>
+            <%- include(`${partialPath}/partials/nav.ejs`); -%> <%- include(`${partialPath}/partials/side.ejs`); -%>
 
             <div class="content-wrapper">
-                <%- include("./../partials/content-head.ejs"); -%>
+                <%- include(`${partialPath}/partials/content-head.ejs`); -%>
 
                 <div class="content">
                     <div class="container-fluid">
@@ -18,9 +18,9 @@
                 </div>
             </div>
 
-            <%- include("./../partials/footer.ejs"); -%>
+            <%- include(`${partialPath}/partials/footer.ejs`); -%>
         </div>
 
-        <%- include("./../partials/script.ejs"); -%>
+        <%- include(`${partialPath}/partials/script.ejs`); -%>
     </body>
 </html>

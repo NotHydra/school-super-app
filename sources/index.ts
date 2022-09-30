@@ -4,6 +4,8 @@ import { navItemArray } from "./depedency";
 
 const app: Express = express();
 const port: number = 3000;
+const headTitle = "Dashboard";
+const partialPath = "./..";
 
 app.set("view engine", "ejs");
 app.set("views", "sources/views");
@@ -17,5 +19,5 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-    res.render("pages/index", { headTitle: "Dashboard", navItemArray, navActive: [0, 0] });
+    res.render("pages/index", { headTitle, partialPath, navItemArray, navActive: [0, 0] });
 });
