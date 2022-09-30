@@ -4,4 +4,5 @@
 /sources/public/dist
 /sources/public/plugins
 
+/.env
 /note.txt

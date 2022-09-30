@@ -1,6 +1,8 @@
 import express, { Express } from "express";
+import mongoose from "mongoose";
 import { loggerMiddleware } from "./common/middleware/loggerMiddleware";
-import { navItemArray } from "./depedency";
+import { mongoDBURI, navItemArray } from "./depedency";
+import { bukuIndukRouter } from "./routes/buku-induk";
 
 const app: Express = express();
 const port: number = 3000;
@@ -14,10 +16,16 @@ app.use(loggerMiddleware);
 
 app.use(express.static("sources/public"));
 
-app.listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
-});
-
 app.get("/", (req, res) => {
     res.render("pages/index", { headTitle, partialPath, navItemArray, navActive: [0, 0] });
+});
+
+app.use("/buku-induk", bukuIndukRouter);
+
+mongoose.connect(mongoDBURI, () => {
+    console.log("Connected to database");
+
+    app.listen(port, async () => {
+        console.log(`Listening on http://localhost:${port}`);
+    });
 });

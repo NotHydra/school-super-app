@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include(`${partialPath}/partials/head.ejs`); -%> <%- include(`${partialPath}/partials/data-table-head.ejs`); -%>
+    </head>
+
+    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
+        <div class="wrapper">
+            <%- include(`${partialPath}/partials/nav.ejs`); -%> <%- include(`${partialPath}/partials/side.ejs`); -%>
+
+            <div class="content-wrapper">
+                <%- include(`${partialPath}/partials/content-head.ejs`); -%>
+
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table id="main-table" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>NISN</th>
+                                                    <th>Nama Lengkap</th>
+                                                    <th>Tempat Lahir</th>
+                                                    <th>Tanggal Lahir</th>
+                                                    <th>Jenis Kelamin</th>
+                                                    <th>Tahun Masuk</th>
+                                                    <th>Tingkat</th>
+                                                    <th>Jurusan</th>
+                                                    <th>Rombel</th>
+                                                    <th>Dibuat</th>
+                                                    <th>Diubah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% siswaArray.forEach(siswaObject => { %>
+                                                <tr>
+                                                    <td><%= siswaObject.nisn %></td>
+                                                    <td><%= siswaObject.nama_lengkap %></td>
+                                                    <td><%= siswaObject.id_tempat_lahir %></td>
+                                                    <td><%= siswaObject.tanggal_lahir %></td>
+                                                    <td><%= siswaObject.id_jenis_kelamin %></td>
+                                                    <td><%= siswaObject.id_tahun_masuk %></td>
+                                                    <td><%= siswaObject.id_tingkat %></td>
+                                                    <td><%= siswaObject.id_jurusan %></td>
+                                                    <td><%= siswaObject.id_rombel %></td>
+                                                    <td><%= siswaObject.dibuat %></td>
+                                                    <td><%= siswaObject.diubah %></td>
+                                                </tr>
+                                                <% }); %>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>NISN</th>
+                                                    <th>Nama Lengkap</th>
+                                                    <th>Tempat Lahir</th>
+                                                    <th>Tanggal Lahir</th>
+                                                    <th>Jenis Kelamin</th>
+                                                    <th>Tahun Masuk</th>
+                                                    <th>Tingkat</th>
+                                                    <th>Jurusan</th>
+                                                    <th>Rombel</th>
+                                                    <th>Dibuat</th>
+                                                    <th>Diubah</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include(`${partialPath}/partials/footer.ejs`); -%>
+        </div>
+
+        <%- include(`${partialPath}/partials/script.ejs`); -%>
+    </body>
+
+    <%- include(`${partialPath}/partials/data-table-script.ejs`); -%>
+</html>
