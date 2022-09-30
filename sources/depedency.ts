@@ -24,32 +24,32 @@ export const navItemArray: navItemType[] = [
                 link: "buku-induk/siswa",
             },
             {
-                id: 1,
+                id: 2,
                 title: "Tempat Lahir",
                 link: "buku-induk/tempat-lahir",
             },
             {
-                id: 1,
+                id: 3,
                 title: "Jenis Kelamin",
                 link: "buku-induk/jenis-kelamin",
             },
             {
-                id: 1,
+                id: 4,
                 title: "Tahun Masuk",
                 link: "buku-induk/tahun-masuk",
             },
             {
-                id: 1,
+                id: 5,
                 title: "Tingkat",
                 link: "buku-induk/tingkat",
             },
             {
-                id: 1,
+                id: 6,
                 title: "Jurusan",
                 link: "buku-induk/jurusan",
             },
             {
-                id: 1,
+                id: 7,
                 title: "Rombel",
                 link: "buku-induk/rombel",
             },
