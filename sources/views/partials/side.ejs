@@ -15,7 +15,7 @@
         </div>
 
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <% navItemArray.forEach((navItemObject, navItemIndex) => { %>
                 <li class="nav-item <%= navItemIndex == navActive[0] ? "menu-open" : "" %>">
                     <a class="nav-link <%= navItemIndex == navActive[0] ? "active" : "" %>">
