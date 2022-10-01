@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { navItemArray } from "../depedency";
-import { Siswa, siswaDocument } from "../models/buku-induk/siswa";
+import { Siswa } from "../models";
 
 export const bukuIndukRouter = Router();
 const headTitle = "Buku Induk";
@@ -9,7 +9,13 @@ const partialPath = "./../..";
 bukuIndukRouter.use(express.static("sources/public"));
 
 bukuIndukRouter.get("/siswa", async (req, res) => {
-    const siswaArray: siswaDocument[] = await Siswa.find();
+    const siswaArray = await Siswa.find()
+        .populate("id_tempat_lahir")
+        .populate("id_jenis_kelamin")
+        .populate("id_tahun_masuk")
+        .populate("id_tingkat")
+        .populate("id_jurusan")
+        .populate("id_rombel");
 
     res.render("pages/buku-induk/siswa", { headTitle, partialPath, navItemArray, navActive: [1, 0], siswaArray });
 });
