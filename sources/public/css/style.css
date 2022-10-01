@@ -1,1 +1,9 @@
-/*# sourceMappingURL=style.css.map */
+.th-custom {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.td-custom {
+  text-align: center;
+  white-space: nowrap;
+}/*# sourceMappingURL=style.css.map */
