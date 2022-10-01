@@ -1,7 +1,9 @@
 import express, { Express } from "express";
 import mongoose from "mongoose";
-import { loggerMiddleware } from "./common/middleware/loggerMiddleware";
+
 import { mongoDBURI, navItemArray } from "./depedency";
+import { localMoment } from "./utility";
+
 import { bukuIndukRouter } from "./routes/buku-induk";
 
 const app: Express = express();
@@ -12,7 +14,7 @@ const partialPath = "./..";
 app.set("view engine", "ejs");
 app.set("views", "sources/views");
 
-app.use(loggerMiddleware);
+app.locals.moment = localMoment;
 
 app.use(express.static("sources/public"));
 
