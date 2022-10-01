@@ -2504,7 +2504,7 @@ class Utility:
         return nis
 
     def randomTempatLahir():
-        return (random.choice(Utility.tempatLahirArray))["id"]
+        return (random.choice(Utility.tempatLahirArray))["_id"]
 
     def randomBirthDate(start, end):
         timeFormat = "%Y/%m/%d"
@@ -2517,25 +2517,25 @@ class Utility:
         return time.strftime(timeFormat, time.localtime(ptime))
 
     def randomJenisKelamin():
-        return (random.choice(Utility.jenisKelaminArray))["id"]
+        return (random.choice(Utility.jenisKelaminArray))["_id"]
 
     def randomTahunMasuk():
-        return (random.choice(Utility.tahunMasukArray))["id"]
+        return (random.choice(Utility.tahunMasukArray))["_id"]
 
     def randomTingkat():
-        return (random.choice(Utility.tingkatArray))["id"]
+        return (random.choice(Utility.tingkatArray))["_id"]
 
     def randomJurusan():
-        return (random.choice(Utility.jurusanArray))["id"]
+        return (random.choice(Utility.jurusanArray))["_id"]
 
     def randomRombel():
-        return (random.choice(Utility.rombelArray))["id"]
+        return (random.choice(Utility.rombelArray))["_id"]
 
     def dateToUnix(date):
-        return str(int(datetime.strptime(date, "%Y/%m/%d").timestamp()))
+        return str(int(datetime.strptime(date, "%Y/%m/%d").timestamp()) * 1000)
 
     def currentDate():
-        return str(int(datetime.today().timestamp()))
+        return str(int(datetime.today().timestamp()) * 1000)
 
     tempatLahirArray = readJSON("scripts/json/tempat_lahir.json")
     jenisKelaminArray = readJSON("scripts/json/jenis_kelamin.json")
@@ -2675,10 +2675,10 @@ class Main:
                             }
                         },
                         "id_jenis_kelamin": Utility.randomJenisKelamin(),
-                        "id_tahun_masuk": tahunMasuk["id"],
-                        "id_tingkat": tingkat["id"],
-                        "id_jurusan": jurusan["id"],
-                        "id_rombel": rombelValue["id"],
+                        "id_tahun_masuk": tahunMasuk["_id"],
+                        "id_tingkat": tingkat["_id"],
+                        "id_jurusan": jurusan["_id"],
+                        "id_rombel": rombelValue["_id"],
                         "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
                         "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
                     }
