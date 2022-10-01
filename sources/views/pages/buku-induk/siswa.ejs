@@ -20,49 +20,52 @@
                                         <table id="main-table" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>NISN</th>
-                                                    <th>Nama Lengkap</th>
-                                                    <th>Tempat Lahir</th>
-                                                    <th>Tanggal Lahir</th>
-                                                    <th>Jenis Kelamin</th>
-                                                    <th>Tahun Masuk</th>
-                                                    <th>Tingkat</th>
-                                                    <th>Jurusan</th>
-                                                    <th>Rombel</th>
-                                                    <th>Dibuat</th>
-                                                    <th>Diubah</th>
+                                                    <th class="th-custom">No.</th>
+                                                    <th class="th-custom">NISN</th>
+                                                    <th class="th-custom">Nama Lengkap</th>
+                                                    <th class="th-custom">Tempat Lahir</th>
+                                                    <th class="th-custom">Tanggal Lahir</th>
+                                                    <th class="th-custom">Jenis Kelamin</th>
+                                                    <th class="th-custom">Tahun Masuk</th>
+                                                    <th class="th-custom">Tingkat</th>
+                                                    <th class="th-custom">Jurusan</th>
+                                                    <th class="th-custom">Rombel</th>
+                                                    <th class="th-custom">Dibuat</th>
+                                                    <th class="th-custom">Diubah</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% siswaArray.forEach(siswaObject => { %>
+                                                <% let number = 0; siswaArray.forEach(siswaObject => { number += 1; %>
                                                 <tr>
-                                                    <td><%= siswaObject.nisn %></td>
-                                                    <td><%= siswaObject.nama_lengkap %></td>
-                                                    <td><%= siswaObject.id_tempat_lahir.tempat_lahir %></td>
-                                                    <td><%= siswaObject.tanggal_lahir %></td>
-                                                    <td><%= siswaObject.id_jenis_kelamin.jenis_kelamin %></td>
-                                                    <td><%= siswaObject.id_tahun_masuk.tahun_masuk %></td>
-                                                    <td><%= siswaObject.id_tingkat.tingkat %></td>
-                                                    <td><%= siswaObject.id_jurusan.jurusan %></td>
-                                                    <td><%= siswaObject.id_rombel.rombel %></td>
-                                                    <td><%= siswaObject.dibuat %></td>
-                                                    <td><%= siswaObject.diubah %></td>
+                                                    <td class="td-custom"><%= number %></td>
+                                                    <td class="td-custom"><%= siswaObject.nisn %></td>
+                                                    <td class="td-custom"><%= siswaObject.nama_lengkap %></td>
+                                                    <td class="td-custom"><%= siswaObject.id_tempat_lahir.tempat_lahir %></td>
+                                                    <td class="td-custom"><%= moment(siswaObject.tanggal_lahir).format("DD-MM-YYYY") %></td>
+                                                    <td class="td-custom"><%= siswaObject.id_jenis_kelamin.jenis_kelamin %></td>
+                                                    <td class="td-custom"><%= siswaObject.id_tahun_masuk.tahun_masuk %></td>
+                                                    <td class="td-custom"><%= siswaObject.id_tingkat.tingkat %></td>
+                                                    <td class="td-custom"><%= siswaObject.id_jurusan.jurusan %></td>
+                                                    <td class="td-custom"><%= siswaObject.id_rombel.rombel %></td>
+                                                    <td class="td-custom"><%= moment(siswaObject.dibuat).format("DD-MM-YYYY") %></td>
+                                                    <td class="td-custom"><%= moment(siswaObject.diubah).fromNow() %></td>
                                                 </tr>
                                                 <% }); %>
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <th>NISN</th>
-                                                    <th>Nama Lengkap</th>
-                                                    <th>Tempat Lahir</th>
-                                                    <th>Tanggal Lahir</th>
-                                                    <th>Jenis Kelamin</th>
-                                                    <th>Tahun Masuk</th>
-                                                    <th>Tingkat</th>
-                                                    <th>Jurusan</th>
-                                                    <th>Rombel</th>
-                                                    <th>Dibuat</th>
-                                                    <th>Diubah</th>
+                                                    <th class="th-custom">No.</th>
+                                                    <th class="th-custom">NISN</th>
+                                                    <th class="th-custom">Nama Lengkap</th>
+                                                    <th class="th-custom">Tempat Lahir</th>
+                                                    <th class="th-custom">Tanggal Lahir</th>
+                                                    <th class="th-custom">Jenis Kelamin</th>
+                                                    <th class="th-custom">Tahun Masuk</th>
+                                                    <th class="th-custom">Tingkat</th>
+                                                    <th class="th-custom">Jurusan</th>
+                                                    <th class="th-custom">Rombel</th>
+                                                    <th class="th-custom">Dibuat</th>
+                                                    <th class="th-custom">Diubah</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
