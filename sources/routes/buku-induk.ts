@@ -17,7 +17,39 @@ bukuIndukRouter.get("/siswa", async (req, res) => {
         .populate("id_jurusan")
         .populate("id_rombel");
 
-    res.render("pages/buku-induk/siswa", { headTitle, partialPath, navItemArray, navActive: [1, 0], siswaArray });
+    res.render("pages/buku-induk/siswa", {
+        headTitle,
+        partialPath,
+        navItemArray,
+        navActive: [1, 0],
+        boxItemArray: [
+            {
+                id: 1,
+                title: "Siswa",
+                icon: "user",
+                value: siswaArray.length,
+            },
+            {
+                id: 2,
+                title: "Laki-Laki & Perempuan",
+                icon: "restroom",
+                value: `${await Siswa.find({ id_jenis_kelamin: 1 }).count()} - ${await Siswa.find({ id_jenis_kelamin: 2 }).count()}`,
+            },
+            {
+                id: 3,
+                title: "Dibuat",
+                icon: "circle-plus",
+                value: (await Siswa.findOne().sort({ dibuat: -1 }))?.nisn,
+            },
+            {
+                id: 4,
+                title: "Diupdate",
+                icon: "circle-exclamation",
+                value: (await Siswa.findOne().sort({ diubah: -1 }))?.nisn,
+            },
+        ],
+        siswaArray,
+    });
 });
 
 bukuIndukRouter.get("/tempat-lahir", (req, res) => {
