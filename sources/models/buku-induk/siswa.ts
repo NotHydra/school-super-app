@@ -1,9 +1,7 @@
-import mongoose, { Document } from "mongoose";
+import mongoose from "mongoose";
 
-export type siswaDocument = typeof Siswa & Document;
-
-const siswaSchema = new mongoose.Schema({
-    id: {
+export const siswaSchema = new mongoose.Schema({
+    _id: {
         type: Number,
         required: true,
     },
@@ -18,6 +16,7 @@ const siswaSchema = new mongoose.Schema({
     id_tempat_lahir: {
         type: Number,
         required: true,
+        ref: "tempat_lahir",
     },
     tanggal_lahir: {
         type: Date,
@@ -26,22 +25,27 @@ const siswaSchema = new mongoose.Schema({
     id_jenis_kelamin: {
         type: Number,
         required: true,
+        ref: "jenis_kelamin",
     },
     id_tahun_masuk: {
         type: Number,
         required: true,
+        ref: "tahun_masuk",
     },
     id_tingkat: {
         type: Number,
         required: true,
+        ref: "tingkat",
     },
     id_jurusan: {
         type: Number,
         required: true,
+        ref: "jurusan",
     },
     id_rombel: {
         type: Number,
         required: true,
+        ref: "rombel",
     },
     dibuat: {
         type: Date,
@@ -52,5 +56,3 @@ const siswaSchema = new mongoose.Schema({
         required: true,
     },
 });
-
-export const Siswa = mongoose.model("siswa", siswaSchema, "siswa");
