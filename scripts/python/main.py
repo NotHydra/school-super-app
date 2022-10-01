@@ -2547,19 +2547,19 @@ class Utility:
 
 class Main:
     def main():
-        # Main.tempatLahir()
-        # Main.jenisKelamin()
-        # Main.tahunMasuk()
-        # Main.tingkat()
-        # Main.jurusan()
-        # Main.rombel()
+        Main.tempatLahir()
+        Main.jenisKelamin()
+        Main.tahunMasuk()
+        Main.tingkat()
+        Main.jurusan()
+        Main.rombel()
         Main.siswa()
 
     def tempatLahir():
         tempatLahirArray = []
         for tempatLahirIndex, tempatLahir in enumerate(Dependency.tempatLahirArray):
             tempatLahirObject = {
-                "id": tempatLahirIndex + 1,
+                "_id": tempatLahirIndex + 1,
                 "tempat_lahir": tempatLahir,
             }
 
@@ -2571,7 +2571,7 @@ class Main:
         jenisKelaminArray = []
         for jenisKelaminIndex, jenisKelamin in enumerate(Dependency.jenisKelaminArray):
             jenisKelaminObject = {
-                "id": jenisKelaminIndex + 1,
+                "_id": jenisKelaminIndex + 1,
                 "jenis_kelamin": jenisKelamin,
             }
 
@@ -2583,7 +2583,7 @@ class Main:
         tahunMasukArray = []
         for tahunMasukIndex, tahunMasuk in enumerate(Dependency.tahunMasukArray):
             tahunMasukObject = {
-                "id": tahunMasukIndex + 1,
+                "_id": tahunMasukIndex + 1,
                 "tahun_masuk": tahunMasuk,
             }
 
@@ -2595,7 +2595,7 @@ class Main:
         tingkatArray = []
         for tingkatIndex, tingkat in enumerate(Dependency.tingkatArray):
             tingkatObject = {
-                "id": tingkatIndex + 1,
+                "_id": tingkatIndex + 1,
                 "tingkat": tingkat,
             }
 
@@ -2607,7 +2607,7 @@ class Main:
         jurusanArray = []
         for jurusanIndex, jurusan in enumerate(Dependency.jurusanArray):
             jurusanObject = {
-                "id": jurusanIndex + 1,
+                "_id": jurusanIndex + 1,
                 "jurusan": jurusan,
             }
 
@@ -2621,7 +2621,7 @@ class Main:
         for tingkat in Dependency.tingkatArray:
             for rombel in Dependency.rombelArray:
                 rombelObject = {
-                    "id": rombelCount + 1,
+                    "_id": rombelCount + 1,
                     "rombel": f"{tingkat} {rombel}",
                 }
 
@@ -2661,7 +2661,7 @@ class Main:
 
                 for namaUnique in namaUniqueArray:
                     siswaObject = {
-                        "id": siswaCount + 1,
+                        "_id": siswaCount + 1,
                         "nisn": Utility.randomNISN(tahunMasuk2Digit, tahunMasuk2Digit),
                         "nama_lengkap": namaUnique,
                         "id_tempat_lahir": Utility.randomTempatLahir(),

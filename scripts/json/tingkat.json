@@ -1,14 +1,14 @@
 [
     {
-        "id": 1,
+        "_id": 1,
         "tingkat": "X"
     },
     {
-        "id": 2,
+        "_id": 2,
         "tingkat": "XI"
     },
     {
-        "id": 3,
+        "_id": 3,
         "tingkat": "XII"
     }
 ]
