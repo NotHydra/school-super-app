@@ -11,15 +11,15 @@ const port: number = 3000;
 const headTitle = "Dashboard";
 const partialPath = "./..";
 
+app.locals.moment = localMoment;
+app.locals.navItemArray = navItemArray;
+
 app.set("view engine", "ejs");
 app.set("views", "sources/views");
-
-app.locals.moment = localMoment;
-
 app.use(express.static("sources/public"));
 
 app.get("/", (req, res) => {
-    res.render("pages/index", { headTitle, partialPath, navItemArray, navActive: [0, 0] });
+    res.render("pages/index", { headTitle, partialPath, navActive: [0, 0] });
 });
 
 app.use("/buku-induk", bukuIndukRouter);
