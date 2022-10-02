@@ -1,6 +1,8 @@
 /node_modules
 /dist
 
+/scripts/json/*.json
+
 /sources/public/dist
 /sources/public/plugins
 
