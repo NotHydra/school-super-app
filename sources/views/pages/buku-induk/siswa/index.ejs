@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <%- include(`${partialPath}/partials/head.ejs`); -%> <%- include(`${partialPath}/partials/data-table-head.ejs`); -%>
+        <%- include(`${partialPath}/partials/head.ejs`); -%> 
+        <%- include(`${partialPath}/partials/data-table-head.ejs`); -%>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
         <div class="wrapper">
-            <%- include(`${partialPath}/partials/nav.ejs`); -%> <%- include(`${partialPath}/partials/side.ejs`); -%>
+            <%- include(`${partialPath}/partials/nav.ejs`); -%> 
+            <%- include(`${partialPath}/partials/side.ejs`); -%>
 
             <div class="content-wrapper">
                 <%- include(`${partialPath}/partials/content-head.ejs`); -%>
@@ -14,7 +16,6 @@
                 <div class="content">
                     <div class="container-fluid">
                         <%- include(`${partialPath}/partials/card-item.ejs`); -%>
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -34,8 +35,10 @@
                                                     <th class="th-custom">Rombel</th>
                                                     <th class="th-custom">Dibuat</th>
                                                     <th class="th-custom">Diubah</th>
+                                                    <th class="th-custom">Aksi</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
                                                 <% let number = 0; siswaArray.forEach(siswaObject => { number += 1; %>
                                                 <tr>
@@ -51,9 +54,14 @@
                                                     <td class="td-custom"><%= siswaObject.id_rombel.rombel %></td>
                                                     <td class="td-custom"><%= moment(siswaObject.dibuat).format("DD-MM-YYYY") %></td>
                                                     <td class="td-custom"><%= moment(siswaObject.diubah).fromNow() %></td>
+                                                    <td class="td-custom">
+                                                        <a type="button" class="btn btn-block btn-warning" href="/buku-induk/siswa/update">Ubah</a>
+                                                        <a type="button" class="btn btn-block btn-danger" href="/buku-induk/siswa/delete">Hapus</a>
+                                                    </td>
                                                 </tr>
                                                 <% }); %>
                                             </tbody>
+                                            
                                             <tfoot>
                                                 <tr>
                                                     <th class="th-custom">No.</th>
@@ -68,11 +76,18 @@
                                                     <th class="th-custom">Rombel</th>
                                                     <th class="th-custom">Dibuat</th>
                                                     <th class="th-custom">Diubah</th>
+                                                    <th class="th-custom">Aksi</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <a type="button" class="btn btn-block btn-primary" href="/buku-induk/siswa/create">Buat Siswa</a>
                             </div>
                         </div>
                     </div>
