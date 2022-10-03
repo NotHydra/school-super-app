@@ -59,8 +59,9 @@ bukuIndukSiswaRouter
             headTitle,
             partialPath,
             extraTitle: "Buat",
-            response: req.query.response,
-            text: req.query.text,
+            toastResponse: req.query.response,
+            toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
+            toastText: req.query.text,
             detailedInputArray: [
                 {
                     id: 1,
