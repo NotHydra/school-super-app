@@ -10,7 +10,7 @@ export const bukuIndukSiswaRouter = Router();
 bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
 
-bukuIndukSiswaRouter.get("/", async (req, res) => {
+bukuIndukSiswaRouter.route("/").get(async (req, res) => {
     const siswaArray = await Siswa.find()
         .populate("id_tempat_lahir")
         .populate("id_jenis_kelamin")
@@ -483,8 +483,6 @@ bukuIndukSiswaRouter
     .post(async (req, res) => {
         const id = req.query.id;
         const siswaExist = await Siswa.exists({ _id: id });
-
-        console.log(siswaExist);
 
         if (siswaExist != null) {
             const inputArray = [
