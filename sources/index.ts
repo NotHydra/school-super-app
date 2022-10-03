@@ -10,6 +10,7 @@ const app: Express = express();
 const port: number = 3000;
 const headTitle = "Dashboard";
 const partialPath = "./..";
+const navActive = [0, 0];
 
 app.locals.moment = localMoment;
 app.locals.navItemArray = navItemArray;
@@ -19,7 +20,7 @@ app.set("views", "sources/views");
 app.use(express.static("sources/public"));
 
 app.get("/", (req, res) => {
-    res.render("pages/index", { headTitle, partialPath, navActive: [0, 0] });
+    res.render("pages/index", { headTitle, partialPath, navActive });
 });
 
 app.use("/buku-induk", bukuIndukRouter);
