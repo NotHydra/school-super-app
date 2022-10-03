@@ -3,6 +3,7 @@
     <head>
         <%- include(`${partialPath}/partials/head.ejs`); -%> 
         <%- include(`${partialPath}/partials/data-table-head.ejs`); -%>
+        <%- include(`${partialPath}/partials/sweet-alert-head.ejs`); %>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
@@ -55,8 +56,8 @@
                                                     <td class="td-custom"><%= moment(siswaObject.dibuat).format("DD-MM-YYYY") %></td>
                                                     <td class="td-custom"><%= moment(siswaObject.diubah).fromNow() %></td>
                                                     <td class="td-custom">
-                                                        <a type="button" class="btn btn-block btn-warning" href="/buku-induk/siswa/update">Ubah</a>
-                                                        <a type="button" class="btn btn-block btn-danger" href="/buku-induk/siswa/delete">Hapus</a>
+                                                        <a type="button" class="btn btn-block btn-warning" href="/buku-induk/siswa/update?id=<%= siswaObject._id %>">Ubah</a>
+                                                        <a type="button" class="btn btn-block btn-danger" href="/buku-induk/siswa/delete?id=<%= siswaObject._id %>">Hapus</a>
                                                     </td>
                                                 </tr>
                                                 <% }); %>
@@ -101,4 +102,5 @@
     </body>
 
     <%- include(`${partialPath}/partials/data-table-script.ejs`); -%>
+    <%- include(`${partialPath}/partials/toast-script.ejs`); -%>
 </html>

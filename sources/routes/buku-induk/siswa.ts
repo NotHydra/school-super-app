@@ -2,7 +2,8 @@ import express, { Router } from "express";
 
 import { JenisKelamin, Jurusan, Rombel, Siswa, TahunMasuk, TempatLahir, Tingkat } from "../../models";
 
-import { headTitle, partialPath } from ".";
+import { headTitle, navActive, partialPath } from ".";
+import { localMoment } from "../../utility";
 
 export const bukuIndukSiswaRouter = Router();
 
@@ -21,7 +22,10 @@ bukuIndukSiswaRouter.get("/", async (req, res) => {
     res.render("pages/buku-induk/siswa/index", {
         headTitle,
         partialPath,
-        navActive: [1, 0],
+        navActive,
+        toastResponse: req.query.response,
+        toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
+        toastText: req.query.text,
         boxItemArray: [
             {
                 id: 1,
@@ -57,8 +61,9 @@ bukuIndukSiswaRouter
     .get(async (req, res) => {
         res.render("pages/buku-induk/siswa/create", {
             headTitle,
-            partialPath,
             extraTitle: "Buat",
+            partialPath,
+            navActive,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
             toastText: req.query.text,
@@ -175,7 +180,6 @@ bukuIndukSiswaRouter
                     enable: true,
                 },
             ],
-            navActive: [1, 0],
         });
     })
     .post(async (req, res) => {
@@ -215,5 +219,127 @@ bukuIndukSiswaRouter
             }
         } else if (inputArray.includes(undefined)) {
             res.redirect("create?response=error&text=Data tidak lengkap");
+        }
+    });
+
+bukuIndukSiswaRouter
+    .route("/delete")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const siswaExist = await Siswa.exists({ _id: id });
+
+        if (siswaExist) {
+            const siswaObject = await Siswa.findOne({ _id: id });
+
+            res.render("pages/buku-induk/siswa/delete", {
+                headTitle,
+                extraTitle: "Hapus",
+                partialPath,
+                navActive,
+                toastResponse: req.query.response,
+                toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
+                toastText: req.query.text,
+                id,
+                detailedInputArray: [
+                    {
+                        id: 1,
+                        name: "nisn",
+                        display: "NISN",
+                        type: "number",
+                        value: siswaObject.nisn,
+                        placeholder: "Input NISN disini",
+                        enable: false,
+                    },
+                    {
+                        id: 2,
+                        name: "nama_lengkap",
+                        display: "Nama Lengkap",
+                        type: "text",
+                        value: siswaObject.nama_lengkap,
+                        placeholder: "Input nama lengkap disini",
+                        enable: false,
+                    },
+                    {
+                        id: 3,
+                        name: "id_tempat_lahir",
+                        display: "Tempat Lahir",
+                        type: "text",
+                        value: (await TempatLahir.findOne({ _id: siswaObject.id_tempat_lahir })).tempat_lahir,
+                        placeholder: "Input tempat lahir disini",
+                        enable: false,
+                    },
+                    {
+                        id: 4,
+                        name: "tanggal_lahir",
+                        display: "Tanggal Lahir",
+                        type: "date",
+                        value: localMoment(siswaObject.tanggal_lahir).format("YYYY-MM-DD"),
+                        placeholder: "Input tanggal lahir disini",
+                        enable: false,
+                    },
+                    {
+                        id: 5,
+                        name: "id_jenis_kelamin",
+                        display: "Jenis Kelamin",
+                        type: "text",
+                        value: (await JenisKelamin.findOne({ _id: siswaObject.id_jenis_kelamin })).jenis_kelamin,
+                        placeholder: "Input jenis kelamin disini",
+                        enable: false,
+                    },
+                    {
+                        id: 6,
+                        name: "id_tahun_masuk",
+                        display: "Tahun Masuk",
+                        type: "text",
+                        value: (await TahunMasuk.findOne({ _id: siswaObject.id_tahun_masuk })).tahun_masuk,
+                        placeholder: "Input tahun masuk disini",
+                        enable: false,
+                    },
+                    {
+                        id: 7,
+                        name: "id_tingkat",
+                        display: "Tingkat",
+                        type: "text",
+                        value: (await Tingkat.findOne({ _id: siswaObject.id_tingkat })).tingkat,
+                        placeholder: "Input tingkat disini",
+                        enable: false,
+                    },
+                    {
+                        id: 8,
+                        name: "id_jurusan",
+                        display: "Jurusan",
+                        type: "text",
+                        value: (await Jurusan.findOne({ _id: siswaObject.id_jurusan })).jurusan,
+                        placeholder: "Input jurusan disini",
+                        enable: false,
+                    },
+                    {
+                        id: 9,
+                        name: "id_rombel",
+                        display: "Rombel",
+                        type: "text",
+                        value: (await Rombel.findOne({ _id: siswaObject.id_rombel })).rombel,
+                        placeholder: "Input rombel disini",
+                        enable: false,
+                    },
+                ],
+            });
+        } else if (!siswaExist) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id = req.query.id;
+        const siswaExist = await Siswa.exists({ _id: id });
+
+        if (siswaExist) {
+            try {
+                await Siswa.deleteOne({ _id: id });
+                res.redirect("./?response=success");
+            } catch (error) {
+                res.redirect(`delete?id=${id}&response=error`);
+            }
+        } else if (!siswaExist) {
+            res.redirect("./?response=error&text=Data tidak valid");
         }
     });

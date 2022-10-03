@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include(`${partialPath}/partials/head.ejs`); -%> 
+        <%- include(`${partialPath}/partials/select-head.ejs`); -%>
+        <%- include(`${partialPath}/partials/sweet-alert-head.ejs`); %>
+    </head>
+
+    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
+        <div class="wrapper">
+            <%- include(`${partialPath}/partials/nav.ejs`); -%> 
+            <%- include(`${partialPath}/partials/side.ejs`); -%>
+
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card mt-3">
+                                    <div class="card-body pt-3">
+                                        <%- include(`${partialPath}/partials/form-head.ejs`, {extraTitle}); -%>
+
+                                        <form action="/buku-induk/siswa/delete?id=<%= id; %>" method="POST">
+                                            <%- include(`${partialPath}/partials/input-detailed.ejs`, {detailedInputArray}); -%>
+
+                                            <button type="submit" class="btn btn-block btn-danger">Hapus</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include(`${partialPath}/partials/footer.ejs`); -%>
+        </div>
+
+        <%- include(`${partialPath}/partials/script.ejs`); -%>
+    </body>
+
+    <%- include(`${partialPath}/partials/select-script.ejs`); -%>
+    <%- include(`${partialPath}/partials/toast-script.ejs`); -%>
+</html>
