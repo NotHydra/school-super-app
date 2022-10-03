@@ -10,4 +10,14 @@
 
 .full-width {
   width: 100%;
+}
+
+.colored-toast {
+  background-color: #343a40 !important;
+}
+.colored-toast .swal2-title {
+  color: #f8f9fa !important;
+}
+.colored-toast .swal2-timer-progress-bar {
+  background-color: #f8f9fa !important;
 }/*# sourceMappingURL=style.css.map */

@@ -1,3 +1,6 @@
+$light: #f8f9fa;
+$dark: #343a40;
+
 .th-custom {
     text-align: center;
     white-space: nowrap;
@@ -10,4 +13,16 @@
 
 .full-width {
     width: 100%;
+}
+
+.colored-toast {
+    background-color: $dark !important;
+
+    .swal2-title {
+        color: $light !important;
+    }
+
+    .swal2-timer-progress-bar {
+        background-color: $light !important;
+    }
 }
