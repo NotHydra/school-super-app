@@ -2,8 +2,8 @@
 <html lang="en">
     <head>
         <%- include(`${partialPath}/partials/head.ejs`); -%> 
-        <%- include(`${partialPath}/partials/data-table-head.ejs`); -%>
         <%- include(`${partialPath}/partials/select-head.ejs`); -%>
+        <%- include(`${partialPath}/partials/sweet-alert-head.ejs`); %>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
@@ -39,6 +39,6 @@
         <%- include(`${partialPath}/partials/script.ejs`); -%>
     </body>
 
-    <%- include(`${partialPath}/partials/data-table-script.ejs`); -%>
     <%- include(`${partialPath}/partials/select-script.ejs`); -%>
+    <%- include(`${partialPath}/partials/toast-script.ejs`); -%>
 </html>
