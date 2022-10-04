@@ -17,26 +17,26 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <% navItemArray.forEach((navItemObject, navItemIndex) => { %>
-                <li class="nav-item <%= navItemIndex == navActive[0] ? "menu-open" : "" %>">
-                    <a class="nav-link <%= navItemIndex == navActive[0] ? "active" : "" %>">
-                        <i class="nav-icon fas fa-<%= navItemObject.icon %>"></i>
-                        <p>
-                            <%= navItemObject.title %>
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
+                    <li class="nav-item <%= navItemIndex == navActive[0] ? "menu-open" : "" %>">
+                        <a class="nav-link <%= navItemIndex == navActive[0] ? "active" : "" %>">
+                            <i class="nav-icon fas fa-<%= navItemObject.icon %>"></i>
+                            <p>
+                                <%= navItemObject.title %>
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
 
-                    <ul class="nav nav-treeview">
-                        <% navItemObject.child.forEach((navItemChildObject, navItemChildIndex) => { %>
-                        <li class="nav-item">
-                            <a href="/<%= navItemChildObject.link %>" class="nav-link <%= navItemIndex == navActive[0] && navItemChildIndex == navActive[1] ? "active" : "" %>">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p><%= navItemChildObject.title %></p>
-                            </a>
-                        </li>
-                        <% }); %>
-                    </ul>
-                </li>
+                        <ul class="nav nav-treeview">
+                            <% navItemObject.child.forEach((navItemChildObject, navItemChildIndex) => { %>
+                                <li class="nav-item">
+                                    <a href="/<%= navItemChildObject.link %>" class="nav-link <%= navItemIndex == navActive[0] && navItemChildIndex == navActive[1] ? "active" : "" %>">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p><%= navItemChildObject.title %></p>
+                                    </a>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </li>
                 <% }); %>
             </ul>
         </nav>

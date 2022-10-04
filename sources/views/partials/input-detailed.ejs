@@ -6,7 +6,7 @@
             if (detailedInputObject.enable) {
                 if (detailedInputObject.type != "select") {
         %>
-                <input type="<%= detailedInputObject.type %>" name="<%= detailedInputObject.name %>" class="form-control" id="<%= detailedInputObject.name %>" placeholder="<%= detailedInputObject.placeholder %>" value="<%= detailedInputObject.value %>" required>
+                    <input type="<%= detailedInputObject.type %>" name="<%= detailedInputObject.name %>" class="form-control" id="<%= detailedInputObject.name %>" placeholder="<%= detailedInputObject.placeholder %>" value="<%= detailedInputObject.value %>" required>
         <%
                 } else if (detailedInputObject.type == "select") {
         %>
@@ -17,11 +17,11 @@
                         detailedInputObject.value[0].forEach(detailedInputValue => { 
                             if (detailedInputObject.value[1] == detailedInputValue[0]) { 
                     %> 
-                            <option value="<%= detailedInputValue[0] %>" selected><%= detailedInputValue[1] %></option>
+                                <option value="<%= detailedInputValue[0] %>" selected><%= detailedInputValue[1] %></option>
                         <% 
                             } else if (detailedInputObject.value[1] != detailedInputValue[0]) {
                         %>
-                            <option value="<%= detailedInputValue[0] %>"><%= detailedInputValue[1] %></option>
+                                <option value="<%= detailedInputValue[0] %>"><%= detailedInputValue[1] %></option>
                     <% 
                             }
                         });
@@ -31,7 +31,7 @@
                 }
             } else if (!detailedInputObject.enable) {
         %>
-            <input type="<%= detailedInputObject.type %>" name="<%= detailedInputObject.name %>" class="form-control" id="<%= detailedInputObject.name %>" placeholder="<%= detailedInputObject.placeholder %>" value="<%= detailedInputObject.value %>" disabled>
+                <input type="<%= detailedInputObject.type %>" name="<%= detailedInputObject.name %>" class="form-control" id="<%= detailedInputObject.name %>" placeholder="<%= detailedInputObject.placeholder %>" value="<%= detailedInputObject.value %>" disabled>
         <% 
             }; 
         %>

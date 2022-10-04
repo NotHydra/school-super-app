@@ -42,24 +42,24 @@
 
                                             <tbody>
                                                 <% let number = 0; siswaArray.forEach(siswaObject => { number += 1; %>
-                                                <tr>
-                                                    <td class="td-custom"><%= number %></td>
-                                                    <td class="td-custom"><%= siswaObject.nisn %></td>
-                                                    <td class="td-custom"><%= siswaObject.nama_lengkap %></td>
-                                                    <td class="td-custom"><%= siswaObject.id_tempat_lahir.tempat_lahir %></td>
-                                                    <td class="td-custom"><%= moment(siswaObject.tanggal_lahir).format("DD-MM-YYYY") %></td>
-                                                    <td class="td-custom"><%= siswaObject.id_jenis_kelamin.jenis_kelamin %></td>
-                                                    <td class="td-custom"><%= siswaObject.id_tahun_masuk.tahun_masuk %></td>
-                                                    <td class="td-custom"><%= siswaObject.id_tingkat.tingkat %></td>
-                                                    <td class="td-custom"><%= siswaObject.id_jurusan.jurusan %></td>
-                                                    <td class="td-custom"><%= siswaObject.id_rombel.rombel %></td>
-                                                    <td class="td-custom"><%= moment(siswaObject.dibuat).format("DD-MM-YYYY") %></td>
-                                                    <td class="td-custom"><%= moment(siswaObject.diubah).fromNow() %></td>
-                                                    <td class="td-custom">
-                                                        <a type="button" class="btn btn-block btn-warning" href="/buku-induk/siswa/update?id=<%= siswaObject._id %>">Ubah</a>
-                                                        <a type="button" class="btn btn-block btn-danger" href="/buku-induk/siswa/delete?id=<%= siswaObject._id %>">Hapus</a>
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td class="td-custom"><%= number %></td>
+                                                        <td class="td-custom"><%= siswaObject.nisn %></td>
+                                                        <td class="td-custom"><%= siswaObject.nama_lengkap %></td>
+                                                        <td class="td-custom"><%= siswaObject.id_tempat_lahir.tempat_lahir %></td>
+                                                        <td class="td-custom"><%= moment(siswaObject.tanggal_lahir).format("DD-MM-YYYY") %></td>
+                                                        <td class="td-custom"><%= siswaObject.id_jenis_kelamin.jenis_kelamin %></td>
+                                                        <td class="td-custom"><%= siswaObject.id_tahun_masuk.tahun_masuk %></td>
+                                                        <td class="td-custom"><%= siswaObject.id_tingkat.tingkat %></td>
+                                                        <td class="td-custom"><%= siswaObject.id_jurusan.jurusan %></td>
+                                                        <td class="td-custom"><%= siswaObject.id_rombel.rombel %></td>
+                                                        <td class="td-custom"><%= moment(siswaObject.dibuat).format("DD-MM-YYYY") %></td>
+                                                        <td class="td-custom"><%= moment(siswaObject.diubah).fromNow() %></td>
+                                                        <td class="td-custom">
+                                                            <a type="button" class="btn btn-block btn-warning" href="/buku-induk/siswa/update?id=<%= siswaObject._id %>">Ubah</a>
+                                                            <a type="button" class="btn btn-block btn-danger" href="/buku-induk/siswa/delete?id=<%= siswaObject._id %>">Hapus</a>
+                                                        </td>
+                                                    </tr>
                                                 <% }); %>
                                             </tbody>
                                             
