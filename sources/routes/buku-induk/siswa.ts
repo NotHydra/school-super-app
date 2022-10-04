@@ -31,7 +31,7 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
                 id: 1,
                 title: "Siswa",
                 icon: "user",
-                value: siswaArray.length,
+                value: await Siswa.countDocuments(),
             },
             {
                 id: 2,
