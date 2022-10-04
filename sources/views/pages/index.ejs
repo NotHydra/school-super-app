@@ -6,15 +6,15 @@
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
         <div class="wrapper">
-            <%- include(`${partialPath}/partials/nav.ejs`); -%> <%- include(`${partialPath}/partials/side.ejs`); -%>
+            <%- include(`${partialPath}/partials/nav.ejs`); -%>
+            <%- include(`${partialPath}/partials/side.ejs`); -%>
 
             <div class="content-wrapper">
-                
                 <div class="content">
                     <div class="container-fluid">
+                        <br>
                         <%- include(`${partialPath}/partials/content-head.ejs`); -%>
-                        
-                        <div class="row"></div>
+                        <%- include(`${partialPath}/partials/card-item.ejs`); -%>
                     </div>
                 </div>
             </div>
