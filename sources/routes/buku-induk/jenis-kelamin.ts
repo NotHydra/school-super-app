@@ -5,7 +5,6 @@ import { JenisKelamin } from "../../models";
 import { headTitle } from ".";
 
 export const bukuIndukJenisKelaminRouter = Router();
-const partialPath = "./../../..";
 const navActive = [1, 3];
 
 bukuIndukJenisKelaminRouter.use(express.static("sources/public"));
@@ -17,7 +16,6 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
     res.render("pages/table", {
         headTitle,
         extraTitle: "Utama",
-        partialPath,
         navActive,
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
@@ -60,7 +58,6 @@ bukuIndukJenisKelaminRouter
         res.render("pages/buku-induk/jenis-kelamin/create", {
             headTitle,
             extraTitle: "Buat",
-            partialPath,
             navActive,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
@@ -112,7 +109,6 @@ bukuIndukJenisKelaminRouter
             res.render("pages/buku-induk/jenis-kelamin/delete", {
                 headTitle,
                 extraTitle: "Hapus",
-                partialPath,
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
@@ -162,7 +158,6 @@ bukuIndukJenisKelaminRouter
             res.render("pages/buku-induk/jenis-kelamin/update", {
                 headTitle,
                 extraTitle: "Ubah",
-                partialPath,
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
