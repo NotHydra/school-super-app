@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { siswaSchema } from "./buku-induk/siswa";
-import { tempatLahirSchema } from "./buku-induk/tempat_lahir";
-import { jenisKelaminSchema } from "./buku-induk/jenis_kelamin";
-import { tahunMasukSchema } from "./buku-induk/tahun_masuk";
+import { tempatLahirSchema } from "./buku-induk/tempat-lahir";
+import { jenisKelaminSchema } from "./buku-induk/jenis-kelamin";
+import { tahunMasukSchema } from "./buku-induk/tahun-masuk";
 import { tingkatSchema } from "./buku-induk/tingkat";
 import { jurusanSchema } from "./buku-induk/jurusan";
 import { rombelSchema } from "./buku-induk/rombel";
