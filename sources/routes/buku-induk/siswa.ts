@@ -2,10 +2,11 @@ import express, { Router } from "express";
 
 import { JenisKelamin, Jurusan, Rombel, Siswa, TahunMasuk, TempatLahir, Tingkat } from "../../models";
 
-import { headTitle, navActive, partialPath } from ".";
+import { headTitle, partialPath } from ".";
 import { localMoment } from "../../utility";
 
 export const bukuIndukSiswaRouter = Router();
+const navActive = [1, 0];
 
 bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
