@@ -2,11 +2,12 @@ import express, { Router } from "express";
 
 import { JenisKelamin, Jurusan, Rombel, Siswa, TahunMasuk, TempatLahir, Tingkat } from "../../models";
 
-import { headTitle, partialPath } from ".";
+import { headTitle } from ".";
 import { localMoment } from "../../utility";
 
 export const bukuIndukSiswaRouter = Router();
-const navActive = [1, 0];
+const partialPath = "./../../..";
+const navActive = [1, 1];
 
 bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
@@ -22,6 +23,7 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
 
     res.render("pages/buku-induk/siswa/index", {
         headTitle,
+        extraTitle: "Utama",
         partialPath,
         navActive,
         toastResponse: req.query.response,
