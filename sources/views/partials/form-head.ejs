@@ -4,12 +4,12 @@
 %>
 
 <div class="row">
-    <div class="col-sm-6">
-        <h1 class="m-0"><%= pageItemObject.title %> - <%= pageItemChildObject.title %> <%= typeof extraTitle !== 'undefined' ? ` - ${extraTitle}` : ""  %></h1>
+    <div class="col-sm-6" style="display: flex; align-items: center;">
+        <h1 class="m-0" style="font-size: 2rem;"><%= pageItemObject.title %> - <%= pageItemChildObject.title %> <%= typeof extraTitle !== 'undefined' ? ` - ${extraTitle}` : ""  %></h1>
     </div>
 
     <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right" style="background-color: transparent;">
+        <ol class="breadcrumb float-sm-right m-0" style="background-color: transparent;">
             <li class="breadcrumb-item">
                 <a href="/<%= pageItemChildObject.link %>"><%= pageItemChildObject.title %></a>
             </li>

@@ -19,8 +19,8 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body pt-3">
+                                <div class="card py-2">
+                                    <div class="card-body pt-0 pb-3">
                                         <%- include("./../partials/form-head.ejs", {extraTitle: "Update"}); -%>
 
                                         <form action="/<%= pageItemCurrent.link %>/update?id=<%= id; %>" method="POST" onsubmit="return confirmModal('form', this);">
