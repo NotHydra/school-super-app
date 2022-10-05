@@ -9,4 +9,12 @@ export const tahunMasukSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    dibuat: {
+        type: Date,
+        required: true,
+    },
+    diubah: {
+        type: Date,
+        required: true,
+    },
 });

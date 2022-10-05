@@ -108,6 +108,8 @@ class Main:
             tempatLahirObject = {
                 "_id": tempatLahirIndex + 1,
                 "tempat_lahir": tempatLahir,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
             }
 
             tempatLahirArray.append(tempatLahirObject)
@@ -120,6 +122,8 @@ class Main:
             jenisKelaminObject = {
                 "_id": jenisKelaminIndex + 1,
                 "jenis_kelamin": jenisKelamin,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
             }
 
             jenisKelaminArray.append(jenisKelaminObject)
@@ -132,6 +136,8 @@ class Main:
             tahunMasukObject = {
                 "_id": tahunMasukIndex + 1,
                 "tahun_masuk": tahunMasuk,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
             }
 
             tahunMasukArray.append(tahunMasukObject)
@@ -144,6 +150,8 @@ class Main:
             tingkatObject = {
                 "_id": tingkatIndex + 1,
                 "tingkat": tingkat,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
             }
 
             tingkatArray.append(tingkatObject)
@@ -156,6 +164,8 @@ class Main:
             jurusanObject = {
                 "_id": jurusanIndex + 1,
                 "jurusan": jurusan,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
             }
 
             jurusanArray.append(jurusanObject)
@@ -170,6 +180,8 @@ class Main:
                 rombelObject = {
                     "_id": rombelCount + 1,
                     "rombel": f"{tingkat} {rombel}",
+                    "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                    "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
                 }
 
                 rombelCount += 1
@@ -195,7 +207,7 @@ class Main:
 
             for rombel in Dependency.rombelArray:
                 namaUniqueArray = random.sample(
-                    Dependency.nameArray, k=random.randint(34, 36)
+                    Dependency.nameArray, k=random.randint(1, 1)
                 )
 
                 for jurusanObject in Utility.jurusanArray:
