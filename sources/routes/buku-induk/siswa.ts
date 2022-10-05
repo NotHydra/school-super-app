@@ -13,7 +13,7 @@ bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukSiswaRouter.route("/").get(async (req, res) => {
-    const siswaArray = await Siswa.find()
+    const tableItemArray = await Siswa.find()
         .populate("id_tempat_lahir")
         .populate("id_jenis_kelamin")
         .populate("id_tahun_masuk")
@@ -21,7 +21,7 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
         .populate("id_jurusan")
         .populate("id_rombel");
 
-    res.render("pages/buku-induk/siswa/index", {
+    res.render("pages/table", {
         headTitle,
         extraTitle: "Utama",
         partialPath,
@@ -29,7 +29,7 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
         toastText: req.query.text,
-        boxItemArray: [
+        cardItemArray: [
             {
                 id: 1,
                 title: "Siswa",
@@ -55,7 +55,63 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
                 value: (await Siswa.findOne().sort({ diubah: -1 })).nisn,
             },
         ],
-        siswaArray,
+        tableAttributeArray: [
+            {
+                id: 1,
+                label: "NISN",
+                value: ["nisn"],
+                type: "text",
+            },
+            {
+                id: 2,
+                label: "Nama Lengkap",
+                value: ["nama_lengkap"],
+                type: "text",
+            },
+            {
+                id: 3,
+                label: "Tempat Lahir",
+                value: ["id_tempat_lahir", "tempat_lahir"],
+                type: "text",
+            },
+            {
+                id: 4,
+                label: "Tanggal Lahir",
+                value: ["tanggal_lahir"],
+                type: "date",
+            },
+            {
+                id: 5,
+                label: "Jenis Kelamin",
+                value: ["id_jenis_kelamin", "jenis_kelamin"],
+                type: "text",
+            },
+            {
+                id: 6,
+                label: "Tahun Masuk",
+                value: ["id_tahun_masuk", "tahun_masuk"],
+                type: "text",
+            },
+            {
+                id: 7,
+                label: "Tingkat",
+                value: ["id_tingkat", "tingkat"],
+                type: "text",
+            },
+            {
+                id: 8,
+                label: "Jurusan",
+                value: ["id_jurusan", "jurusan"],
+                type: "text",
+            },
+            {
+                id: 9,
+                label: "Rombel",
+                value: ["id_rombel", "rombel"],
+                type: "text",
+            },
+        ],
+        tableItemArray,
     });
 });
 

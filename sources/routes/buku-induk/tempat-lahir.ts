@@ -12,9 +12,9 @@ bukuIndukTempatLahirRouter.use(express.static("sources/public"));
 bukuIndukTempatLahirRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
-    const tempatLahirArray = await TempatLahir.find();
+    const tableItemArray = await TempatLahir.find();
 
-    res.render("pages/buku-induk/tempat-lahir/index", {
+    res.render("pages/table", {
         headTitle,
         extraTitle: "Utama",
         partialPath,
@@ -22,7 +22,7 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
         toastText: req.query.text,
-        boxItemArray: [
+        cardItemArray: [
             {
                 id: 1,
                 title: "Tempat Lahir",
@@ -42,7 +42,15 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
                 value: (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir,
             },
         ],
-        tempatLahirArray: tempatLahirArray,
+        tableAttributeArray: [
+            {
+                id: 1,
+                label: "Tempat Lahir",
+                value: ["tempat_lahir"],
+                type: "text",
+            },
+        ],
+        tableItemArray,
     });
 });
 

@@ -12,9 +12,9 @@ bukuIndukJenisKelaminRouter.use(express.static("sources/public"));
 bukuIndukJenisKelaminRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
-    const jenisKelaminArray = await JenisKelamin.find();
+    const tableItemArray = await JenisKelamin.find();
 
-    res.render("pages/buku-induk/jenis-kelamin/index", {
+    res.render("pages/table", {
         headTitle,
         extraTitle: "Utama",
         partialPath,
@@ -22,7 +22,7 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
         toastText: req.query.text,
-        boxItemArray: [
+        cardItemArray: [
             {
                 id: 1,
                 title: "Jenis Kelamin",
@@ -42,7 +42,15 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
                 value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
             },
         ],
-        jenisKelaminArray: jenisKelaminArray,
+        tableAttributeArray: [
+            {
+                id: 1,
+                label: "Jenis Kelamin",
+                value: ["jenis_kelamin"],
+                type: "text",
+            },
+        ],
+        tableItemArray,
     });
 });
 
