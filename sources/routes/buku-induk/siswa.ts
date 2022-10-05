@@ -269,6 +269,176 @@ bukuIndukSiswaRouter
     });
 
 bukuIndukSiswaRouter
+    .route("/update")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await Siswa.exists({ _id: id });
+
+        if (dataExist) {
+            const itemObject = await Siswa.findOne({ _id: id });
+
+            res.render("pages/update", {
+                headTitle,
+                navActive,
+                toastResponse: req.query.response,
+                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
+                toastText: req.query.text,
+                id,
+                detailedInputArray: [
+                    {
+                        id: 1,
+                        name: "nisn",
+                        display: "NISN",
+                        type: "number",
+                        value: itemObject.nisn,
+                        placeholder: "Input NISN disini",
+                        enable: true,
+                    },
+                    {
+                        id: 2,
+                        name: "nama_lengkap",
+                        display: "Nama Lengkap",
+                        type: "text",
+                        value: itemObject.nama_lengkap,
+                        placeholder: "Input nama lengkap disini",
+                        enable: true,
+                    },
+                    {
+                        id: 3,
+                        name: "id_tempat_lahir",
+                        display: "Tempat Lahir",
+                        type: "select",
+                        value: [
+                            (await TempatLahir.find().sort({ tempat_lahir: 1 })).map((tempatLahirObject) => {
+                                return [tempatLahirObject.id, tempatLahirObject.tempat_lahir];
+                            }),
+                            itemObject.id_tempat_lahir,
+                        ],
+                        placeholder: "Input tempat lahir disini",
+                        enable: true,
+                    },
+                    {
+                        id: 4,
+                        name: "tanggal_lahir",
+                        display: "Tanggal Lahir",
+                        type: "date",
+                        value: localMoment(itemObject.tanggal_lahir).format("YYYY-MM-DD"),
+                        placeholder: "Input tanggal lahir disini",
+                        enable: true,
+                    },
+                    {
+                        id: 5,
+                        name: "id_jenis_kelamin",
+                        display: "Jenis Kelamin",
+                        type: "select",
+                        value: [
+                            (await JenisKelamin.find().sort({ jenis_kelamin: 1 })).map((jenisKelaminObject) => {
+                                return [jenisKelaminObject.id, jenisKelaminObject.jenis_kelamin];
+                            }),
+                            itemObject.id_jenis_kelamin,
+                        ],
+                        placeholder: "Input jenis kelamin disini",
+                        enable: true,
+                    },
+                    {
+                        id: 6,
+                        name: "id_tahun_masuk",
+                        display: "Tahun Masuk",
+                        type: "select",
+                        value: [
+                            (await TahunMasuk.find().sort({ tahun_masuk: 1 })).map((tahunMasukObject) => {
+                                return [tahunMasukObject.id, tahunMasukObject.tahun_masuk];
+                            }),
+                            itemObject.id_tahun_masuk,
+                        ],
+                        placeholder: "Input tahun masuk disini",
+                        enable: true,
+                    },
+                    {
+                        id: 7,
+                        name: "id_tingkat",
+                        display: "Tingkat",
+                        type: "select",
+                        value: [
+                            (await Tingkat.find().sort({ tingkat: 1 })).map((tingkatObject) => {
+                                return [tingkatObject.id, tingkatObject.tingkat];
+                            }),
+                            itemObject.id_tingkat,
+                        ],
+                        placeholder: "Input tingkat disini",
+                        enable: true,
+                    },
+                    {
+                        id: 8,
+                        name: "id_jurusan",
+                        display: "Jurusan",
+                        type: "select",
+                        value: [
+                            (await Jurusan.find().sort({ jurusan: 1 })).map((jurusanObject) => {
+                                return [jurusanObject.id, jurusanObject.jurusan];
+                            }),
+                            itemObject.id_jurusan,
+                        ],
+                        placeholder: "Input jurusan disini",
+                        enable: true,
+                    },
+                    {
+                        id: 9,
+                        name: "id_rombel",
+                        display: "Rombel",
+                        type: "select",
+                        value: [
+                            (await Rombel.find().sort({ rombel: 1 })).map((rombelObject) => {
+                                return [rombelObject.id, rombelObject.rombel];
+                            }),
+                            itemObject.id_rombel,
+                        ],
+                        placeholder: "Input rombel disini",
+                        enable: true,
+                    },
+                ],
+            });
+        } else if (!dataExist) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await Siswa.exists({ _id: id });
+
+        if (dataExist != null) {
+            const attributeArray: any = {};
+            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+                const attributeCurrent = tableAttributeObject.value[0];
+
+                attributeArray[attributeCurrent] = req.body[attributeCurrent];
+
+                return req.body[attributeCurrent];
+            });
+
+            if (!inputArray.includes(undefined)) {
+                try {
+                    await Siswa.updateOne(
+                        { _id: id },
+                        {
+                            ...attributeArray,
+
+                            diubah: new Date(),
+                        }
+                    );
+                    res.redirect(`update?id=${id}&response=success`);
+                } catch {
+                    res.redirect(`update?id=${id}&response=error`);
+                }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+            }
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    });
+
+bukuIndukSiswaRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
@@ -385,187 +555,6 @@ bukuIndukSiswaRouter
                 res.redirect(`delete?id=${id}&response=error`);
             }
         } else if (!siswaExist) {
-            res.redirect("./?response=error&text=Data tidak valid");
-        }
-    });
-
-bukuIndukSiswaRouter
-    .route("/update")
-    .get(async (req, res) => {
-        const id = req.query.id;
-        const siswaExist = await Siswa.exists({ _id: id });
-
-        if (siswaExist) {
-            const siswaObject = await Siswa.findOne({ _id: id });
-
-            res.render("pages/buku-induk/siswa/update", {
-                headTitle,
-                extraTitle: "Ubah",
-                navActive,
-                toastResponse: req.query.response,
-                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
-                toastText: req.query.text,
-                id,
-                detailedInputArray: [
-                    {
-                        id: 1,
-                        name: "nisn",
-                        display: "NISN",
-                        type: "number",
-                        value: siswaObject.nisn,
-                        placeholder: "Input NISN disini",
-                        enable: true,
-                    },
-                    {
-                        id: 2,
-                        name: "nama_lengkap",
-                        display: "Nama Lengkap",
-                        type: "text",
-                        value: siswaObject.nama_lengkap,
-                        placeholder: "Input nama lengkap disini",
-                        enable: true,
-                    },
-                    {
-                        id: 3,
-                        name: "id_tempat_lahir",
-                        display: "Tempat Lahir",
-                        type: "select",
-                        value: [
-                            (await TempatLahir.find().sort({ tempat_lahir: 1 })).map((tempatLahirObject) => {
-                                return [tempatLahirObject.id, tempatLahirObject.tempat_lahir];
-                            }),
-                            siswaObject.id_tempat_lahir,
-                        ],
-                        placeholder: "Input tempat lahir disini",
-                        enable: true,
-                    },
-                    {
-                        id: 4,
-                        name: "tanggal_lahir",
-                        display: "Tanggal Lahir",
-                        type: "date",
-                        value: localMoment(siswaObject.tanggal_lahir).format("YYYY-MM-DD"),
-                        placeholder: "Input tanggal lahir disini",
-                        enable: true,
-                    },
-                    {
-                        id: 5,
-                        name: "id_jenis_kelamin",
-                        display: "Jenis Kelamin",
-                        type: "select",
-                        value: [
-                            (await JenisKelamin.find().sort({ jenis_kelamin: 1 })).map((jenisKelaminObject) => {
-                                return [jenisKelaminObject.id, jenisKelaminObject.jenis_kelamin];
-                            }),
-                            siswaObject.id_jenis_kelamin,
-                        ],
-                        placeholder: "Input jenis kelamin disini",
-                        enable: true,
-                    },
-                    {
-                        id: 6,
-                        name: "id_tahun_masuk",
-                        display: "Tahun Masuk",
-                        type: "select",
-                        value: [
-                            (await TahunMasuk.find().sort({ tahun_masuk: 1 })).map((tahunMasukObject) => {
-                                return [tahunMasukObject.id, tahunMasukObject.tahun_masuk];
-                            }),
-                            siswaObject.id_tahun_masuk,
-                        ],
-                        placeholder: "Input tahun masuk disini",
-                        enable: true,
-                    },
-                    {
-                        id: 7,
-                        name: "id_tingkat",
-                        display: "Tingkat",
-                        type: "select",
-                        value: [
-                            (await Tingkat.find().sort({ tingkat: 1 })).map((tingkatObject) => {
-                                return [tingkatObject.id, tingkatObject.tingkat];
-                            }),
-                            siswaObject.id_tingkat,
-                        ],
-                        placeholder: "Input tingkat disini",
-                        enable: true,
-                    },
-                    {
-                        id: 8,
-                        name: "id_jurusan",
-                        display: "Jurusan",
-                        type: "select",
-                        value: [
-                            (await Jurusan.find().sort({ jurusan: 1 })).map((jurusanObject) => {
-                                return [jurusanObject.id, jurusanObject.jurusan];
-                            }),
-                            siswaObject.id_jurusan,
-                        ],
-                        placeholder: "Input jurusan disini",
-                        enable: true,
-                    },
-                    {
-                        id: 9,
-                        name: "id_rombel",
-                        display: "Rombel",
-                        type: "select",
-                        value: [
-                            (await Rombel.find().sort({ rombel: 1 })).map((rombelObject) => {
-                                return [rombelObject.id, rombelObject.rombel];
-                            }),
-                            siswaObject.id_rombel,
-                        ],
-                        placeholder: "Input rombel disini",
-                        enable: true,
-                    },
-                ],
-            });
-        } else if (!siswaExist) {
-            res.redirect("./?response=error&text=Data tidak valid");
-        }
-    })
-    .post(async (req, res) => {
-        const id = req.query.id;
-        const siswaExist = await Siswa.exists({ _id: id });
-
-        if (siswaExist != null) {
-            const inputArray = [
-                req.body.nisn,
-                req.body.nama_lengkap,
-                req.body.id_tempat_lahir,
-                req.body.tanggal_lahir,
-                req.body.id_jenis_kelamin,
-                req.body.id_tahun_masuk,
-                req.body.id_tingkat,
-                req.body.id_jurusan,
-                req.body.id_rombel,
-            ];
-
-            if (!inputArray.includes(undefined)) {
-                try {
-                    await Siswa.updateOne(
-                        { _id: id },
-                        {
-                            nisn: req.body.nisn,
-                            nama_lengkap: req.body.nama_lengkap,
-                            id_tempat_lahir: req.body.id_tempat_lahir,
-                            tanggal_lahir: req.body.tanggal_lahir,
-                            id_jenis_kelamin: req.body.id_jenis_kelamin,
-                            id_tahun_masuk: req.body.id_tahun_masuk,
-                            id_tingkat: req.body.id_tingkat,
-                            id_jurusan: req.body.id_jurusan,
-                            id_rombel: req.body.id_rombel,
-                            diubah: new Date(),
-                        }
-                    );
-                    res.redirect(`update?id=${id}&response=success`);
-                } catch {
-                    res.redirect(`update?id=${id}&response=error`);
-                }
-            } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
-            }
-        } else if (siswaExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });

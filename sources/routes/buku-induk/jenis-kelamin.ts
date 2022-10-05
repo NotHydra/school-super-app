@@ -106,6 +106,74 @@ bukuIndukJenisKelaminRouter
     });
 
 bukuIndukJenisKelaminRouter
+    .route("/update")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await JenisKelamin.exists({ _id: id });
+
+        if (dataExist) {
+            const itemObject = await JenisKelamin.findOne({ _id: id });
+
+            res.render("pages/update", {
+                headTitle,
+                navActive,
+                toastResponse: req.query.response,
+                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
+                toastText: req.query.text,
+                id,
+                detailedInputArray: [
+                    {
+                        id: 1,
+                        name: "jenis_kelamin",
+                        display: "Jenis Kelamin",
+                        type: "text",
+                        value: itemObject.jenis_kelamin,
+                        placeholder: "Input jenis kelamin disini",
+                        enable: true,
+                    },
+                ],
+            });
+        } else if (!dataExist) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await JenisKelamin.exists({ _id: id });
+
+        if (dataExist != null) {
+            const attributeArray: any = {};
+            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+                const attributeCurrent = tableAttributeObject.value[0];
+
+                attributeArray[attributeCurrent] = req.body[attributeCurrent];
+
+                return req.body[attributeCurrent];
+            });
+
+            if (!inputArray.includes(undefined)) {
+                try {
+                    await JenisKelamin.updateOne(
+                        { _id: id },
+                        {
+                            ...attributeArray,
+
+                            diubah: new Date(),
+                        }
+                    );
+                    res.redirect(`update?id=${id}&response=success`);
+                } catch {
+                    res.redirect(`update?id=${id}&response=error`);
+                }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+            }
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    });
+
+bukuIndukJenisKelaminRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
@@ -150,67 +218,6 @@ bukuIndukJenisKelaminRouter
                 res.redirect(`delete?id=${id}&response=error`);
             }
         } else if (!jenisKelaminExist) {
-            res.redirect("./?response=error&text=Data tidak valid");
-        }
-    });
-
-bukuIndukJenisKelaminRouter
-    .route("/update")
-    .get(async (req, res) => {
-        const id = req.query.id;
-        const jenisKelaminExist = await JenisKelamin.exists({ _id: id });
-
-        if (jenisKelaminExist) {
-            const jenisKelaminObject = await JenisKelamin.findOne({ _id: id });
-
-            res.render("pages/buku-induk/jenis-kelamin/update", {
-                headTitle,
-                extraTitle: "Ubah",
-                navActive,
-                toastResponse: req.query.response,
-                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
-                toastText: req.query.text,
-                id,
-                detailedInputArray: [
-                    {
-                        id: 1,
-                        name: "jenis_kelamin",
-                        display: "Jenis Kelamin",
-                        type: "text",
-                        value: jenisKelaminObject.jenis_kelamin,
-                        placeholder: "Input jenis kelamin disini",
-                        enable: true,
-                    },
-                ],
-            });
-        } else if (!jenisKelaminExist) {
-            res.redirect("./?response=error&text=Data tidak valid");
-        }
-    })
-    .post(async (req, res) => {
-        const id = req.query.id;
-        const jenisKelaminExist = await JenisKelamin.exists({ _id: id });
-
-        if (jenisKelaminExist != null) {
-            const inputArray = [req.body.jenis_kelamin];
-
-            if (!inputArray.includes(undefined)) {
-                try {
-                    await JenisKelamin.updateOne(
-                        { _id: id },
-                        {
-                            jenis_kelamin: req.body.jenis_kelamin,
-                            diubah: new Date(),
-                        }
-                    );
-                    res.redirect(`update?id=${id}&response=success`);
-                } catch {
-                    res.redirect(`update?id=${id}&response=error`);
-                }
-            } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
-            }
-        } else if (jenisKelaminExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });

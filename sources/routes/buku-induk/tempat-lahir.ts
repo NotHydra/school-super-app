@@ -106,6 +106,74 @@ bukuIndukTempatLahirRouter
     });
 
 bukuIndukTempatLahirRouter
+    .route("/update")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await TempatLahir.exists({ _id: id });
+
+        if (dataExist) {
+            const itemObject = await TempatLahir.findOne({ _id: id });
+
+            res.render("pages/update", {
+                headTitle,
+                navActive,
+                toastResponse: req.query.response,
+                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
+                toastText: req.query.text,
+                id,
+                detailedInputArray: [
+                    {
+                        id: 1,
+                        name: "tempat_lahir",
+                        display: "Tempat Lahir",
+                        type: "text",
+                        value: itemObject.tempat_lahir,
+                        placeholder: "Input tempat lahir disini",
+                        enable: true,
+                    },
+                ],
+            });
+        } else if (!dataExist) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await TempatLahir.exists({ _id: id });
+
+        if (dataExist != null) {
+            const attributeArray: any = {};
+            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+                const attributeCurrent = tableAttributeObject.value[0];
+
+                attributeArray[attributeCurrent] = req.body[attributeCurrent];
+
+                return req.body[attributeCurrent];
+            });
+
+            if (!inputArray.includes(undefined)) {
+                try {
+                    await TempatLahir.updateOne(
+                        { _id: id },
+                        {
+                            ...attributeArray,
+
+                            diubah: new Date(),
+                        }
+                    );
+                    res.redirect(`update?id=${id}&response=success`);
+                } catch {
+                    res.redirect(`update?id=${id}&response=error`);
+                }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+            }
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    });
+
+bukuIndukTempatLahirRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
@@ -150,67 +218,6 @@ bukuIndukTempatLahirRouter
                 res.redirect(`delete?id=${id}&response=error`);
             }
         } else if (!tempatLahirExist) {
-            res.redirect("./?response=error&text=Data tidak valid");
-        }
-    });
-
-bukuIndukTempatLahirRouter
-    .route("/update")
-    .get(async (req, res) => {
-        const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
-
-        if (tempatLahirExist) {
-            const tempatLahirObject = await TempatLahir.findOne({ _id: id });
-
-            res.render("pages/buku-induk/tempat-lahir/update", {
-                headTitle,
-                extraTitle: "Ubah",
-                navActive,
-                toastResponse: req.query.response,
-                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
-                toastText: req.query.text,
-                id,
-                detailedInputArray: [
-                    {
-                        id: 1,
-                        name: "tempat_lahir",
-                        display: "Tempat Lahir",
-                        type: "text",
-                        value: tempatLahirObject.tempat_lahir,
-                        placeholder: "Input tempat lahir disini",
-                        enable: true,
-                    },
-                ],
-            });
-        } else if (!tempatLahirExist) {
-            res.redirect("./?response=error&text=Data tidak valid");
-        }
-    })
-    .post(async (req, res) => {
-        const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
-
-        if (tempatLahirExist != null) {
-            const inputArray = [req.body.tempat_lahir];
-
-            if (!inputArray.includes(undefined)) {
-                try {
-                    await TempatLahir.updateOne(
-                        { _id: id },
-                        {
-                            tempat_lahir: req.body.tempat_lahir,
-                            diubah: new Date(),
-                        }
-                    );
-                    res.redirect(`update?id=${id}&response=success`);
-                } catch {
-                    res.redirect(`update?id=${id}&response=error`);
-                }
-            } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
-            }
-        } else if (tempatLahirExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });
