@@ -1,20 +1,20 @@
 import express, { Router } from "express";
 
-import { TempatLahir } from "../../models";
+import { JenisKelamin } from "../../models";
 
 import { headTitle } from ".";
 
-export const bukuIndukTempatLahirRouter = Router();
+export const bukuIndukJenisKelaminRouter = Router();
 const partialPath = "./../../..";
-const navActive = [1, 2];
+const navActive = [1, 3];
 
-bukuIndukTempatLahirRouter.use(express.static("sources/public"));
-bukuIndukTempatLahirRouter.use(express.urlencoded({ extended: false }));
+bukuIndukJenisKelaminRouter.use(express.static("sources/public"));
+bukuIndukJenisKelaminRouter.use(express.urlencoded({ extended: false }));
 
-bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
-    const tempatLahirArray = await TempatLahir.find();
+bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
+    const jenisKelaminArray = await JenisKelamin.find();
 
-    res.render("pages/buku-induk/tempat-lahir/index", {
+    res.render("pages/buku-induk/jenis-kelamin/index", {
         headTitle,
         extraTitle: "Utama",
         partialPath,
@@ -25,31 +25,31 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
         boxItemArray: [
             {
                 id: 1,
-                title: "Tempat Lahir",
+                title: "Jenis Kelamin",
                 icon: "user",
-                value: await TempatLahir.countDocuments(),
+                value: await JenisKelamin.countDocuments(),
             },
             {
                 id: 2,
                 title: "Dibuat",
                 icon: "circle-plus",
-                value: (await TempatLahir.findOne().sort({ dibuat: -1 })).tempat_lahir,
+                value: (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin,
             },
             {
                 id: 3,
                 title: "Diupdate",
                 icon: "circle-exclamation",
-                value: (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir,
+                value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
             },
         ],
-        tempatLahirArray: tempatLahirArray,
+        jenisKelaminArray: jenisKelaminArray,
     });
 });
 
-bukuIndukTempatLahirRouter
+bukuIndukJenisKelaminRouter
     .route("/create")
     .get(async (req, res) => {
-        res.render("pages/buku-induk/tempat-lahir/create", {
+        res.render("pages/buku-induk/jenis-kelamin/create", {
             headTitle,
             extraTitle: "Buat",
             partialPath,
@@ -60,29 +60,29 @@ bukuIndukTempatLahirRouter
             detailedInputArray: [
                 {
                     id: 1,
-                    name: "tempat_lahir",
-                    display: "Tempat Lahir",
+                    name: "jenis_kelamin",
+                    display: "Jenis Kelamin",
                     type: "text",
                     value: null,
-                    placeholder: "Input tempat lahir disini",
+                    placeholder: "Input jenis kelamin disini",
                     enable: true,
                 },
             ],
         });
     })
     .post(async (req, res) => {
-        const inputArray = [req.body.tempat_lahir];
+        const inputArray = [req.body.jenis_kelamin];
 
         if (!inputArray.includes(undefined)) {
-            const tempatLahirObject: any = new TempatLahir({
-                _id: (await TempatLahir.findOne().sort({ _id: -1 }))._id + 1,
-                tempat_lahir: req.body.tempat_lahir,
+            const jenisKelaminObject: any = new JenisKelamin({
+                _id: (await JenisKelamin.findOne().sort({ _id: -1 }))._id + 1,
+                jenis_kelamin: req.body.jenis_kelamin,
                 dibuat: new Date(),
                 diubah: new Date(),
             });
 
             try {
-                await tempatLahirObject.save();
+                await jenisKelaminObject.save();
                 res.redirect("create?response=success");
             } catch (error) {
                 res.redirect("create?response=error");
@@ -92,16 +92,16 @@ bukuIndukTempatLahirRouter
         }
     });
 
-bukuIndukTempatLahirRouter
+bukuIndukJenisKelaminRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
+        const jenisKelaminExist = await JenisKelamin.exists({ _id: id });
 
-        if (tempatLahirExist) {
-            const tempatLahirObject = await TempatLahir.findOne({ _id: id });
+        if (jenisKelaminExist) {
+            const jenisKelaminObject = await JenisKelamin.findOne({ _id: id });
 
-            res.render("pages/buku-induk/tempat-lahir/delete", {
+            res.render("pages/buku-induk/jenis-kelamin/delete", {
                 headTitle,
                 extraTitle: "Hapus",
                 partialPath,
@@ -113,45 +113,45 @@ bukuIndukTempatLahirRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "tempat_lahir",
-                        display: "Tempat Lahir",
+                        name: "jenis_kelamin",
+                        display: "Jenis Kelamin",
                         type: "text",
-                        value: tempatLahirObject.tempat_lahir,
-                        placeholder: "Input tempat lahir disini",
+                        value: jenisKelaminObject.jenis_kelamin,
+                        placeholder: "Input jenis kelamin disini",
                         enable: false,
                     },
                 ],
             });
-        } else if (!tempatLahirExist) {
+        } else if (!jenisKelaminExist) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
+        const jenisKelaminExist = await JenisKelamin.exists({ _id: id });
 
-        if (tempatLahirExist) {
+        if (jenisKelaminExist) {
             try {
-                await TempatLahir.deleteOne({ _id: id });
+                await JenisKelamin.deleteOne({ _id: id });
                 res.redirect("./?response=success");
             } catch (error) {
                 res.redirect(`delete?id=${id}&response=error`);
             }
-        } else if (!tempatLahirExist) {
+        } else if (!jenisKelaminExist) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });
 
-bukuIndukTempatLahirRouter
+bukuIndukJenisKelaminRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
+        const jenisKelaminExist = await JenisKelamin.exists({ _id: id });
 
-        if (tempatLahirExist) {
-            const tempatLahirObject = await TempatLahir.findOne({ _id: id });
+        if (jenisKelaminExist) {
+            const jenisKelaminObject = await JenisKelamin.findOne({ _id: id });
 
-            res.render("pages/buku-induk/tempat-lahir/update", {
+            res.render("pages/buku-induk/jenis-kelamin/update", {
                 headTitle,
                 extraTitle: "Ubah",
                 partialPath,
@@ -163,32 +163,32 @@ bukuIndukTempatLahirRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "tempat_lahir",
-                        display: "Tempat Lahir",
+                        name: "jenis_kelamin",
+                        display: "Jenis Kelamin",
                         type: "text",
-                        value: tempatLahirObject.tempat_lahir,
-                        placeholder: "Input tempat lahir disini",
+                        value: jenisKelaminObject.jenis_kelamin,
+                        placeholder: "Input jenis kelamin disini",
                         enable: true,
                     },
                 ],
             });
-        } else if (!tempatLahirExist) {
+        } else if (!jenisKelaminExist) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
+        const jenisKelaminExist = await JenisKelamin.exists({ _id: id });
 
-        if (tempatLahirExist != null) {
-            const inputArray = [req.body.tempat_lahir];
+        if (jenisKelaminExist != null) {
+            const inputArray = [req.body.jenis_kelamin];
 
             if (!inputArray.includes(undefined)) {
                 try {
-                    await TempatLahir.updateOne(
+                    await JenisKelamin.updateOne(
                         { _id: id },
                         {
-                            tempat_lahir: req.body.tempat_lahir,
+                            jenis_kelamin: req.body.jenis_kelamin,
                             diubah: new Date(),
                         }
                     );
@@ -199,7 +199,7 @@ bukuIndukTempatLahirRouter
             } else if (inputArray.includes(undefined)) {
                 res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
             }
-        } else if (tempatLahirExist == null) {
+        } else if (jenisKelaminExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });
