@@ -1,14 +1,14 @@
 <div class="row">
-    <% boxItemArray.forEach(boxItemObject => { %>
+    <% cardItemArray.forEach(cardItemObject => { %>
         <div class="col-sm">
             <div class="small-box bg-dark">
                 <div class="inner">
-                    <h3><%= boxItemObject.value %></h3>
+                    <h3><%= cardItemObject.value %></h3>
 
-                    <p><%= boxItemObject.title %></p>
+                    <p><%= cardItemObject.title %></p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-<%= boxItemObject.icon %>"></i>
+                    <i class="fas fa-<%= cardItemObject.icon %>"></i>
                 </div>
             </div>
         </div>

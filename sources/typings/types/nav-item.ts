@@ -1,12 +1,12 @@
-export type navItemChildType = {
+type pageItemChildType = {
     id: number;
     title: string;
     link: string;
 };
 
-export type navItemType = {
+export type pageItemType = {
     id: number;
     title: string;
     icon: string;
-    child: navItemChildType[];
+    child: pageItemChildType[];
 };

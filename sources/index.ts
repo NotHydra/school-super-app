@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import mongoose from "mongoose";
 
-import { mongoDBURI, navItemArray } from "./depedency";
+import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
 import { bukuIndukRouter } from "./routes/buku-induk";
@@ -9,12 +9,13 @@ import { Siswa } from "./models";
 
 const app: Express = express();
 const port: number = 3000;
+
 const headTitle = "Dashboard";
 const partialPath = "./..";
 const navActive = [0, 0];
 
 app.locals.moment = localMoment;
-app.locals.navItemArray = navItemArray;
+app.locals.pageItemArray = pageItemArray;
 
 app.set("view engine", "ejs");
 app.set("views", "sources/views");

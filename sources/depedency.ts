@@ -1,9 +1,9 @@
 import "dotenv/config";
-import { navItemType } from "./typings/types/nav-item";
+import { pageItemType } from "./typings/types/nav-item";
 
 export const mongoDBURI: string = process.env.MONGO_DB_URI as string;
 
-export const navItemArray: navItemType[] = [
+export const pageItemArray: pageItemType[] = [
     {
         id: 1,
         title: "Dashboard",

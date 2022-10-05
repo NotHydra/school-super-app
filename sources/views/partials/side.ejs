@@ -16,22 +16,22 @@
 
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-                <% navItemArray.forEach((navItemObject, navItemIndex) => { %>
-                    <li class="nav-item <%= navItemIndex == navActive[0] ? "menu-open" : "" %>">
-                        <a class="nav-link <%= navItemIndex == navActive[0] ? "active" : "" %>">
-                            <i class="nav-icon fas fa-<%= navItemObject.icon %>"></i>
+                <% pageItemArray.forEach((pageItemObject, pageItemIndex) => { %>
+                    <li class="nav-item <%= pageItemIndex == navActive[0] ? "menu-open" : "" %>">
+                        <a class="nav-link <%= pageItemIndex == navActive[0] ? "active" : "" %>">
+                            <i class="nav-icon fas fa-<%= pageItemObject.icon %>"></i>
                             <p>
-                                <%= navItemObject.title %>
+                                <%= pageItemObject.title %>
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
 
                         <ul class="nav nav-treeview">
-                            <% navItemObject.child.forEach((navItemChildObject, navItemChildIndex) => { %>
+                            <% pageItemObject.child.forEach((pageItemChildObject, pageItemChildIndex) => { %>
                                 <li class="nav-item">
-                                    <a href="/<%= navItemChildObject.link %>" class="nav-link <%= navItemIndex == navActive[0] && navItemChildIndex == navActive[1] ? "active" : "" %>">
+                                    <a href="/<%= pageItemChildObject.link %>" class="nav-link <%= pageItemIndex == navActive[0] && pageItemChildIndex == navActive[1] ? "active" : "" %>">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p><%= navItemChildObject.title %></p>
+                                        <p><%= pageItemChildObject.title %></p>
                                     </a>
                                 </li>
                             <% }); %>
