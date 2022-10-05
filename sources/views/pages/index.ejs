@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <%- include(`${partialPath}/partials/head.ejs`); -%>
+        <%- include("./../partials/head.ejs"); -%>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
         <div class="wrapper">
-            <%- include(`${partialPath}/partials/nav.ejs`); -%>
-            <%- include(`${partialPath}/partials/side.ejs`); -%>
+            <%- include("./../partials/nav.ejs"); -%>
+            <%- include("./../partials/side.ejs"); -%>
 
             <div class="content-wrapper">
                 <div class="content">
                     <div class="container-fluid">
                         <br>
-                        <%- include(`${partialPath}/partials/content-head.ejs`); -%>
-                        <%- include(`${partialPath}/partials/card-item.ejs`); -%>
+                        <%- include("./../partials/content-head.ejs"); -%>
+                        <%- include("./../partials/card-item.ejs"); -%>
                     </div>
                 </div>
             </div>
 
-            <%- include(`${partialPath}/partials/footer.ejs`); -%>
+            <%- include("./../partials/footer.ejs"); -%>
         </div>
 
-        <%- include(`${partialPath}/partials/script.ejs`); -%>
+        <%- include("./../partials/script.ejs"); -%>
     </body>
 </html>

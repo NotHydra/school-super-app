@@ -11,7 +11,6 @@ const app: Express = express();
 const port: number = 3000;
 
 const headTitle = "Dashboard";
-const partialPath = "./..";
 const navActive = [0, 0];
 
 app.locals.moment = localMoment;
@@ -24,9 +23,8 @@ app.use(express.static("sources/public"));
 app.get("/", async (req, res) => {
     res.render("pages/index", {
         headTitle,
-        partialPath,
         navActive,
-        boxItemArray: [
+        cardItemArray: [
             {
                 id: 1,
                 title: "Siswa",
