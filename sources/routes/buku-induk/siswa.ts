@@ -7,6 +7,62 @@ import { localMoment } from "../../utility";
 
 export const bukuIndukSiswaRouter = Router();
 const navActive = [1, 1];
+const tableAttributeArray = [
+    {
+        id: 1,
+        label: "NISN",
+        value: ["nisn"],
+        type: "text",
+    },
+    {
+        id: 2,
+        label: "Nama Lengkap",
+        value: ["nama_lengkap"],
+        type: "text",
+    },
+    {
+        id: 3,
+        label: "Tempat Lahir",
+        value: ["id_tempat_lahir", "tempat_lahir"],
+        type: "text",
+    },
+    {
+        id: 4,
+        label: "Tanggal Lahir",
+        value: ["tanggal_lahir"],
+        type: "date",
+    },
+    {
+        id: 5,
+        label: "Jenis Kelamin",
+        value: ["id_jenis_kelamin", "jenis_kelamin"],
+        type: "text",
+    },
+    {
+        id: 6,
+        label: "Tahun Masuk",
+        value: ["id_tahun_masuk", "tahun_masuk"],
+        type: "text",
+    },
+    {
+        id: 7,
+        label: "Tingkat",
+        value: ["id_tingkat", "tingkat"],
+        type: "text",
+    },
+    {
+        id: 8,
+        label: "Jurusan",
+        value: ["id_jurusan", "jurusan"],
+        type: "text",
+    },
+    {
+        id: 9,
+        label: "Rombel",
+        value: ["id_rombel", "rombel"],
+        type: "text",
+    },
+];
 
 bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
@@ -22,7 +78,6 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
 
     res.render("pages/table", {
         headTitle,
-        extraTitle: "Utama",
         navActive,
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
@@ -53,62 +108,7 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
                 value: (await Siswa.findOne().sort({ diubah: -1 })).nisn,
             },
         ],
-        tableAttributeArray: [
-            {
-                id: 1,
-                label: "NISN",
-                value: ["nisn"],
-                type: "text",
-            },
-            {
-                id: 2,
-                label: "Nama Lengkap",
-                value: ["nama_lengkap"],
-                type: "text",
-            },
-            {
-                id: 3,
-                label: "Tempat Lahir",
-                value: ["id_tempat_lahir", "tempat_lahir"],
-                type: "text",
-            },
-            {
-                id: 4,
-                label: "Tanggal Lahir",
-                value: ["tanggal_lahir"],
-                type: "date",
-            },
-            {
-                id: 5,
-                label: "Jenis Kelamin",
-                value: ["id_jenis_kelamin", "jenis_kelamin"],
-                type: "text",
-            },
-            {
-                id: 6,
-                label: "Tahun Masuk",
-                value: ["id_tahun_masuk", "tahun_masuk"],
-                type: "text",
-            },
-            {
-                id: 7,
-                label: "Tingkat",
-                value: ["id_tingkat", "tingkat"],
-                type: "text",
-            },
-            {
-                id: 8,
-                label: "Jurusan",
-                value: ["id_jurusan", "jurusan"],
-                type: "text",
-            },
-            {
-                id: 9,
-                label: "Rombel",
-                value: ["id_rombel", "rombel"],
-                type: "text",
-            },
-        ],
+        tableAttributeArray,
         tableItemArray,
     });
 });
@@ -116,9 +116,8 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
 bukuIndukSiswaRouter
     .route("/create")
     .get(async (req, res) => {
-        res.render("pages/buku-induk/siswa/create", {
+        res.render("pages/create", {
             headTitle,
-            extraTitle: "Buat",
             navActive,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
@@ -239,36 +238,27 @@ bukuIndukSiswaRouter
         });
     })
     .post(async (req, res) => {
-        const inputArray = [
-            req.body.nisn,
-            req.body.nama_lengkap,
-            req.body.id_tempat_lahir,
-            req.body.tanggal_lahir,
-            req.body.id_jenis_kelamin,
-            req.body.id_tahun_masuk,
-            req.body.id_tingkat,
-            req.body.id_jurusan,
-            req.body.id_rombel,
-        ];
+        const attributeArray: any = {};
+        const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+            const attributeCurrent = tableAttributeObject.value[0];
+
+            attributeArray[attributeCurrent] = req.body[attributeCurrent];
+
+            return req.body[attributeCurrent];
+        });
 
         if (!inputArray.includes(undefined)) {
-            const siswaObject: any = new Siswa({
+            const itemObject = new Siswa({
                 _id: (await Siswa.findOne().sort({ _id: -1 }))._id + 1,
-                nisn: req.body.nisn,
-                nama_lengkap: req.body.nama_lengkap,
-                id_tempat_lahir: req.body.id_tempat_lahir,
-                tanggal_lahir: req.body.tanggal_lahir,
-                id_jenis_kelamin: req.body.id_jenis_kelamin,
-                id_tahun_masuk: req.body.id_tahun_masuk,
-                id_tingkat: req.body.id_tingkat,
-                id_jurusan: req.body.id_jurusan,
-                id_rombel: req.body.id_rombel,
+
+                ...attributeArray,
+
                 dibuat: new Date(),
                 diubah: new Date(),
             });
 
             try {
-                await siswaObject.save();
+                await itemObject.save();
                 res.redirect("create?response=success");
             } catch (error) {
                 res.redirect("create?response=error");

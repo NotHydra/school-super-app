@@ -6,6 +6,14 @@ import { headTitle } from ".";
 
 export const bukuIndukTempatLahirRouter = Router();
 const navActive = [1, 2];
+const tableAttributeArray = [
+    {
+        id: 1,
+        label: "Tempat Lahir",
+        value: ["tempat_lahir"],
+        type: "text",
+    },
+];
 
 bukuIndukTempatLahirRouter.use(express.static("sources/public"));
 bukuIndukTempatLahirRouter.use(express.urlencoded({ extended: false }));
@@ -15,7 +23,6 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
 
     res.render("pages/table", {
         headTitle,
-        extraTitle: "Utama",
         navActive,
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
@@ -40,14 +47,7 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
                 value: (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir,
             },
         ],
-        tableAttributeArray: [
-            {
-                id: 1,
-                label: "Tempat Lahir",
-                value: ["tempat_lahir"],
-                type: "text",
-            },
-        ],
+        tableAttributeArray,
         tableItemArray,
     });
 });
@@ -55,9 +55,8 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
 bukuIndukTempatLahirRouter
     .route("/create")
     .get(async (req, res) => {
-        res.render("pages/buku-induk/tempat-lahir/create", {
+        res.render("pages/create", {
             headTitle,
-            extraTitle: "Buat",
             navActive,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
@@ -76,18 +75,27 @@ bukuIndukTempatLahirRouter
         });
     })
     .post(async (req, res) => {
-        const inputArray = [req.body.tempat_lahir];
+        const attributeArray: any = {};
+        const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+            const attributeCurrent = tableAttributeObject.value[0];
+
+            attributeArray[attributeCurrent] = req.body[attributeCurrent];
+
+            return req.body[attributeCurrent];
+        });
 
         if (!inputArray.includes(undefined)) {
-            const tempatLahirObject: any = new TempatLahir({
+            const itemObject = new TempatLahir({
                 _id: (await TempatLahir.findOne().sort({ _id: -1 }))._id + 1,
-                tempat_lahir: req.body.tempat_lahir,
+
+                ...attributeArray,
+
                 dibuat: new Date(),
                 diubah: new Date(),
             });
 
             try {
-                await tempatLahirObject.save();
+                await itemObject.save();
                 res.redirect("create?response=success");
             } catch (error) {
                 res.redirect("create?response=error");

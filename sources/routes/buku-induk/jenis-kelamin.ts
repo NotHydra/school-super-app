@@ -6,6 +6,14 @@ import { headTitle } from ".";
 
 export const bukuIndukJenisKelaminRouter = Router();
 const navActive = [1, 3];
+const tableAttributeArray = [
+    {
+        id: 1,
+        label: "Jenis Kelamin",
+        value: ["jenis_kelamin"],
+        type: "text",
+    },
+];
 
 bukuIndukJenisKelaminRouter.use(express.static("sources/public"));
 bukuIndukJenisKelaminRouter.use(express.urlencoded({ extended: false }));
@@ -15,7 +23,6 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
 
     res.render("pages/table", {
         headTitle,
-        extraTitle: "Utama",
         navActive,
         toastResponse: req.query.response,
         toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
@@ -40,14 +47,7 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
                 value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
             },
         ],
-        tableAttributeArray: [
-            {
-                id: 1,
-                label: "Jenis Kelamin",
-                value: ["jenis_kelamin"],
-                type: "text",
-            },
-        ],
+        tableAttributeArray,
         tableItemArray,
     });
 });
@@ -55,9 +55,8 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
 bukuIndukJenisKelaminRouter
     .route("/create")
     .get(async (req, res) => {
-        res.render("pages/buku-induk/jenis-kelamin/create", {
+        res.render("pages/create", {
             headTitle,
-            extraTitle: "Buat",
             navActive,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
@@ -76,18 +75,27 @@ bukuIndukJenisKelaminRouter
         });
     })
     .post(async (req, res) => {
-        const inputArray = [req.body.jenis_kelamin];
+        const attributeArray: any = {};
+        const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+            const attributeCurrent = tableAttributeObject.value[0];
+
+            attributeArray[attributeCurrent] = req.body[attributeCurrent];
+
+            return req.body[attributeCurrent];
+        });
 
         if (!inputArray.includes(undefined)) {
-            const jenisKelaminObject: any = new JenisKelamin({
+            const itemObject = new JenisKelamin({
                 _id: (await JenisKelamin.findOne().sort({ _id: -1 }))._id + 1,
-                jenis_kelamin: req.body.jenis_kelamin,
+
+                ...attributeArray,
+
                 dibuat: new Date(),
                 diubah: new Date(),
             });
 
             try {
-                await jenisKelaminObject.save();
+                await itemObject.save();
                 res.redirect("create?response=success");
             } catch (error) {
                 res.redirect("create?response=error");
