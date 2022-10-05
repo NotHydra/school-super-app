@@ -177,14 +177,13 @@ bukuIndukTempatLahirRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
+        const dataExist = await TempatLahir.exists({ _id: id });
 
-        if (tempatLahirExist) {
-            const tempatLahirObject = await TempatLahir.findOne({ _id: id });
+        if (dataExist) {
+            const itemObject = await TempatLahir.findOne({ _id: id });
 
-            res.render("pages/buku-induk/tempat-lahir/delete", {
+            res.render("pages/delete", {
                 headTitle,
-                extraTitle: "Hapus",
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
@@ -196,28 +195,28 @@ bukuIndukTempatLahirRouter
                         name: "tempat_lahir",
                         display: "Tempat Lahir",
                         type: "text",
-                        value: tempatLahirObject.tempat_lahir,
+                        value: itemObject.tempat_lahir,
                         placeholder: "Input tempat lahir disini",
                         enable: false,
                     },
                 ],
             });
-        } else if (!tempatLahirExist) {
+        } else if (!dataExist) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const tempatLahirExist = await TempatLahir.exists({ _id: id });
+        const dataExist = await TempatLahir.exists({ _id: id });
 
-        if (tempatLahirExist) {
+        if (dataExist) {
             try {
                 await TempatLahir.deleteOne({ _id: id });
                 res.redirect("./?response=success");
             } catch (error) {
                 res.redirect(`delete?id=${id}&response=error`);
             }
-        } else if (!tempatLahirExist) {
+        } else if (!dataExist) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });
