@@ -278,7 +278,7 @@ bukuIndukSiswaRouter
         const id = req.query.id;
         const dataExist = await Siswa.exists({ _id: id });
 
-        if (dataExist) {
+        if (dataExist != null) {
             const itemObject = await Siswa.findOne({ _id: id });
 
             res.render("pages/update", {
@@ -402,7 +402,7 @@ bukuIndukSiswaRouter
                     },
                 ],
             });
-        } else if (!dataExist) {
+        } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
@@ -452,7 +452,7 @@ bukuIndukSiswaRouter
         const id = req.query.id;
         const dataExist = await Siswa.exists({ _id: id });
 
-        if (dataExist) {
+        if (dataExist != null) {
             const itemObject = await Siswa.findOne({ _id: id });
 
             res.render("pages/delete", {
@@ -546,7 +546,7 @@ bukuIndukSiswaRouter
                     },
                 ],
             });
-        } else if (!dataExist) {
+        } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
@@ -554,14 +554,14 @@ bukuIndukSiswaRouter
         const id = req.query.id;
         const dataExist = await Siswa.exists({ _id: id });
 
-        if (dataExist) {
+        if (dataExist != null) {
             try {
                 await Siswa.deleteOne({ _id: id });
                 res.redirect("./?response=success");
             } catch (error) {
                 res.redirect(`delete?id=${id}&response=error`);
             }
-        } else if (!dataExist) {
+        } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });

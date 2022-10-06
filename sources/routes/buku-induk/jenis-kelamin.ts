@@ -111,7 +111,7 @@ bukuIndukJenisKelaminRouter
         const id = req.query.id;
         const dataExist = await JenisKelamin.exists({ _id: id });
 
-        if (dataExist) {
+        if (dataExist != null) {
             const itemObject = await JenisKelamin.findOne({ _id: id });
 
             res.render("pages/update", {
@@ -133,7 +133,7 @@ bukuIndukJenisKelaminRouter
                     },
                 ],
             });
-        } else if (!dataExist) {
+        } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
@@ -179,7 +179,7 @@ bukuIndukJenisKelaminRouter
         const id = req.query.id;
         const dataExist = await JenisKelamin.exists({ _id: id });
 
-        if (dataExist) {
+        if (dataExist != null) {
             const itemObject = await JenisKelamin.findOne({ _id: id });
 
             res.render("pages/delete", {
@@ -201,7 +201,7 @@ bukuIndukJenisKelaminRouter
                     },
                 ],
             });
-        } else if (!dataExist) {
+        } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     })
@@ -209,7 +209,7 @@ bukuIndukJenisKelaminRouter
         const id = req.query.id;
         const dataExist = await JenisKelamin.exists({ _id: id });
 
-        if (dataExist) {
+        if (dataExist != null) {
             const dataIsUsed = await Siswa.exists({ id_jenis_kelamin: id });
 
             if (dataIsUsed == null) {
@@ -222,7 +222,7 @@ bukuIndukJenisKelaminRouter
             } else if (dataIsUsed != null) {
                 res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain`);
             }
-        } else if (!dataExist) {
+        } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
     });
