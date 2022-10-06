@@ -63,4 +63,26 @@ export const pageItemArray: pageItemType[] = [
             },
         ],
     },
+    {
+        id: 3,
+        title: "Penilaian",
+        icon: "pen-nib",
+        child: [
+            {
+                id: 1,
+                title: "Utama",
+                link: "penilaian",
+            },
+            {
+                id: 2,
+                title: "Raport",
+                link: "penilaian/raport",
+            },
+            {
+                id: 3,
+                title: "Mata Pelajaran",
+                link: "penilaian/mata-pelajaran",
+            },
+        ],
+    },
 ];
