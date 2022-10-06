@@ -27,27 +27,32 @@ app.get("/", async (req, res) => {
         cardItemArray: [
             {
                 id: 1,
-                title: "Siswa",
-                icon: "user",
-                value: await Siswa.countDocuments(),
-            },
-            {
-                id: 2,
-                title: "Alumni",
-                icon: "user",
-                value: await Siswa.countDocuments(),
-            },
-            {
-                id: 3,
-                title: "Guru",
-                icon: "user",
-                value: await Siswa.countDocuments(),
-            },
-            {
-                id: 4,
-                title: "Buku",
-                icon: "user",
-                value: await Siswa.countDocuments(),
+                cardItemChild: [
+                    {
+                        id: 1,
+                        title: "Siswa",
+                        icon: "user",
+                        value: await Siswa.countDocuments(),
+                    },
+                    {
+                        id: 2,
+                        title: "Alumni",
+                        icon: "user",
+                        value: await Siswa.countDocuments(),
+                    },
+                    {
+                        id: 3,
+                        title: "Guru",
+                        icon: "user",
+                        value: await Siswa.countDocuments(),
+                    },
+                    {
+                        id: 4,
+                        title: "Buku",
+                        icon: "user",
+                        value: await Siswa.countDocuments(),
+                    },
+                ],
             },
         ],
     });

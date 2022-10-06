@@ -86,27 +86,32 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
         cardItemArray: [
             {
                 id: 1,
-                title: "Siswa",
-                icon: "user",
-                value: await Siswa.countDocuments(),
-            },
-            {
-                id: 2,
-                title: "Laki-Laki & Perempuan",
-                icon: "restroom",
-                value: `${await Siswa.find({ id_jenis_kelamin: 1 }).count()} - ${await Siswa.find({ id_jenis_kelamin: 2 }).count()}`,
-            },
-            {
-                id: 3,
-                title: "Dibuat",
-                icon: "circle-plus",
-                value: (await Siswa.findOne().sort({ dibuat: -1 })).nisn,
-            },
-            {
-                id: 4,
-                title: "Diupdate",
-                icon: "circle-exclamation",
-                value: (await Siswa.findOne().sort({ diubah: -1 })).nisn,
+                cardItemChild: [
+                    {
+                        id: 1,
+                        title: "Siswa",
+                        icon: "user",
+                        value: await Siswa.countDocuments(),
+                    },
+                    {
+                        id: 2,
+                        title: "Laki-Laki & Perempuan",
+                        icon: "restroom",
+                        value: `${await Siswa.find({ id_jenis_kelamin: 1 }).count()} - ${await Siswa.find({ id_jenis_kelamin: 2 }).count()}`,
+                    },
+                    {
+                        id: 3,
+                        title: "Dibuat",
+                        icon: "circle-plus",
+                        value: (await Siswa.findOne().sort({ dibuat: -1 })).nisn,
+                    },
+                    {
+                        id: 4,
+                        title: "Diupdate",
+                        icon: "circle-exclamation",
+                        value: (await Siswa.findOne().sort({ diubah: -1 })).nisn,
+                    },
+                ],
             },
         ],
         tableAttributeArray,

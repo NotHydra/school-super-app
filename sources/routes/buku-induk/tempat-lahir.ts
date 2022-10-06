@@ -30,21 +30,26 @@ bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
         cardItemArray: [
             {
                 id: 1,
-                title: "Tempat Lahir",
-                icon: "user",
-                value: await TempatLahir.countDocuments(),
-            },
-            {
-                id: 2,
-                title: "Dibuat",
-                icon: "circle-plus",
-                value: (await TempatLahir.findOne().sort({ dibuat: -1 })).tempat_lahir,
-            },
-            {
-                id: 3,
-                title: "Diupdate",
-                icon: "circle-exclamation",
-                value: (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir,
+                cardItemChild: [
+                    {
+                        id: 1,
+                        title: "Tempat Lahir",
+                        icon: "city",
+                        value: await TempatLahir.countDocuments(),
+                    },
+                    {
+                        id: 2,
+                        title: "Dibuat",
+                        icon: "circle-plus",
+                        value: (await TempatLahir.findOne().sort({ dibuat: -1 })).tempat_lahir,
+                    },
+                    {
+                        id: 3,
+                        title: "Diupdate",
+                        icon: "circle-exclamation",
+                        value: (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir,
+                    },
+                ],
             },
         ],
         tableAttributeArray,

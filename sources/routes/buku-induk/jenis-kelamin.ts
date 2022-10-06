@@ -30,21 +30,26 @@ bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
         cardItemArray: [
             {
                 id: 1,
-                title: "Jenis Kelamin",
-                icon: "user",
-                value: await JenisKelamin.countDocuments(),
-            },
-            {
-                id: 2,
-                title: "Dibuat",
-                icon: "circle-plus",
-                value: (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin,
-            },
-            {
-                id: 3,
-                title: "Diupdate",
-                icon: "circle-exclamation",
-                value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
+                cardItemChild: [
+                    {
+                        id: 1,
+                        title: "Jenis Kelamin",
+                        icon: "venus-mars",
+                        value: await JenisKelamin.countDocuments(),
+                    },
+                    {
+                        id: 2,
+                        title: "Dibuat",
+                        icon: "circle-plus",
+                        value: (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin,
+                    },
+                    {
+                        id: 3,
+                        title: "Diupdate",
+                        icon: "circle-exclamation",
+                        value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
+                    },
+                ],
             },
         ],
         tableAttributeArray,
