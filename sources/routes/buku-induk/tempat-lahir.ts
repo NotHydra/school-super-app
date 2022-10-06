@@ -19,7 +19,7 @@ bukuIndukTempatLahirRouter.use(express.static("sources/public"));
 bukuIndukTempatLahirRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukTempatLahirRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TempatLahir.find();
+    const tableItemArray = await TempatLahir.find().sort({ tempat_lahir: 1 });
 
     res.render("pages/table", {
         headTitle,

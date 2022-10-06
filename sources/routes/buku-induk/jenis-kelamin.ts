@@ -19,7 +19,7 @@ bukuIndukJenisKelaminRouter.use(express.static("sources/public"));
 bukuIndukJenisKelaminRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukJenisKelaminRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await JenisKelamin.find();
+    const tableItemArray = await JenisKelamin.find().sort({ jenis_kelamin: 1 });
 
     res.render("pages/table", {
         headTitle,

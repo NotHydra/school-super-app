@@ -74,7 +74,8 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
         .populate("id_tahun_masuk")
         .populate("id_tingkat")
         .populate("id_jurusan")
-        .populate("id_rombel");
+        .populate("id_rombel")
+        .sort({ nisn: 1 });
 
     res.render("pages/table", {
         headTitle,
