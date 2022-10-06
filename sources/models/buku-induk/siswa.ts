@@ -7,6 +7,7 @@ export const siswaSchema = new mongoose.Schema({
     },
     nisn: {
         type: Number,
+        unique: true,
         required: true,
     },
     nama_lengkap: {

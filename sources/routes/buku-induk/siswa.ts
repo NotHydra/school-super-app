@@ -260,8 +260,12 @@ bukuIndukSiswaRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
-                res.redirect("create?response=error");
+            } catch (error: any) {
+                if (error.code == 11000) {
+                    res.redirect("create?response=error&text=NISN sudah digunakan");
+                } else {
+                    res.redirect("create?response=error");
+                }
             }
         } else if (inputArray.includes(undefined)) {
             res.redirect("create?response=error&text=Data tidak lengkap");
@@ -427,8 +431,12 @@ bukuIndukSiswaRouter
                         }
                     );
                     res.redirect(`update?id=${id}&response=success`);
-                } catch {
-                    res.redirect(`update?id=${id}&response=error`);
+                } catch (error: any) {
+                    if (error.code == 11000) {
+                        res.redirect(`update?id=${id}&response=error&text=NISN sudah digunakan`);
+                    } else {
+                        res.redirect(`update?id=${id}&response=error`);
+                    }
                 }
             } else if (inputArray.includes(undefined)) {
                 res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
