@@ -272,7 +272,7 @@ class Penilaian:
                 "_id": mataPelajaranIndex + 1,
                 "mata_pelajaran": mataPelajaran,
                 "bobot_pengetahuan": randomBobotValue,
-                "boobt_keterampilan": 100 - randomBobotValue,
+                "bobot_keterampilan": 100 - randomBobotValue,
                 "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
                 "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
             }
