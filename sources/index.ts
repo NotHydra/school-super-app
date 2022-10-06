@@ -5,6 +5,8 @@ import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
 import { bukuIndukRouter } from "./routes/buku-induk";
+import { penilaianRouter } from "./routes/penilaian";
+
 import { Siswa } from "./models";
 
 const app: Express = express();
@@ -59,6 +61,7 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/buku-induk", bukuIndukRouter);
+app.use("/penilaian", penilaianRouter);
 
 mongoose.connect(mongoDBURI, () => {
     console.log("Connected to database");
