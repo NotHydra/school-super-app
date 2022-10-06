@@ -4,10 +4,10 @@ import mongoose from "mongoose";
 import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
+import { JenisKelamin, Jurusan, MataPelajaran, Raport, Rombel, Siswa, TahunMasuk, TempatLahir, Tingkat } from "./models";
+
 import { bukuIndukRouter } from "./routes/buku-induk";
 import { penilaianRouter } from "./routes/penilaian";
-
-import { Siswa } from "./models";
 
 const app: Express = express();
 const port: number = 3000;
@@ -58,6 +58,21 @@ app.get("/", async (req, res) => {
             },
         ],
     });
+});
+
+app.get("/reset-database", async (req, res) => {
+    await Siswa.deleteMany();
+    await TempatLahir.deleteMany();
+    await JenisKelamin.deleteMany();
+    await TahunMasuk.deleteMany();
+    await Tingkat.deleteMany();
+    await Jurusan.deleteMany();
+    await Rombel.deleteMany();
+
+    await Raport.deleteMany();
+    await MataPelajaran.deleteMany();
+
+    res.send("done");
 });
 
 app.use("/buku-induk", bukuIndukRouter);
