@@ -17,6 +17,8 @@ class Dependency:
     rombelArray = readJSON("scripts/json/dependency/rombel.json")
     nameArray = readJSON("scripts/json/dependency/name.json")
 
+    mataPelajaranArray = readJSON("scripts/json/dependency/mata_pelajaran.json")
+
 
 class Utility:
     nisnObject = {}
@@ -84,23 +86,26 @@ class Utility:
     def currentDate():
         return str(int(datetime.today().timestamp()) * 1000)
 
-    tempatLahirArray = readJSON("scripts/json/tempat_lahir.json")
-    jenisKelaminArray = readJSON("scripts/json/jenis_kelamin.json")
-    tahunMasukArray = readJSON("scripts/json/tahun_masuk.json")
-    tingkatArray = readJSON("scripts/json/tingkat.json")
-    jurusanArray = readJSON("scripts/json/jurusan.json")
-    rombelArray = readJSON("scripts/json/rombel.json")
+    tempatLahirArray = readJSON("scripts/json/buku-induk/tempat_lahir.json")
+    jenisKelaminArray = readJSON("scripts/json/buku-induk/jenis_kelamin.json")
+    tahunMasukArray = readJSON("scripts/json/buku-induk/tahun_masuk.json")
+    tingkatArray = readJSON("scripts/json/buku-induk/tingkat.json")
+    jurusanArray = readJSON("scripts/json/buku-induk/jurusan.json")
+    rombelArray = readJSON("scripts/json/buku-induk/rombel.json")
+    siswaArray = readJSON("scripts/json/buku-induk/siswa.json")
+
+    mataPelajaranArray = readJSON("scripts/json/penilaian/mata_pelajaran.json")
 
 
-class Main:
+class BukuInduk:
     def main():
-        Main.tempatLahir()
-        Main.jenisKelamin()
-        Main.tahunMasuk()
-        Main.tingkat()
-        Main.jurusan()
-        Main.rombel()
-        Main.siswa()
+        BukuInduk.tempatLahir()
+        BukuInduk.jenisKelamin()
+        BukuInduk.tahunMasuk()
+        BukuInduk.tingkat()
+        BukuInduk.jurusan()
+        BukuInduk.rombel()
+        BukuInduk.siswa()
 
     def tempatLahir():
         tempatLahirArray = []
@@ -114,7 +119,7 @@ class Main:
 
             tempatLahirArray.append(tempatLahirObject)
 
-        Utility.writeJSON("scripts/json/tempat_lahir.json", tempatLahirArray)
+        Utility.writeJSON("scripts/json/buku-induk/tempat_lahir.json", tempatLahirArray)
 
     def jenisKelamin():
         jenisKelaminArray = []
@@ -128,7 +133,9 @@ class Main:
 
             jenisKelaminArray.append(jenisKelaminObject)
 
-        Utility.writeJSON("scripts/json/jenis_kelamin.json", jenisKelaminArray)
+        Utility.writeJSON(
+            "scripts/json/buku-induk/jenis_kelamin.json", jenisKelaminArray
+        )
 
     def tahunMasuk():
         tahunMasukArray = []
@@ -142,7 +149,7 @@ class Main:
 
             tahunMasukArray.append(tahunMasukObject)
 
-        Utility.writeJSON("scripts/json/tahun_masuk.json", tahunMasukArray)
+        Utility.writeJSON("scripts/json/buku-induk/tahun_masuk.json", tahunMasukArray)
 
     def tingkat():
         tingkatArray = []
@@ -156,7 +163,7 @@ class Main:
 
             tingkatArray.append(tingkatObject)
 
-        Utility.writeJSON("scripts/json/tingkat.json", tingkatArray)
+        Utility.writeJSON("scripts/json/buku-induk/tingkat.json", tingkatArray)
 
     def jurusan():
         jurusanArray = []
@@ -170,7 +177,7 @@ class Main:
 
             jurusanArray.append(jurusanObject)
 
-        Utility.writeJSON("scripts/json/jurusan.json", jurusanArray)
+        Utility.writeJSON("scripts/json/buku-induk/jurusan.json", jurusanArray)
 
     def rombel():
         rombelArray = []
@@ -188,7 +195,7 @@ class Main:
 
                 rombelArray.append(rombelObject)
 
-        Utility.writeJSON("scripts/json/rombel.json", rombelArray)
+        Utility.writeJSON("scripts/json/buku-induk/rombel.json", rombelArray)
 
     def siswa():
         siswaArray = []
@@ -207,7 +214,7 @@ class Main:
 
             for rombel in Dependency.rombelArray:
                 namaUniqueArray = random.sample(
-                    Dependency.nameArray, k=random.randint(1, 1)
+                    Dependency.nameArray, k=random.randint(3, 3)
                 )
 
                 for jurusanObject in Utility.jurusanArray:
@@ -246,7 +253,77 @@ class Main:
 
                     siswaArray.append(siswaObject)
 
-        Utility.writeJSON("scripts/json/siswa.json", siswaArray)
+        Utility.writeJSON("scripts/json/buku-induk/siswa.json", siswaArray)
 
 
-Main.main()
+class Penilaian:
+    def main():
+        Penilaian.mataPelajaran()
+        Penilaian.raport()
+
+    def mataPelajaran():
+        mataPelajaranArray = []
+        for mataPelajaranIndex, mataPelajaran in enumerate(
+            Dependency.mataPelajaranArray
+        ):
+            randomBobotValue = random.randint(4, 6) * 10
+
+            mataPelajaranObject = {
+                "_id": mataPelajaranIndex + 1,
+                "mata_pelajaran": mataPelajaran,
+                "bobot_pengetahuan": randomBobotValue,
+                "boobt_keterampilan": 100 - randomBobotValue,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            mataPelajaranArray.append(mataPelajaranObject)
+
+        Utility.writeJSON(
+            "scripts/json/penilaian/mata_pelajaran.json", mataPelajaranArray
+        )
+
+    def raport():
+        raportArray = []
+        for siswaIndex, siswa in enumerate(Utility.siswaArray):
+
+            semesterArray = []
+            for i in range(4):
+
+                mataPelajaranArray = []
+                mataPelajaranIdArray = [1, 2, 3, 4, 6]
+                for mataPelajaranIdIndex, mataPelajaranId in enumerate(
+                    mataPelajaranIdArray
+                ):
+                    mataPelajaranObject = {
+                        "_id": mataPelajaranIdIndex + 1,
+                        "id_mata_pelajaran": mataPelajaranId,
+                        "pengetahuan": random.randint(60, 100),
+                        "keterampilan": random.randint(60, 100),
+                    }
+
+                    mataPelajaranArray.append(mataPelajaranObject)
+
+                semesterObject = {
+                    "_id": i + 1,
+                    "semester": i + 1,
+                    "mata_pelajaran": mataPelajaranArray,
+                }
+
+                semesterArray.append(semesterObject)
+
+            raportObject = {
+                "_id": siswaIndex + 1,
+                "id_siswa": siswa["_id"],
+                "semester": semesterArray,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            raportArray.append(raportObject)
+
+        Utility.writeJSON("scripts/json/penilaian/raport.json", raportArray)
+
+
+BukuInduk.main()
+Penilaian.main()
