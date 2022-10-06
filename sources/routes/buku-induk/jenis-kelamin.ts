@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 
-import { JenisKelamin } from "../../models";
+import { JenisKelamin, Siswa } from "../../models";
 
 import { headTitle } from ".";
 
@@ -210,11 +210,17 @@ bukuIndukJenisKelaminRouter
         const dataExist = await JenisKelamin.exists({ _id: id });
 
         if (dataExist) {
-            try {
-                await JenisKelamin.deleteOne({ _id: id });
-                res.redirect("./?response=success");
-            } catch (error) {
-                res.redirect(`delete?id=${id}&response=error`);
+            const dataIsUsed = await Siswa.exists({ id_jenis_kelamin: id });
+
+            if (dataIsUsed == null) {
+                try {
+                    await JenisKelamin.deleteOne({ _id: id });
+                    res.redirect("./?response=success");
+                } catch (error) {
+                    res.redirect(`delete?id=${id}&response=error`);
+                }
+            } else if (dataIsUsed != null) {
+                res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain`);
             }
         } else if (!dataExist) {
             res.redirect("./?response=error&text=Data tidak valid");

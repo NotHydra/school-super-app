@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 
-import { TempatLahir } from "../../models";
+import { Siswa, TempatLahir } from "../../models";
 
 import { headTitle } from ".";
 
@@ -210,11 +210,17 @@ bukuIndukTempatLahirRouter
         const dataExist = await TempatLahir.exists({ _id: id });
 
         if (dataExist) {
-            try {
-                await TempatLahir.deleteOne({ _id: id });
-                res.redirect("./?response=success");
-            } catch (error) {
-                res.redirect(`delete?id=${id}&response=error`);
+            const dataIsUsed = await Siswa.exists({ id_tempat_lahir: id });
+
+            if (dataIsUsed == null) {
+                try {
+                    await TempatLahir.deleteOne({ _id: id });
+                    res.redirect("./?response=success");
+                } catch (error) {
+                    res.redirect(`delete?id=${id}&response=error`);
+                }
+            } else if (dataIsUsed != null) {
+                res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain`);
             }
         } else if (!dataExist) {
             res.redirect("./?response=error&text=Data tidak valid");
