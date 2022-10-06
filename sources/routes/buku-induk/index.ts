@@ -7,6 +7,7 @@ import { bukuIndukJenisKelaminRouter } from "./jenis-kelamin";
 import { bukuIndukTahunMasukRouter } from "./tahun-masuk";
 import { bukuIndukTingkatRouter } from "./tingkat";
 import { bukuIndukJurusanRouter } from "./jurusan";
+import { bukuIndukRombelRouter } from "./rombel";
 
 export const bukuIndukRouter = Router();
 export const headTitle = "Buku Induk";
@@ -85,3 +86,4 @@ bukuIndukRouter.use("/jenis-kelamin", bukuIndukJenisKelaminRouter);
 bukuIndukRouter.use("/tahun-masuk", bukuIndukTahunMasukRouter);
 bukuIndukRouter.use("/tingkat", bukuIndukTingkatRouter);
 bukuIndukRouter.use("/jurusan", bukuIndukJurusanRouter);
+bukuIndukRouter.use("/rombel", bukuIndukRombelRouter);
