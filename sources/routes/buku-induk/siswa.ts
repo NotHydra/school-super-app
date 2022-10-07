@@ -68,7 +68,9 @@ bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukSiswaRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Siswa.find()
+    const tahunMasukValue = req.query.tahunMasuk;
+
+    const tableItemArray = await Siswa.find(tahunMasukValue == undefined ? {} : { id_tahun_masuk: tahunMasukValue })
         .populate("id_tempat_lahir")
         .populate("id_jenis_kelamin")
         .populate("id_tahun_masuk")
@@ -77,7 +79,7 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
         .populate("id_rombel")
         .sort({ nisn: 1 });
 
-    res.render("pages/table", {
+    res.render("pages/buku-induk/siswa/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -116,6 +118,8 @@ bukuIndukSiswaRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        tahunMasukValue,
+        tahunMasukArray: await TahunMasuk.find(),
     });
 });
 
