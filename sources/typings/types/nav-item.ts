@@ -2,6 +2,7 @@ type pageItemChildType = {
     id: number;
     title: string;
     link: string;
+    icon: string;
 };
 
 export type pageItemType = {

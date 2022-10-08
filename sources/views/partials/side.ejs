@@ -30,7 +30,7 @@
                             <% pageItemObject.child.forEach((pageItemChildObject, pageItemChildIndex) => { %>
                                 <li class="nav-item">
                                     <a href="/<%= pageItemChildObject.link %>" class="nav-link <%= pageItemIndex == navActive[0] && pageItemChildIndex == navActive[1] ? "active" : "" %>">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="<%= pageItemChildObject.icon == "circle" ? "far" : "fas" %> fa-<%= pageItemChildObject.icon %> nav-icon"></i>
                                         <p><%= pageItemChildObject.title %></p>
                                     </a>
                                 </li>
