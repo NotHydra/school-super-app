@@ -23,55 +23,53 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
-                                            <option disabled>Pilih rombel</option>
+                                        <div class="form-group">
+                                            <label for="rombel_select">Rombel</label>
+                                            <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
+                                                <option disabled>Pilih rombel</option>
 
-                                            <option value="semua" selected>Semua</option>
-                                            
-                                            <% 
-                                                rombelArray.forEach(rombelObject => { 
-                                                    if (rombelObject._id == rombelValue) { 
-                                            %> 
-                                                        <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
-                                                <% 
-                                                    } else if (rombelObject._id != rombelValue) {
-                                                %>
-                                                        <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
-                                            <% 
-                                                    }
-                                                });
-                                            %>
+                                                <option value="semua" selected>Semua</option>
                                                 
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
-                                            <option disabled>Pilih tahun masuk</option>
-
-                                            <option value="semua" selected>Semua</option>
-                                            
-                                            <% 
-                                                tahunMasukArray.forEach(tahunMasukObject => { 
-                                                    if (tahunMasukObject._id == tahunMasukValue) { 
-                                            %> 
-                                                        <option value="<%= tahunMasukObject._id %>" selected><%= tahunMasukObject.tahun_masuk %></option>
                                                 <% 
-                                                    } else if (tahunMasukObject._id != tahunMasukValue) {
+                                                    rombelArray.forEach(rombelObject => { 
+                                                        if (rombelObject._id == rombelValue) { 
+                                                %> 
+                                                            <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
+                                                    <% 
+                                                        } else if (rombelObject._id != rombelValue) {
+                                                    %>
+                                                            <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
+                                                <% 
+                                                        }
+                                                    });
                                                 %>
-                                                        <option value="<%= tahunMasukObject._id %>"><%= tahunMasukObject.tahun_masuk %></option>
-                                            <% 
-                                                    }
-                                                });
-                                            %>
+                                                    
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="tahun_masuk_select">Tahun Masuk</label>
+                                            <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
+                                                <option disabled>Pilih tahun masuk</option>
+    
+                                                <option value="semua" selected>Semua</option>
                                                 
-                                        </select>
+                                                <% 
+                                                    tahunMasukArray.forEach(tahunMasukObject => { 
+                                                        if (tahunMasukObject._id == tahunMasukValue) { 
+                                                %> 
+                                                            <option value="<%= tahunMasukObject._id %>" selected><%= tahunMasukObject.tahun_masuk %></option>
+                                                    <% 
+                                                        } else if (tahunMasukObject._id != tahunMasukValue) {
+                                                    %>
+                                                            <option value="<%= tahunMasukObject._id %>"><%= tahunMasukObject.tahun_masuk %></option>
+                                                <% 
+                                                        }
+                                                    });
+                                                %>
+                                                    
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
