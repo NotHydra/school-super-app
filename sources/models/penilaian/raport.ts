@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const raportMataPelajaranSchema = new mongoose.Schema({
+export const raportMataPelajaranSchema = new mongoose.Schema({
     _id: {
         type: Number,
         required: true,
@@ -20,7 +20,7 @@ const raportMataPelajaranSchema = new mongoose.Schema({
     },
 });
 
-const raportSemesterSchema = new mongoose.Schema({
+export const raportSemesterSchema = new mongoose.Schema({
     _id: {
         type: Number,
         required: true,
@@ -32,7 +32,7 @@ const raportSemesterSchema = new mongoose.Schema({
     mata_pelajaran: {
         type: Array,
         required: true,
-        ref: "raportMataPelajaranSchema",
+        ref: "raport_mata_pelajaran",
     },
 });
 
@@ -49,7 +49,7 @@ export const raportSchema = new mongoose.Schema({
     semester: {
         type: Array,
         required: true,
-        ref: "raportSemesterSchema",
+        ref: "raport_semester",
     },
     dibuat: {
         type: Date,
