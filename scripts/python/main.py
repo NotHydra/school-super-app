@@ -24,6 +24,11 @@ class Dependency:
             "scripts/json/dependency/pelajar/tahun_masuk.json"
         )
 
+    class Lulusan:
+        tahunLulusArray = Utility.readJSON(
+            "scripts/json/dependency/lulusan/tahun_lulus.json"
+        )
+
     class DataUmum:
         tempatLahirArray = Utility.readJSON(
             "scripts/json/dependency/data-umum/tempat_lahir.json"
@@ -80,6 +85,27 @@ class Pelajar:
             tahunMasukArray.append(tahunMasukObject)
 
         Utility.writeJSON("scripts/json/pelajar/tahun_masuk.json", tahunMasukArray)
+
+
+class Lulusan:
+    def main():
+        Lulusan.tahunLulus()
+
+    def tahunLulus():
+        tahunLulusArray = []
+        for tahunLulusIndex, tahunLulus in enumerate(
+            Dependency.Lulusan.tahunLulusArray
+        ):
+            tahunLulusObject = {
+                "_id": tahunLulusIndex + 1,
+                "tahun_masuk": tahunLulus,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            tahunLulusArray.append(tahunLulusObject)
+
+        Utility.writeJSON("scripts/json/lulusan/tahun_lulus.json", tahunLulusArray)
 
 
 class DataUmum:
@@ -161,6 +187,7 @@ class Main:
     def main():
         Pengajar.main()
         Pelajar.main()
+        Lulusan.main()
         DataUmum.main()
 
 
