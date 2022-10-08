@@ -38,6 +38,7 @@ class Dependency:
     class Instansi:
         tingkatArray = Utility.readJSON("scripts/json/dependency/instansi/tingkat.json")
         jurusanArray = Utility.readJSON("scripts/json/dependency/instansi/jurusan.json")
+        tahunRombelArray = Utility.readJSON("scripts/json/dependency/instansi/tahun_rombel.json")
 
     class DataUmum:
         tempatLahirArray = Utility.readJSON(
@@ -149,6 +150,7 @@ class Instansi:
     def main():
         Instansi.tingkat()
         Instansi.jurusan()
+        Instansi.tahunRombel()
 
     def tingkat():
         tingkatArray = []
@@ -177,6 +179,21 @@ class Instansi:
             jurusanArray.append(jurusanObject)
 
         Utility.writeJSON("scripts/json/instansi/jurusan.json", jurusanArray)
+
+    def tahunRombel():
+        tahunRombelArray = []
+        for tahunRombelIndex, tahunRombel in enumerate(Dependency.Instansi.tahunRombelArray):
+            tahunRombelObject = {
+                "_id": tahunRombelIndex + 1,
+                "tahun_rombel": tahunRombel,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            tahunRombelArray.append(tahunRombelObject)
+
+        Utility.writeJSON("scripts/json/instansi/tahun_rombel.json", tahunRombelArray)
+
 
 
 class DataUmum:
