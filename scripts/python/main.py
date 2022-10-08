@@ -25,11 +25,16 @@ class Dependency:
             "scripts/json/dependency/data-umum/jenis_kelamin.json"
         )
 
+        universitasArray = Utility.readJSON(
+            "scripts/json/dependency/data-umum/universitas.json"
+        )
+
 
 class DataUmum:
     def main():
         DataUmum.tempatLahir()
         DataUmum.jenisKelamin()
+        DataUmum.universitas()
 
     def tempatLahir():
         tempatLahirArray = []
@@ -64,6 +69,22 @@ class DataUmum:
         Utility.writeJSON(
             "scripts/json/data-umum/jenis_kelamin.json", jenisKelaminArray
         )
+
+    def universitas():
+        universitasArray = []
+        for universitasIndex, universitas in enumerate(
+            Dependency.DataUmum.universitasArray
+        ):
+            universitasObject = {
+                "_id": universitasIndex + 1,
+                "universitas": universitas,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            universitasArray.append(universitasObject)
+
+        Utility.writeJSON("scripts/json/data-umum/universitas.json", universitasArray)
 
 
 class Main:
