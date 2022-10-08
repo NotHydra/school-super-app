@@ -20,4 +20,17 @@
 }
 .colored-toast .swal2-timer-progress-bar {
   background-color: #f8f9fa !important;
+}
+
+.white-border-top {
+  border-top: 3px solid #f8f9fa;
+}
+
+.white-border-bottom {
+  border-bottom: 3px solid #f8f9fa;
+}
+
+.white-border-side {
+  border-right: 3px solid #f8f9fa;
+  border-left: 3px solid #f8f9fa;
 }/*# sourceMappingURL=style.css.map */

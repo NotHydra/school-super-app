@@ -26,3 +26,18 @@ $dark: #343a40;
         background-color: $light !important;
     }
 }
+
+$borderWidth: 3px;
+$borderColor: $light;
+.white-border-top {
+    border-top: $borderWidth solid $borderColor;
+}
+
+.white-border-bottom {
+    border-bottom: $borderWidth solid $borderColor;
+}
+
+.white-border-side {
+    border-right: $borderWidth solid $borderColor;
+    border-left: $borderWidth solid $borderColor;
+}
