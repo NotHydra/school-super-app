@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { penilaianMataPelajaranRouter } from "./mata-pelajaran";
+import { penilaianRaportRouter } from "./raport";
 
 export const penilaianRouter = Router();
 export const headTitle = "Penilaian";
@@ -20,3 +21,4 @@ penilaianRouter.get("/", async (req, res) => {
 });
 
 penilaianRouter.use("/mata-pelajaran", penilaianMataPelajaranRouter);
+penilaianRouter.use("/raport", penilaianRaportRouter);
