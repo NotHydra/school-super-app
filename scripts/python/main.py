@@ -1,4 +1,5 @@
 import json
+import random
 
 from datetime import datetime
 
@@ -27,6 +28,11 @@ class Dependency:
     class Lulusan:
         tahunLulusArray = Utility.readJSON(
             "scripts/json/dependency/lulusan/tahun_lulus.json"
+        )
+
+    class Penilaian:
+        mataPelajaranArray = Utility.readJSON(
+            "scripts/json/dependency/penilaian/mata_pelajaran.json"
         )
 
     class DataUmum:
@@ -106,6 +112,33 @@ class Lulusan:
             tahunLulusArray.append(tahunLulusObject)
 
         Utility.writeJSON("scripts/json/lulusan/tahun_lulus.json", tahunLulusArray)
+
+
+class Penilaian:
+    def main():
+        Penilaian.mataPelajaran()
+
+    def mataPelajaran():
+        mataPelajaranArray = []
+        for mataPelajaranIndex, mataPelajaran in enumerate(
+            Dependency.Penilaian.mataPelajaranArray
+        ):
+            randomBobot = random.randint(4, 6) * 10
+
+            mataPelajaranObject = {
+                "_id": mataPelajaranIndex + 1,
+                "mata_pelajaran": mataPelajaran,
+                "bobot_pengetahuan": randomBobot,
+                "bobot_keterampilan": 100 - randomBobot,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            mataPelajaranArray.append(mataPelajaranObject)
+
+        Utility.writeJSON(
+            "scripts/json/penilaian/mata_pelajaran.json", mataPelajaranArray
+        )
 
 
 class DataUmum:
@@ -188,6 +221,7 @@ class Main:
         Pengajar.main()
         Pelajar.main()
         Lulusan.main()
+        Penilaian.main()
         DataUmum.main()
 
 
