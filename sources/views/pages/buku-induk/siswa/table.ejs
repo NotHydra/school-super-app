@@ -24,7 +24,7 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="tahunMasuKSelect();">
+                                        <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
                                             <option disabled>Pilih tahun masuk</option>
 
                                             <option value="semua" selected>Semua</option>
@@ -139,16 +139,10 @@
     <%- include("./../../../partials/toast-script.ejs"); -%>
 
     <script>
-        function tahunMasuKSelect() {
+        function filterSelect() {
             const tahunMasukValue = document.getElementById("tahun_masuk_select").value;
 
-            if (tahunMasukValue == "semua") {
-                window.location = "./";
-            }
-            
-            else if (tahunMasukValue != "semua") {
-                window.location = `./?tahunMasuk=${tahunMasukValue}`;
-            };
+            window.location = `./?tahunMasuk=${tahunMasukValue}`;
         };
     </script>
 </html>
