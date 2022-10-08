@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <%- include("./../../../partials/head.ejs"); -%> 
-        <%- include("./../../../partials/data-table-head.ejs"); -%>
+        <%- include("./../../../partials/select-head.ejs"); -%>
         <%- include("./../../../partials/sweet-alert-head.ejs"); %>
     </head>
 
@@ -23,12 +23,70 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
+                                        <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
+                                            <option disabled>Pilih rombel</option>
+
+                                            <option value="semua" selected>Semua</option>
+                                            
+                                            <% 
+                                                rombelArray.forEach(rombelObject => { 
+                                                    if (rombelObject._id == rombelValue) { 
+                                            %> 
+                                                        <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
+                                                <% 
+                                                    } else if (rombelObject._id != rombelValue) {
+                                                %>
+                                                        <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
+                                            <% 
+                                                    }
+                                                });
+                                            %>
+                                                
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
+                                            <option disabled>Pilih tahun masuk</option>
+
+                                            <option value="semua" selected>Semua</option>
+                                            
+                                            <% 
+                                                tahunMasukArray.forEach(tahunMasukObject => { 
+                                                    if (tahunMasukObject._id == tahunMasukValue) { 
+                                            %> 
+                                                        <option value="<%= tahunMasukObject._id %>" selected><%= tahunMasukObject.tahun_masuk %></option>
+                                                <% 
+                                                    } else if (tahunMasukObject._id != tahunMasukValue) {
+                                                %>
+                                                        <option value="<%= tahunMasukObject._id %>"><%= tahunMasukObject.tahun_masuk %></option>
+                                            <% 
+                                                    }
+                                                });
+                                            %>
+                                                
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
                                         <table id="main-table" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
                                                     <th class="th-custom">No.</th>
                                                     <th class="th-custom">Nama</th>
-                                                    <th class="th-custom">Kelas</th>
+                                                    <th class="th-custom">Rombel</th>
                                                     <th class="th-custom">Tahun Masuk</th>
                                                     <th class="th-custom">Hasil Raport</th>
                                                     <th class="th-custom">Dibuat</th>
@@ -116,7 +174,7 @@
                                                 <tr>
                                                     <th class="th-custom">No.</th>
                                                     <th class="th-custom">Nama</th>
-                                                    <th class="th-custom">Kelas</th>
+                                                    <th class="th-custom">Rombel</th>
                                                     <th class="th-custom">Tahun Masuk</th>
                                                     <th class="th-custom">Hasil Raport</th>
                                                     <th class="th-custom">Dibuat</th>
@@ -126,12 +184,6 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
                             </div>
                         </div>
                     </div>
@@ -144,6 +196,15 @@
         <%- include("./../../../partials/script.ejs"); -%>
     </body>
 
-    <!-- <%- include("./../../../partials/data-table-script.ejs"); -%> -->
+    <%- include("./../../../partials/select-script.ejs"); -%>
     <%- include("./../../../partials/toast-script.ejs"); -%>
+
+    <script>
+        function filterSelect() {
+            const rombelValue = document.getElementById("rombel_select").value;
+            const tahunMasukValue = document.getElementById("tahun_masuk_select").value;
+
+            window.location = `./?rombel=${rombelValue}&tahunMasuk=${tahunMasukValue}`;
+        };
+    </script>
 </html>

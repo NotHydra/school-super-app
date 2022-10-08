@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 
-import { MataPelajaran, Raport } from "../../models";
+import { MataPelajaran, Raport, Rombel, TahunMasuk } from "../../models";
 
 import { headTitle } from ".";
 
@@ -11,7 +11,7 @@ penilaianRaportRouter.use(express.static("sources/public"));
 penilaianRaportRouter.use(express.urlencoded({ extended: false }));
 
 penilaianRaportRouter.route("/").get(async (req, res) => {
-    let tableItemArray = await Raport.find()
+    let tableItemArray: any = await Raport.find()
         .populate({
             path: "id_siswa",
             select: "nama_lengkap id_rombel id_tahun_masuk",
@@ -22,9 +22,25 @@ penilaianRaportRouter.route("/").get(async (req, res) => {
         })
         .sort({ jenis_kelamin: 1 });
 
+    const rombelValue = req.query.rombel;
+
+    if (rombelValue != undefined && rombelValue != "semua") {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            return tableItemObject.id_siswa.id_rombel._id == rombelValue;
+        });
+    }
+
+    const tahunMasukValue = req.query.tahunMasuk;
+
+    if (tahunMasukValue != undefined && tahunMasukValue != "semua") {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            return tableItemObject.id_siswa.id_tahun_masuk._id == tahunMasukValue;
+        });
+    }
+
     const mataPelajaranArray = await MataPelajaran.find().select("mata_pelajaran bobot_pengetahuan bobot_keterampilan");
 
-    tableItemArray = tableItemArray.map((tableItemObject) => {
+    tableItemArray = tableItemArray.map((tableItemObject: any) => {
         const scoreSemesterArray: any = [];
         tableItemObject.semester = tableItemObject.semester.map((tableItemSemesterObject: any) => {
             const scoreMataPelajaranArray: number[] = [];
@@ -108,5 +124,9 @@ penilaianRaportRouter.route("/").get(async (req, res) => {
             // },
         ],
         tableItemArray,
+        rombelValue,
+        rombelArray: await Rombel.find(),
+        tahunMasukValue,
+        tahunMasukArray: await TahunMasuk.find(),
     });
 });
