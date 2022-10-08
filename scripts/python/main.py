@@ -35,6 +35,9 @@ class Dependency:
             "scripts/json/dependency/penilaian/mata_pelajaran.json"
         )
 
+    class Instansi:
+        tingkatArray = Utility.readJSON("scripts/json/dependency/instansi/tingkat.json")
+
     class DataUmum:
         tempatLahirArray = Utility.readJSON(
             "scripts/json/dependency/data-umum/tempat_lahir.json"
@@ -141,6 +144,26 @@ class Penilaian:
         )
 
 
+class Instansi:
+    def main():
+        Instansi.tingkat()
+        Instansi.jurusan()
+
+    def tingkat():
+        tingkatArray = []
+        for tingkatIndex, tingkat in enumerate(Dependency.Instansi.tingkatArray):
+            tingkatObject = {
+                "_id": tingkatIndex + 1,
+                "tingkat": tingkat,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            tingkatArray.append(tingkatObject)
+
+        Utility.writeJSON("scripts/json/instansi/tingkat.json", tingkatArray)
+
+
 class DataUmum:
     def main():
         DataUmum.tempatLahir()
@@ -222,6 +245,7 @@ class Main:
         Pelajar.main()
         Lulusan.main()
         Penilaian.main()
+        Instansi.main()
         DataUmum.main()
 
 
