@@ -1,29 +1,9 @@
 import json
-import random
-import time
 
 from datetime import datetime
 
 
-class Dependency:
-    def readJSON(path):
-        return json.load(open(path))
-
-    tempatLahirArray = readJSON("scripts/json/dependency/tempat_lahir.json")
-    jenisKelaminArray = readJSON("scripts/json/dependency/jenis_kelamin.json")
-    tahunMasukArray = readJSON("scripts/json/dependency/tahun_masuk.json")
-    tingkatArray = readJSON("scripts/json/dependency/tingkat.json")
-    jurusanArray = readJSON("scripts/json/dependency/jurusan.json")
-    rombelArray = readJSON("scripts/json/dependency/rombel.json")
-    nameArray = readJSON("scripts/json/dependency/name.json")
-
-    mataPelajaranArray = readJSON("scripts/json/dependency/mata_pelajaran.json")
-
-
 class Utility:
-    nisnObject = {}
-    tahunMasukToTingkat = {2020: "XII", 2021: "XI", 2022: "X"}
-
     def readJSON(path):
         return json.load(open(path))
 
@@ -31,85 +11,26 @@ class Utility:
         with open(path, "w") as outfile:
             outfile.write(json.dumps(data, indent=4))
 
-    def randomNISN(start, end):
-        enrollmentNumber = str(random.randint(start, end))
-
-        newEnrollmentNumber = True
-        for nisKey in Utility.nisnObject.items():
-            if enrollmentNumber == nisKey[0]:
-                newEnrollmentNumber = False
-
-        if newEnrollmentNumber:
-            Utility.nisnObject[enrollmentNumber] = 1
-
-        elif not newEnrollmentNumber:
-            Utility.nisnObject[enrollmentNumber] += 1
-
-        idkNumber = str(719)
-        countNumber = str(Utility.nisnObject[enrollmentNumber]).zfill(3)
-
-        nis = int(enrollmentNumber + idkNumber + countNumber)
-
-        return nis
-
-    def randomTempatLahir():
-        return (random.choice(Utility.tempatLahirArray))["_id"]
-
-    def randomBirthDate(start, end):
-        timeFormat = "%Y/%m/%d"
-
-        stime = time.mktime(time.strptime(start, timeFormat))
-        etime = time.mktime(time.strptime(end, timeFormat))
-
-        ptime = stime + random.random() * (etime - stime)
-
-        return time.strftime(timeFormat, time.localtime(ptime))
-
-    def randomJenisKelamin():
-        return (random.choice(Utility.jenisKelaminArray))["_id"]
-
-    def randomTahunMasuk():
-        return (random.choice(Utility.tahunMasukArray))["_id"]
-
-    def randomTingkat():
-        return (random.choice(Utility.tingkatArray))["_id"]
-
-    def randomJurusan():
-        return (random.choice(Utility.jurusanArray))["_id"]
-
-    def randomRombel():
-        return (random.choice(Utility.rombelArray))["_id"]
-
-    def dateToUnix(date):
-        return str(int(datetime.strptime(date, "%Y/%m/%d").timestamp()) * 1000)
-
     def currentDate():
         return str(int(datetime.today().timestamp()) * 1000)
 
-    tempatLahirArray = readJSON("scripts/json/buku-induk/tempat_lahir.json")
-    jenisKelaminArray = readJSON("scripts/json/buku-induk/jenis_kelamin.json")
-    tahunMasukArray = readJSON("scripts/json/buku-induk/tahun_masuk.json")
-    tingkatArray = readJSON("scripts/json/buku-induk/tingkat.json")
-    jurusanArray = readJSON("scripts/json/buku-induk/jurusan.json")
-    rombelArray = readJSON("scripts/json/buku-induk/rombel.json")
-    siswaArray = readJSON("scripts/json/buku-induk/siswa.json")
 
-    mataPelajaranArray = readJSON("scripts/json/penilaian/mata_pelajaran.json")
+class Dependency:
+    class DataUmum:
+        tempatLahirArray = Utility.readJSON(
+            "scripts/json/dependency/data-umum/tempat_lahir.json"
+        )
 
 
-class BukuInduk:
+class DataUmum:
     def main():
-        BukuInduk.tempatLahir()
-        BukuInduk.jenisKelamin()
-        BukuInduk.tahunMasuk()
-        BukuInduk.tingkat()
-        BukuInduk.jurusan()
-        BukuInduk.rombel()
-        BukuInduk.siswa()
+        DataUmum.tempatLahir()
 
     def tempatLahir():
         tempatLahirArray = []
-        for tempatLahirIndex, tempatLahir in enumerate(Dependency.tempatLahirArray):
+        for tempatLahirIndex, tempatLahir in enumerate(
+            Dependency.DataUmum.tempatLahirArray
+        ):
             tempatLahirObject = {
                 "_id": tempatLahirIndex + 1,
                 "tempat_lahir": tempatLahir,
@@ -119,211 +40,8 @@ class BukuInduk:
 
             tempatLahirArray.append(tempatLahirObject)
 
-        Utility.writeJSON("scripts/json/buku-induk/tempat_lahir.json", tempatLahirArray)
-
-    def jenisKelamin():
-        jenisKelaminArray = []
-        for jenisKelaminIndex, jenisKelamin in enumerate(Dependency.jenisKelaminArray):
-            jenisKelaminObject = {
-                "_id": jenisKelaminIndex + 1,
-                "jenis_kelamin": jenisKelamin,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            jenisKelaminArray.append(jenisKelaminObject)
-
-        Utility.writeJSON(
-            "scripts/json/buku-induk/jenis_kelamin.json", jenisKelaminArray
-        )
-
-    def tahunMasuk():
-        tahunMasukArray = []
-        for tahunMasukIndex, tahunMasuk in enumerate(Dependency.tahunMasukArray):
-            tahunMasukObject = {
-                "_id": tahunMasukIndex + 1,
-                "tahun_masuk": tahunMasuk,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            tahunMasukArray.append(tahunMasukObject)
-
-        Utility.writeJSON("scripts/json/buku-induk/tahun_masuk.json", tahunMasukArray)
-
-    def tingkat():
-        tingkatArray = []
-        for tingkatIndex, tingkat in enumerate(Dependency.tingkatArray):
-            tingkatObject = {
-                "_id": tingkatIndex + 1,
-                "tingkat": tingkat,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            tingkatArray.append(tingkatObject)
-
-        Utility.writeJSON("scripts/json/buku-induk/tingkat.json", tingkatArray)
-
-    def jurusan():
-        jurusanArray = []
-        for jurusanIndex, jurusan in enumerate(Dependency.jurusanArray):
-            jurusanObject = {
-                "_id": jurusanIndex + 1,
-                "jurusan": jurusan,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            jurusanArray.append(jurusanObject)
-
-        Utility.writeJSON("scripts/json/buku-induk/jurusan.json", jurusanArray)
-
-    def rombel():
-        rombelArray = []
-        rombelCount = 0
-        for tingkat in Dependency.tingkatArray:
-            for rombel in Dependency.rombelArray:
-                rombelObject = {
-                    "_id": rombelCount + 1,
-                    "rombel": f"{tingkat} {rombel}",
-                    "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                    "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-                }
-
-                rombelCount += 1
-
-                rombelArray.append(rombelObject)
-
-        Utility.writeJSON("scripts/json/buku-induk/rombel.json", rombelArray)
-
-    def siswa():
-        siswaArray = []
-        siswaCount = 0
-        for tahunMasuk in Utility.tahunMasukArray:
-            tahunMasukValue = tahunMasuk["tahun_masuk"]
-            tahunMasuk2Digit = int(str(tahunMasukValue)[-2:])
-            birthDateStart = f"{2004 - 20 + tahunMasuk2Digit}/01/01"
-            birthDateEnd = f"{2006 - 20 + tahunMasuk2Digit}/12/31"
-
-            tingkatValue = Utility.tahunMasukToTingkat[tahunMasukValue]
-
-            for tingkatObject in Utility.tingkatArray:
-                if tingkatObject["tingkat"] in tingkatValue:
-                    tingkat = tingkatObject
-
-            for rombel in Dependency.rombelArray:
-                namaUniqueArray = random.sample(
-                    Dependency.nameArray, k=random.randint(3, 3)
-                )
-
-                for jurusanObject in Utility.jurusanArray:
-                    if jurusanObject["jurusan"] in rombel:
-                        jurusan = jurusanObject
-
-                for rombelObject in Utility.rombelArray:
-                    if rombelObject["rombel"] in f"{tingkat['tingkat']} {rombel}":
-                        rombelValue = rombelObject
-
-                for namaUnique in namaUniqueArray:
-                    siswaObject = {
-                        "_id": siswaCount + 1,
-                        "nisn": Utility.randomNISN(tahunMasuk2Digit, tahunMasuk2Digit),
-                        "nama_lengkap": namaUnique,
-                        "id_tempat_lahir": Utility.randomTempatLahir(),
-                        "tanggal_lahir": {
-                            "$date": {
-                                "$numberLong": Utility.dateToUnix(
-                                    Utility.randomBirthDate(
-                                        birthDateStart, birthDateEnd
-                                    )
-                                )
-                            }
-                        },
-                        "id_jenis_kelamin": Utility.randomJenisKelamin(),
-                        "id_tahun_masuk": tahunMasuk["_id"],
-                        "id_tingkat": tingkat["_id"],
-                        "id_jurusan": jurusan["_id"],
-                        "id_rombel": rombelValue["_id"],
-                        "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                        "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-                    }
-
-                    siswaCount += 1
-
-                    siswaArray.append(siswaObject)
-
-        Utility.writeJSON("scripts/json/buku-induk/siswa.json", siswaArray)
+        Utility.writeJSON("scripts/json/data-umum/tempat_lahir.json", tempatLahirArray)
 
 
-class Penilaian:
-    def main():
-        Penilaian.mataPelajaran()
-        Penilaian.raport()
-
-    def mataPelajaran():
-        mataPelajaranArray = []
-        for mataPelajaranIndex, mataPelajaran in enumerate(
-            Dependency.mataPelajaranArray
-        ):
-            randomBobotValue = random.randint(4, 6) * 10
-
-            mataPelajaranObject = {
-                "_id": mataPelajaranIndex + 1,
-                "mata_pelajaran": mataPelajaran,
-                "bobot_pengetahuan": randomBobotValue,
-                "bobot_keterampilan": 100 - randomBobotValue,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            mataPelajaranArray.append(mataPelajaranObject)
-
-        Utility.writeJSON(
-            "scripts/json/penilaian/mata_pelajaran.json", mataPelajaranArray
-        )
-
-    def raport():
-        raportArray = []
-        for siswaIndex, siswa in enumerate(Utility.siswaArray):
-
-            semesterArray = []
-            for i in range(4):
-
-                mataPelajaranArray = []
-                mataPelajaranIdArray = [1, 2, 3, 4, 6]
-                for mataPelajaranIdIndex, mataPelajaranId in enumerate(
-                    mataPelajaranIdArray
-                ):
-                    mataPelajaranObject = {
-                        "_id": mataPelajaranIdIndex + 1,
-                        "id_mata_pelajaran": mataPelajaranId,
-                        "pengetahuan": random.randint(60, 100),
-                        "keterampilan": random.randint(60, 100),
-                    }
-
-                    mataPelajaranArray.append(mataPelajaranObject)
-
-                semesterObject = {
-                    "_id": i + 1,
-                    "semester": i + 1,
-                    "mata_pelajaran": mataPelajaranArray,
-                }
-
-                semesterArray.append(semesterObject)
-
-            raportObject = {
-                "_id": siswaIndex + 1,
-                "id_siswa": siswa["_id"],
-                "semester": semesterArray,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            raportArray.append(raportObject)
-
-        Utility.writeJSON("scripts/json/penilaian/raport.json", raportArray)
-
-
-BukuInduk.main()
-Penilaian.main()
+class Main:
+    DataUmum.main()
