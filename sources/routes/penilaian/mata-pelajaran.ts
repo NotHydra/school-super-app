@@ -130,20 +130,33 @@ penilaianMataPelajaranRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new MataPelajaran({
-                _id: (await MataPelajaran.findOne().sort({ _id: -1 }))._id + 1,
+            const bobotPengetahuan: number = parseInt(req.body.bobot_pengetahuan);
+            const bobotKeterampilan: number = parseInt(req.body.bobot_keterampilan);
 
-                ...attributeArray,
+            if (bobotPengetahuan >= 0 && bobotPengetahuan <= 100) {
+                if (bobotKeterampilan >= 0 && bobotKeterampilan <= 100) {
+                    if (bobotPengetahuan + bobotKeterampilan == 100) {
+                        const itemObject = new MataPelajaran({
+                            _id: (await MataPelajaran.findOne().sort({ _id: -1 }))._id + 1,
+                            ...attributeArray,
+                            dibuat: new Date(),
+                            diubah: new Date(),
+                        });
 
-                dibuat: new Date(),
-                diubah: new Date(),
-            });
-
-            try {
-                await itemObject.save();
-                res.redirect("create?response=success");
-            } catch (error) {
-                res.redirect("create?response=error");
+                        try {
+                            await itemObject.save();
+                            res.redirect("create?response=success");
+                        } catch (error) {
+                            res.redirect("create?response=error");
+                        }
+                    } else if (bobotPengetahuan + bobotKeterampilan != 100) {
+                        res.redirect("create?response=error&text=Total bobot pengetahuan dan bobot keterampilan harus 100");
+                    }
+                } else if (bobotKeterampilan < 0 || bobotKeterampilan > 100) {
+                    res.redirect("create?response=error&text=Bobot keterampilan harus di antara 0 sampai 100");
+                }
+            } else if (bobotPengetahuan < 0 || bobotPengetahuan > 100) {
+                res.redirect("create?response=error&text=Bobot pengetahuan harus di antara 0 sampai 100");
             }
         } else if (inputArray.includes(undefined)) {
             res.redirect("create?response=error&text=Data tidak lengkap");
@@ -215,18 +228,34 @@ penilaianMataPelajaranRouter
             });
 
             if (!inputArray.includes(undefined)) {
-                try {
-                    await MataPelajaran.updateOne(
-                        { _id: id },
-                        {
-                            ...attributeArray,
+                const bobotPengetahuan: number = parseInt(req.body.bobot_pengetahuan);
+                const bobotKeterampilan: number = parseInt(req.body.bobot_keterampilan);
 
-                            diubah: new Date(),
+                if (bobotPengetahuan >= 0 && bobotPengetahuan <= 100) {
+                    if (bobotKeterampilan >= 0 && bobotKeterampilan <= 100) {
+                        if (bobotPengetahuan + bobotKeterampilan == 100) {
+                            try {
+                                await MataPelajaran.updateOne(
+                                    { _id: id },
+                                    {
+                                        ...attributeArray,
+
+                                        diubah: new Date(),
+                                    }
+                                );
+
+                                res.redirect(`update?id=${id}&response=success`);
+                            } catch {
+                                res.redirect(`update?id=${id}&response=error`);
+                            }
+                        } else if (bobotPengetahuan + bobotKeterampilan != 100) {
+                            res.redirect(`update?id=${id}&response=error&text=Total bobot pengetahuan dan bobot keterampilan harus 100`);
                         }
-                    );
-                    res.redirect(`update?id=${id}&response=success`);
-                } catch {
-                    res.redirect(`update?id=${id}&response=error`);
+                    } else if (bobotKeterampilan < 0 || bobotKeterampilan > 100) {
+                        res.redirect(`update?id=${id}&response=error&text=Bobot keterampilan harus di antara 0 sampai 100`);
+                    }
+                } else if (bobotPengetahuan < 0 || bobotPengetahuan > 100) {
+                    res.redirect(`update?id=${id}&response=error&text=Bobot pengetahuan harus di antara 0 sampai 100`);
                 }
             } else if (inputArray.includes(undefined)) {
                 res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
