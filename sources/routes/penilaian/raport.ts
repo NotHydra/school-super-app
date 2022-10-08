@@ -22,17 +22,17 @@ penilaianRaportRouter.route("/").get(async (req, res) => {
         })
         .sort({ jenis_kelamin: 1 });
 
-    const rombelValue = req.query.rombel;
+    const rombelValue: any = req.query.rombel;
 
-    if (rombelValue != undefined && rombelValue != "semua") {
+    if (rombelValue != undefined && !isNaN(rombelValue)) {
         tableItemArray = tableItemArray.filter((tableItemObject: any) => {
             return tableItemObject.id_siswa.id_rombel._id == rombelValue;
         });
     }
 
-    const tahunMasukValue = req.query.tahunMasuk;
+    const tahunMasukValue: any = req.query.tahunMasuk;
 
-    if (tahunMasukValue != undefined && tahunMasukValue != "semua") {
+    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
         tableItemArray = tableItemArray.filter((tableItemObject: any) => {
             return tableItemObject.id_siswa.id_tahun_masuk._id == tahunMasukValue;
         });

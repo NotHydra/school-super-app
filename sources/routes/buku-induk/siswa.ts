@@ -68,9 +68,9 @@ bukuIndukSiswaRouter.use(express.static("sources/public"));
 bukuIndukSiswaRouter.use(express.urlencoded({ extended: false }));
 
 bukuIndukSiswaRouter.route("/").get(async (req, res) => {
-    const tahunMasukValue = req.query.tahunMasuk;
+    const tahunMasukValue: any = req.query.tahunMasuk;
 
-    const tableItemArray = await Siswa.find(tahunMasukValue == undefined || tahunMasukValue == "semua" ? {} : { id_tahun_masuk: tahunMasukValue })
+    const tableItemArray = await Siswa.find(tahunMasukValue != undefined && !isNaN(tahunMasukValue) ? { id_tahun_masuk: tahunMasukValue } : {})
         .populate("id_tempat_lahir")
         .populate("id_jenis_kelamin")
         .populate("id_tahun_masuk")
