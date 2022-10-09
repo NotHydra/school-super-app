@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { lulusanAlumniRouter } from "./alumni";
 import { lulusanTahunLulusRouter } from "./tahun-lulus";
 
 export const lulusanRouter = Router();
@@ -14,4 +15,5 @@ lulusanRouter.get("/", async (req, res) => {
     });
 });
 
+lulusanRouter.use("/alumni", lulusanAlumniRouter);
 lulusanRouter.use("/tahun-lulus", lulusanTahunLulusRouter);
