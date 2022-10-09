@@ -42,22 +42,22 @@ export const rombelSchema = new mongoose.Schema({
         required: true,
     },
     id_wali_kelas: {
-        type: String,
+        type: Number,
         required: true,
         ref: "guru",
     },
     id_tingkat: {
-        type: String,
+        type: Number,
         required: true,
         ref: "tingkat",
     },
     id_jurusan: {
-        type: String,
+        type: Number,
         required: true,
         ref: "jurusan",
     },
     id_tahun_rombel: {
-        type: String,
+        type: Number,
         required: true,
         ref: "tahun_rombel",
     },
