@@ -11,7 +11,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "",
                 icon: "circle",
             },
@@ -24,7 +24,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "pengajar",
                 icon: "circle",
             },
@@ -49,7 +49,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "pelajar",
                 icon: "circle",
             },
@@ -74,7 +74,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "lulusan",
                 icon: "circle",
             },
@@ -99,7 +99,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "penilaian",
                 icon: "circle",
             },
@@ -136,7 +136,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "instansi",
                 icon: "circle",
             },
@@ -173,7 +173,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Utama (WIP)",
                 link: "data-umum",
                 icon: "circle",
             },
