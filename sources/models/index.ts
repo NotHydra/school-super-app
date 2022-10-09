@@ -7,12 +7,16 @@ import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
 import { rombelSchema } from "./instansi/rombel";
 import { tingkatSchema } from "./instansi/tingkat";
 import { jurusanSchema } from "./instansi/jurusan";
-import { tahunRombelSchema } from "./instansi/tahun_rombel";
+import { tahunRombelSchema } from "./instansi/tahun-rombel";
 
 import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
+import { tahunMasukSchema } from "./pelajar/tahun-masuk";
+
+const pelajarDatabase = mongoose.connection.useDb("pelajar");
+export const TahunMasuk = pelajarDatabase.model("tahun_masuk", tahunMasukSchema, "tahun_masuk");
 
 const lulusanDatabase = mongoose.connection.useDb("lulusan");
 export const TahunLulus = lulusanDatabase.model("tahun_lulus", tahunLulusSchema, "tahun_lulus");
