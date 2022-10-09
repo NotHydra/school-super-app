@@ -6,6 +6,9 @@ from datetime import datetime, timedelta
 
 
 class Utility:
+    tingkatToTahunMasuk = {1: 5, 2: 4, 3: 3}
+    tingkatToSemesterCount = {"X": 1, "XI": 3, "XII": 5}
+
     def readJSON(path):
         return json.load(open(path))
 
@@ -40,6 +43,7 @@ class Dependency:
         )
 
     class Instansi:
+        rombelArray = Utility.readJSON("scripts/json/dependency/instansi/rombel.json")
         tingkatArray = Utility.readJSON("scripts/json/dependency/instansi/tingkat.json")
         jurusanArray = Utility.readJSON("scripts/json/dependency/instansi/jurusan.json")
         tahunRombelArray = Utility.readJSON(
@@ -65,15 +69,22 @@ class Dependency:
 
     namaArray = Utility.readJSON("scripts/json/dependency/nama.json")
 
-
-class Random:
-    nipCount = 0
-
     tempatLahirArray = Utility.readJSON("scripts/json/data-umum/tempat_lahir.json")
     jenisKelaminArray = Utility.readJSON("scripts/json/data-umum/jenis_kelamin.json")
     jabatanArray = Utility.readJSON("scripts/json/pengajar/jabatan.json")
     universitasArray = Utility.readJSON("scripts/json/data-umum/universitas.json")
     pendidikanArray = Utility.readJSON("scripts/json/data-umum/pendidikan.json")
+
+    guruArray = Utility.readJSON("scripts/json/pengajar/guru.json")
+
+    mataPelajaranArray = Utility.readJSON("scripts/json/penilaian/mata_pelajaran.json")
+
+    tingkatArray = Utility.readJSON("scripts/json/instansi/tingkat.json")
+    jurusanArray = Utility.readJSON("scripts/json/instansi/jurusan.json")
+
+
+class Random:
+    nipCount = 0
 
     def nip(tanggalLahir: str, jenisKelamin: int):
         Random.nipCount += 1
@@ -81,7 +92,7 @@ class Random:
         return f"{tanggalLahir.replace('/', '')} {datetime.strftime(datetime.strptime(tanggalLahir, '%Y/%m/%d') + timedelta(days=random.randint(6935, 7602)), '%Y%m')} {jenisKelamin} {str(Random.nipCount).zfill(3)}"
 
     def tempatLahir():
-        return random.choice(Random.tempatLahirArray)["_id"]
+        return random.choice(Dependency.tempatLahirArray)["_id"]
 
     def tanggalLahir(start, end):
         timeFormat = "%Y/%m/%d"
@@ -94,16 +105,16 @@ class Random:
         return time.strftime(timeFormat, time.localtime(ptime))
 
     def jenisKelamin():
-        return random.choice(Random.jenisKelaminArray)["_id"]
+        return random.choice(Dependency.jenisKelaminArray)["_id"]
 
     def jabatan():
-        return random.choice(Random.jabatanArray)["_id"]
+        return random.choice(Dependency.jabatanArray)["_id"]
 
     def universitas():
-        return random.choice(Random.universitasArray)["_id"]
+        return random.choice(Dependency.universitasArray)["_id"]
 
     def pendidikan():
-        return random.choice(Random.pendidikanArray)["_id"]
+        return random.choice(Dependency.pendidikanArray)["_id"]
 
     def nomorTelepon():
         phoneNumberLength = random.randint(11, 13) - 2
@@ -122,7 +133,7 @@ class Pengajar:
 
     def guru():
         guruArray = []
-        for namaIndex, nama in enumerate(random.sample(Dependency.namaArray, k=30)):
+        for namaIndex, nama in enumerate(random.sample(Dependency.namaArray, k=45)):
             tanggalLahir = Random.tanggalLahir("1970/01/02", "2000/12/31")
             jenisKelamin = Random.jenisKelamin()
 
@@ -233,9 +244,74 @@ class Penilaian:
 
 class Instansi:
     def main():
+        Instansi.rombel()
         Instansi.tingkat()
         Instansi.jurusan()
         Instansi.tahunRombel()
+
+    def rombel():
+        rombelArray = []
+        rombelCount = 0
+
+        randomWaliKelas = random.sample(
+            Dependency.guruArray,
+            k=(len(Dependency.tingkatArray) * len(Dependency.Instansi.rombelArray)),
+        )
+
+        for tingkat in Dependency.tingkatArray:
+            for rombel in Dependency.Instansi.rombelArray:
+
+                validJurusan = None
+                for jurusan in Dependency.jurusanArray:
+                    if jurusan["jurusan"] in rombel:
+                        validJurusan = jurusan["_id"]
+
+                mataPelajaranSample = random.sample(
+                    Dependency.mataPelajaranArray, k=random.randint(9, 11)
+                )
+
+                guruSample = random.sample(Dependency.guruArray, k=len(mataPelajaranSample))
+
+                semesterArray = []
+                for i in range(Utility.tingkatToSemesterCount[tingkat["tingkat"]]):
+
+                    mataPelajaranArray = []
+                    for mataPelajaranIndex, mataPelajaran in enumerate(
+                        mataPelajaranSample
+                    ):
+                        mataPelajaranObject = {
+                            "_id": mataPelajaranIndex + 1,
+                            "id_mata_pelajaran": mataPelajaran["_id"],
+                            "id_guru": guruSample[mataPelajaranIndex]["_id"]
+                        }
+
+                        mataPelajaranArray.append(mataPelajaranObject)
+
+                    semesterObject = {
+                        "_id": i + 1,
+                        "semester": i + 1,
+                        "mata_pelajaran": mataPelajaranArray,
+                    }
+
+                    semesterArray.append(semesterObject)
+
+                rombelObject = {
+                    "_id": rombelCount + 1,
+                    "rombel": f"{tingkat['tingkat']} {rombel}",
+                    "id_wali_kelas": randomWaliKelas[rombelCount]["_id"],
+                    "id_tingkat": tingkat["_id"],
+                    "id_jurusan": validJurusan,
+                    "id_tahun_rombel": Utility.tingkatToTahunMasuk[tingkat["_id"]],
+                    "semester": semesterArray,
+                    "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                    "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+                }
+
+                rombelCount += 1
+
+                rombelArray.append(rombelObject)
+
+        Utility.writeJSON("scripts/json/instansi/rombel.json", rombelArray)
 
     def tingkat():
         tingkatArray = []
