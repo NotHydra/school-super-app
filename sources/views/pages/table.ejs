@@ -49,12 +49,17 @@
                                                                 <td class="td-custom"><%= number %></td>
 
                                                                 <% tableAttributeArray.forEach(tableAttributeObject => {
-                                                                        let tableItemValue;
-                                                                        if (tableAttributeObject.value.length == 1) {
-                                                                            tableItemValue = tableItemObject[tableAttributeObject.value[0]];
-                                                                        } else if (tableAttributeObject.value.length == 2) {
-                                                                            tableItemValue = tableItemObject[tableAttributeObject.value[0]][tableAttributeObject.value[1]];
-                                                                        };
+                                                                        let tableItemValue = "tableItemObject";
+
+                                                                        let valueLength = tableAttributeObject.value.length;
+                                                                        let i = 0;
+                                                                        while (i < valueLength) {
+                                                                            tableItemValue = tableItemValue + `[tableAttributeObject.value[${i}]]`;
+
+                                                                            i += 1;
+                                                                        }
+
+                                                                        tableItemValue = eval(tableItemValue);
 
                                                                         if (tableAttributeObject.type == "date") {
                                                                             tableItemValue = moment(tableItemValue).format("DD-MM-YYYY");
