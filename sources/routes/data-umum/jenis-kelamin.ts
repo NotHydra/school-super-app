@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 
 import { headTitle } from ".";
-import { DataUmumJenisKelamin } from "../../models";
+import { JenisKelamin } from "../../models";
 
 export const dataUmumJenisKelaminRouter = Router();
 
@@ -19,7 +19,7 @@ dataUmumJenisKelaminRouter.use(express.static("sources/public"));
 dataUmumJenisKelaminRouter.use(express.urlencoded({ extended: false }));
 
 dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await DataUmumJenisKelamin.find().sort({ jenis_kelamin: 1 });
+    const tableItemArray = await JenisKelamin.find().sort({ jenis_kelamin: 1 });
 
     res.render("pages/table", {
         headTitle,
@@ -35,19 +35,19 @@ dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Jenis Kelamin",
                         icon: "venus-mars",
-                        value: await DataUmumJenisKelamin.countDocuments(),
+                        value: await JenisKelamin.countDocuments(),
                     },
                     {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: (await DataUmumJenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin,
+                        value: (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin,
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: (await DataUmumJenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
+                        value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
                     },
                 ],
             },
@@ -90,8 +90,8 @@ dataUmumJenisKelaminRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new DataUmumJenisKelamin({
-                _id: (await DataUmumJenisKelamin.findOne().sort({ _id: -1 }))._id + 1,
+            const itemObject = new JenisKelamin({
+                _id: (await JenisKelamin.findOne().sort({ _id: -1 }))._id + 1,
 
                 ...attributeArray,
 
@@ -114,10 +114,10 @@ dataUmumJenisKelaminRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await DataUmumJenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await DataUmumJenisKelamin.findOne({ _id: id });
+            const itemObject = await JenisKelamin.findOne({ _id: id });
 
             res.render("pages/update", {
                 headTitle,
@@ -144,7 +144,7 @@ dataUmumJenisKelaminRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await DataUmumJenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id });
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -158,7 +158,7 @@ dataUmumJenisKelaminRouter
 
             if (!inputArray.includes(undefined)) {
                 try {
-                    await DataUmumJenisKelamin.updateOne(
+                    await JenisKelamin.updateOne(
                         { _id: id },
                         {
                             ...attributeArray,
@@ -182,10 +182,10 @@ dataUmumJenisKelaminRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await DataUmumJenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await DataUmumJenisKelamin.findOne({ _id: id });
+            const itemObject = await JenisKelamin.findOne({ _id: id });
 
             res.render("pages/delete", {
                 headTitle,
@@ -212,14 +212,14 @@ dataUmumJenisKelaminRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await DataUmumJenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id });
 
         if (dataExist != null) {
             // const dataIsUsed = await Siswa.exists({ id_jenis_kelamin: id });
 
             // if (dataIsUsed == null) {
             try {
-                await DataUmumJenisKelamin.deleteOne({ _id: id });
+                await JenisKelamin.deleteOne({ _id: id });
                 res.redirect("./?response=success");
             } catch (error) {
                 res.redirect(`delete?id=${id}&response=error`);

@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
-import { DataUmumJenisKelamin, DataUmumPendidikan, DataUmumTempatLahir, DataUmumUniversitas } from "./models";
+import { JenisKelamin, Pendidikan, TempatLahir, Universitas } from "./models";
 import { dataUmumRouter } from "./routes/data-umum";
 
 const app: Express = express();
@@ -29,10 +29,10 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/reset-collection", async (req, res) => {
-    await DataUmumTempatLahir.deleteMany();
-    await DataUmumJenisKelamin.deleteMany();
-    await DataUmumUniversitas.deleteMany();
-    await DataUmumPendidikan.deleteMany();
+    await TempatLahir.deleteMany();
+    await JenisKelamin.deleteMany();
+    await Universitas.deleteMany();
+    await Pendidikan.deleteMany();
 
     res.send("done");
 });
