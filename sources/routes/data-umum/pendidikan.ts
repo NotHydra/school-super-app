@@ -2,25 +2,31 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Alumni, Guru, Universitas } from "../../models";
+import { Alumni, Guru, Pendidikan } from "../../models";
 
-export const dataUmumUniversitasRouter = Router();
+export const dataUmumPendidikanRouter = Router();
 
-const navActive = [6, 3];
+const navActive = [6, 4];
 const tableAttributeArray = [
     {
         id: 1,
-        label: "Universitas",
-        value: ["universitas"],
+        label: "Pendidikan",
+        value: ["pendidikan"],
+        type: "text",
+    },
+    {
+        id: 2,
+        label: "Singkatan",
+        value: ["singkatan"],
         type: "text",
     },
 ];
 
-dataUmumUniversitasRouter.use(express.static("sources/public"));
-dataUmumUniversitasRouter.use(express.urlencoded({ extended: false }));
+dataUmumPendidikanRouter.use(express.static("sources/public"));
+dataUmumPendidikanRouter.use(express.urlencoded({ extended: false }));
 
-dataUmumUniversitasRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Universitas.find().sort({ universitas: 1 });
+dataUmumPendidikanRouter.route("/").get(async (req, res) => {
+    const tableItemArray = await Pendidikan.find().sort({ pendidikan: 1 });
 
     res.render("pages/table", {
         headTitle,
@@ -34,9 +40,9 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                 cardItemChild: [
                     {
                         id: 1,
-                        title: "Universitas",
+                        title: "Pendidikan",
                         icon: "school",
-                        value: await Universitas.countDocuments(),
+                        value: await Pendidikan.countDocuments(),
                     },
                 ],
             },
@@ -47,7 +53,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: (await Universitas.findOne().sort({ dibuat: -1 })).universitas,
+                        value: (await Pendidikan.findOne().sort({ dibuat: -1 })).pendidikan,
                     },
                 ],
             },
@@ -58,7 +64,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: (await Universitas.findOne().sort({ diubah: -1 })).universitas,
+                        value: (await Pendidikan.findOne().sort({ diubah: -1 })).pendidikan,
                     },
                 ],
             },
@@ -68,7 +74,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
     });
 });
 
-dataUmumUniversitasRouter
+dataUmumPendidikanRouter
     .route("/create")
     .get(async (req, res) => {
         res.render("pages/create", {
@@ -80,11 +86,20 @@ dataUmumUniversitasRouter
             detailedInputArray: [
                 {
                     id: 1,
-                    name: "universitas",
-                    display: "Universitas",
+                    name: "pendidikan",
+                    display: "Pendidikan",
                     type: "text",
                     value: null,
-                    placeholder: "Input universitas disini",
+                    placeholder: "Input pendidikan disini",
+                    enable: true,
+                },
+                {
+                    id: 2,
+                    name: "singkatan",
+                    display: "Singkatan",
+                    type: "text",
+                    value: null,
+                    placeholder: "Input singkatan disini",
                     enable: true,
                 },
             ],
@@ -101,8 +116,8 @@ dataUmumUniversitasRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new Universitas({
-                _id: (await Universitas.findOne().sort({ _id: -1 }))._id + 1,
+            const itemObject = new Pendidikan({
+                _id: (await Pendidikan.findOne().sort({ _id: -1 }))._id + 1,
 
                 ...attributeArray,
 
@@ -121,14 +136,14 @@ dataUmumUniversitasRouter
         }
     });
 
-dataUmumUniversitasRouter
+dataUmumPendidikanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Universitas.findOne({ _id: id });
+            const itemObject = await Pendidikan.findOne({ _id: id });
 
             res.render("pages/update", {
                 headTitle,
@@ -140,11 +155,20 @@ dataUmumUniversitasRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "universitas",
-                        display: "Universitas",
+                        name: "pendidikan",
+                        display: "Pendidikan",
                         type: "text",
-                        value: itemObject.universitas,
-                        placeholder: "Input universitas disini",
+                        value: itemObject.pendidikan,
+                        placeholder: "Input pendidikan disini",
+                        enable: true,
+                    },
+                    {
+                        id: 2,
+                        name: "singkatan",
+                        display: "Singkatan",
+                        type: "text",
+                        value: itemObject.singkatan,
+                        placeholder: "Input singkatan disini",
                         enable: true,
                     },
                 ],
@@ -155,7 +179,7 @@ dataUmumUniversitasRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id });
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -169,7 +193,7 @@ dataUmumUniversitasRouter
 
             if (!inputArray.includes(undefined)) {
                 try {
-                    await Universitas.updateOne(
+                    await Pendidikan.updateOne(
                         { _id: id },
                         {
                             ...attributeArray,
@@ -189,14 +213,14 @@ dataUmumUniversitasRouter
         }
     });
 
-dataUmumUniversitasRouter
+dataUmumPendidikanRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Universitas.findOne({ _id: id });
+            const itemObject = await Pendidikan.findOne({ _id: id });
 
             res.render("pages/delete", {
                 headTitle,
@@ -208,11 +232,11 @@ dataUmumUniversitasRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "universitas",
-                        display: "Universitas",
+                        name: "pendidikan",
+                        display: "Pendidikan",
                         type: "text",
-                        value: itemObject.universitas,
-                        placeholder: "Input universitas kelamin disini",
+                        value: itemObject.pendidikan,
+                        placeholder: "Input pendidikan kelamin disini",
                         enable: false,
                     },
                 ],
@@ -223,14 +247,14 @@ dataUmumUniversitasRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = (await Alumni.exists({ id_universitas: id })) || (await Guru.exists({ id_universitas: id }));
+            const dataIsUsed = (await Alumni.exists({ id_pendidikan: id })) || (await Guru.exists({ id_pendidikan: id }));
 
             if (dataIsUsed == null) {
                 try {
-                    await Universitas.deleteOne({ _id: id });
+                    await Pendidikan.deleteOne({ _id: id });
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
