@@ -6,6 +6,7 @@ import { localMoment } from "./utility";
 
 import { JenisKelamin, Pendidikan, TempatLahir, Universitas } from "./models";
 
+import { penilaianRouter } from "./routes/penilaian";
 import { instansiRouter } from "./routes/instansi";
 import { dataUmumRouter } from "./routes/data-umum";
 
@@ -39,6 +40,7 @@ app.get("/reset-collection", async (req, res) => {
     res.send("done");
 });
 
+app.use("/penilaian", penilaianRouter);
 app.use("/instansi", instansiRouter);
 app.use("/data-umum", dataUmumRouter);
 
