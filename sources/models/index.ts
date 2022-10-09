@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 
+import { rombelSchema } from "./instansi/rombel";
+
 import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
+
+const instansiDatabase = mongoose.connection.useDb("instansi");
+export const Rombel = instansiDatabase.model("rombel", rombelSchema, "rombel");
 
 const dataUmumDatabase = mongoose.connection.useDb("data-umum");
 export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSchema, "tempat_lahir");
