@@ -105,7 +105,7 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 2,
-                title: "Raport",
+                title: "Raport (WIP)",
                 link: "penilaian/raport",
                 icon: "address-book",
             },
@@ -117,13 +117,13 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 4,
-                title: "Kehadiran",
+                title: "Kehadiran (WIP)",
                 link: "penilaian/kehadiran",
                 icon: "clipboard",
             },
             {
                 id: 5,
-                title: "Pelanggaran",
+                title: "Pelanggaran (WIP)",
                 link: "penilaian/pelanggaran",
                 icon: "circle-exclamation",
             },
@@ -142,7 +142,7 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 2,
-                title: "Rombel",
+                title: "Rombel (WIP)",
                 link: "instansi/rombel",
                 icon: "archway",
             },
