@@ -4,10 +4,8 @@ import mongoose from "mongoose";
 import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
-import { JenisKelamin, Jurusan, MataPelajaran, Raport, Rombel, Siswa, TahunMasuk, TempatLahir, Tingkat } from "./models";
-
-import { bukuIndukRouter } from "./routes/buku-induk";
-import { penilaianRouter } from "./routes/penilaian";
+import { DataUmumJenisKelamin, DataUmumPendidikan, DataUmumTempatLahir, DataUmumUniversitas } from "./models";
+import { dataUmumRouter } from "./routes/data-umum";
 
 const app: Express = express();
 const port: number = 3000;
@@ -26,57 +24,20 @@ app.get("/", async (req, res) => {
     res.render("pages/index", {
         headTitle,
         navActive,
-        cardItemArray: [
-            {
-                id: 1,
-                cardItemChild: [
-                    {
-                        id: 1,
-                        title: "Siswa",
-                        icon: "user",
-                        value: await Siswa.countDocuments(),
-                    },
-                    {
-                        id: 2,
-                        title: "Alumni",
-                        icon: "user",
-                        value: await Siswa.countDocuments(),
-                    },
-                    {
-                        id: 3,
-                        title: "Guru",
-                        icon: "user",
-                        value: await Siswa.countDocuments(),
-                    },
-                    {
-                        id: 4,
-                        title: "Buku",
-                        icon: "user",
-                        value: await Siswa.countDocuments(),
-                    },
-                ],
-            },
-        ],
+        cardItemArray: [],
     });
 });
 
-app.get("/reset-database", async (req, res) => {
-    await Siswa.deleteMany();
-    await TempatLahir.deleteMany();
-    await JenisKelamin.deleteMany();
-    await TahunMasuk.deleteMany();
-    await Tingkat.deleteMany();
-    await Jurusan.deleteMany();
-    await Rombel.deleteMany();
-
-    await Raport.deleteMany();
-    await MataPelajaran.deleteMany();
+app.get("/reset-collection", async (req, res) => {
+    await DataUmumTempatLahir.deleteMany();
+    await DataUmumJenisKelamin.deleteMany();
+    await DataUmumUniversitas.deleteMany();
+    await DataUmumPendidikan.deleteMany();
 
     res.send("done");
 });
 
-app.use("/buku-induk", bukuIndukRouter);
-app.use("/penilaian", penilaianRouter);
+app.use("/data-umum", dataUmumRouter);
 
 mongoose.connect(mongoDBURI, () => {
     console.log("Connected to database");
