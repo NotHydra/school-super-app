@@ -28,6 +28,7 @@ dataUmumPendidikanRouter.use(express.urlencoded({ extended: false }));
 dataUmumPendidikanRouter.route("/").get(async (req, res) => {
     const tableItemArray = await Pendidikan.find().sort({ pendidikan: 1 });
 
+    const documentCount = await Pendidikan.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -42,7 +43,7 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Pendidikan",
                         icon: "school",
-                        value: await Pendidikan.countDocuments(),
+                        value: documentCount,
                     },
                 ],
             },
@@ -53,7 +54,7 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: (await Pendidikan.findOne().sort({ dibuat: -1 })).pendidikan,
+                        value: documentCount >= 1 ? (await Pendidikan.findOne().sort({ dibuat: -1 })).pendidikan : "Tidak Ada",
                     },
                 ],
             },
@@ -64,7 +65,7 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: (await Pendidikan.findOne().sort({ diubah: -1 })).pendidikan,
+                        value: documentCount >= 1 ? (await Pendidikan.findOne().sort({ diubah: -1 })).pendidikan : "Tidak Ada",
                     },
                 ],
             },

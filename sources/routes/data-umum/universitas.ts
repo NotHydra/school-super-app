@@ -22,6 +22,7 @@ dataUmumUniversitasRouter.use(express.urlencoded({ extended: false }));
 dataUmumUniversitasRouter.route("/").get(async (req, res) => {
     const tableItemArray = await Universitas.find().sort({ universitas: 1 });
 
+    const documentCount = await Universitas.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -36,7 +37,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Universitas",
                         icon: "school",
-                        value: await Universitas.countDocuments(),
+                        value: documentCount,
                     },
                 ],
             },
@@ -47,7 +48,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: (await Universitas.findOne().sort({ dibuat: -1 })).universitas,
+                        value: documentCount >= 1 ? (await Universitas.findOne().sort({ dibuat: -1 })).universitas : "Tidak Ada",
                     },
                 ],
             },
@@ -58,7 +59,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: (await Universitas.findOne().sort({ diubah: -1 })).universitas,
+                        value: documentCount >= 1 ? (await Universitas.findOne().sort({ diubah: -1 })).universitas : "Tidak Ada",
                     },
                 ],
             },

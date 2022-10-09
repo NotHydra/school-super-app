@@ -22,6 +22,7 @@ dataUmumJenisKelaminRouter.use(express.urlencoded({ extended: false }));
 dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
     const tableItemArray = await JenisKelamin.find().sort({ jenis_kelamin: 1 });
 
+    const documentCount = await JenisKelamin.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -36,19 +37,19 @@ dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Jenis Kelamin",
                         icon: "venus-mars",
-                        value: await JenisKelamin.countDocuments(),
+                        value: documentCount,
                     },
                     {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin,
+                        value: documentCount >= 1 ? (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin,
+                        value: documentCount >= 1 ? (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin : "Tidak Ada",
                     },
                 ],
             },

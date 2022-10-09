@@ -22,6 +22,7 @@ dataUmumTempatLahirRouter.use(express.urlencoded({ extended: false }));
 dataUmumTempatLahirRouter.route("/").get(async (req, res) => {
     const tableItemArray = await TempatLahir.find().sort({ tempat_lahir: 1 });
 
+    const documentCount = await TempatLahir.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -36,19 +37,19 @@ dataUmumTempatLahirRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Tempat Lahir",
                         icon: "city",
-                        value: await TempatLahir.countDocuments(),
+                        value: documentCount,
                     },
                     {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: (await TempatLahir.findOne().sort({ dibuat: -1 })).tempat_lahir,
+                        value: documentCount >= 1 ? (await TempatLahir.findOne().sort({ dibuat: -1 })).tempat_lahir : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir,
+                        value: documentCount >= 1 ? (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir : "Tidak Ada",
                     },
                 ],
             },
