@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
+
 import { rombelSchema } from "./instansi/rombel";
 import { tingkatSchema } from "./instansi/tingkat";
 import { jurusanSchema } from "./instansi/jurusan";
@@ -9,6 +11,9 @@ import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
+
+const penilaianDatabase = mongoose.connection.useDb("penilaian");
+export const MataPelajaran = penilaianDatabase.model("mata_pelajaran", mataPelajaranSchema, "mata_pelajaran");
 
 const instansiDatabase = mongoose.connection.useDb("instansi");
 export const Rombel = instansiDatabase.model("rombel", rombelSchema, "rombel");
