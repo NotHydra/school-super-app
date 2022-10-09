@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { tahunLulusSchema } from "./lulusan/tahun-lulus";
+
 import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
 
 import { rombelSchema } from "./instansi/rombel";
@@ -11,6 +13,9 @@ import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
+
+const lulusanDatabase = mongoose.connection.useDb("lulusan");
+export const TahunLulus = lulusanDatabase.model("tahun_lulus", tahunLulusSchema, "tahun_lulus");
 
 const penilaianDatabase = mongoose.connection.useDb("penilaian");
 export const MataPelajaran = penilaianDatabase.model("mata_pelajaran", mataPelajaranSchema, "mata_pelajaran");
