@@ -216,7 +216,7 @@ dataUmumTempatLahirRouter
         const dataExist = await TempatLahir.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = (await Siswa.exists({ id_tempat_lahir: id })) && (await Guru.exists({ id_tempat_lahir: id }));
+            const dataIsUsed = (await Siswa.exists({ id_tempat_lahir: id })) || (await Guru.exists({ id_tempat_lahir: id }));
 
             if (dataIsUsed == null) {
                 try {
