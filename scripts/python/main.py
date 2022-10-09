@@ -1,7 +1,8 @@
 import json
 import random
+import time
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Utility:
@@ -14,6 +15,9 @@ class Utility:
 
     def currentDate():
         return str(int(datetime.today().timestamp()) * 1000)
+
+    def dateToUnix(date):
+        return str(int(datetime.strptime(date, "%Y/%m/%d").timestamp()) * 1000)
 
 
 class Dependency:
@@ -59,10 +63,89 @@ class Dependency:
             "scripts/json/dependency/data-umum/pendidikan.json"
         )
 
+    namaArray = Utility.readJSON("scripts/json/dependency/nama.json")
+
+
+class Random:
+    nipCount = 0
+
+    tempatLahirArray = Utility.readJSON("scripts/json/data-umum/tempat_lahir.json")
+    jenisKelaminArray = Utility.readJSON("scripts/json/data-umum/jenis_kelamin.json")
+    jabatanArray = Utility.readJSON("scripts/json/pengajar/jabatan.json")
+    universitasArray = Utility.readJSON("scripts/json/data-umum/universitas.json")
+    pendidikanArray = Utility.readJSON("scripts/json/data-umum/pendidikan.json")
+
+    def nip(tanggalLahir: str, jenisKelamin: int):
+        Random.nipCount += 1
+
+        return f"{tanggalLahir.replace('/', '')} {datetime.strftime(datetime.strptime(tanggalLahir, '%Y/%m/%d') + timedelta(days=random.randint(6935, 7602)), '%Y%m')} {jenisKelamin} {str(Random.nipCount).zfill(3)}"
+
+    def tempatLahir():
+        return random.choice(Random.tempatLahirArray)["_id"]
+
+    def tanggalLahir(start, end):
+        timeFormat = "%Y/%m/%d"
+
+        stime = time.mktime(time.strptime(start, timeFormat))
+        etime = time.mktime(time.strptime(end, timeFormat))
+
+        ptime = stime + random.random() * (etime - stime)
+
+        return time.strftime(timeFormat, time.localtime(ptime))
+
+    def jenisKelamin():
+        return random.choice(Random.jenisKelaminArray)["_id"]
+
+    def jabatan():
+        return random.choice(Random.jabatanArray)["_id"]
+
+    def universitas():
+        return random.choice(Random.universitasArray)["_id"]
+
+    def pendidikan():
+        return random.choice(Random.pendidikanArray)["_id"]
+
+    def nomorTelepon():
+        phoneNumberLength = random.randint(11, 13) - 2
+
+        phoneNumber = "08" + str(random.randint(0, int("9" * phoneNumberLength))).zfill(
+            phoneNumberLength
+        )
+
+        return phoneNumber
+
 
 class Pengajar:
     def main():
+        Pengajar.guru()
         Pengajar.jabatan()
+
+    def guru():
+        guruArray = []
+        for namaIndex, nama in enumerate(random.sample(Dependency.namaArray, k=30)):
+            tanggalLahir = Random.tanggalLahir("1970/01/02", "2000/12/31")
+            jenisKelamin = Random.jenisKelamin()
+
+            guruObject = {
+                "_id": namaIndex + 1,
+                "nip": Random.nip(tanggalLahir, jenisKelamin),
+                "nama_lengkap": nama,
+                "id_tempat_lahir": Random.tempatLahir(),
+                "tanggal_lahir": {
+                    "$date": {"$numberLong": Utility.dateToUnix(tanggalLahir)}
+                },
+                "id_jenis_kelamin": jenisKelamin,
+                "id_jabatan": Random.jabatan(),
+                "id_universitas": Random.universitas(),
+                "id_pendidikan": Random.pendidikan(),
+                "nomor_telepon": Random.nomorTelepon(),
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            guruArray.append(guruObject)
+
+        Utility.writeJSON("scripts/json/pengajar/guru.json", guruArray)
 
     def jabatan():
         jabatanArray = []
