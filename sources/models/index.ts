@@ -6,6 +6,7 @@ import { jabatanSchema } from "./pengajar/jabatan";
 import { siswaSchema } from "./pelajar/siswa";
 import { tahunMasukSchema } from "./pelajar/tahun-masuk";
 
+import { alumniSchema } from "./lulusan/alumni";
 import { tahunLulusSchema } from "./lulusan/tahun-lulus";
 
 import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
@@ -29,6 +30,7 @@ export const Siswa = pelajarDatabase.model("siswa", siswaSchema, "siswa");
 export const TahunMasuk = pelajarDatabase.model("tahun_masuk", tahunMasukSchema, "tahun_masuk");
 
 const lulusanDatabase = mongoose.connection.useDb("lulusan");
+export const Alumni = lulusanDatabase.model("alumni", alumniSchema, "alumni");
 export const TahunLulus = lulusanDatabase.model("tahun_lulus", tahunLulusSchema, "tahun_lulus");
 
 const penilaianDatabase = mongoose.connection.useDb("penilaian");
