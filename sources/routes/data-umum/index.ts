@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { dataUmumTempatLahirRouter } from "./tempat-lahir";
 import { dataUmumJenisKelaminRouter } from "./jenis-kelamin";
 
 export const dataUmumRouter = Router();
@@ -14,4 +15,5 @@ dataUmumRouter.get("/", async (req, res) => {
     });
 });
 
+dataUmumRouter.use("/tempat-lahir", dataUmumTempatLahirRouter);
 dataUmumRouter.use("/jenis-kelamin", dataUmumJenisKelaminRouter);
