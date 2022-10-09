@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { jabatanSchema } from "./pengajar/jabatan";
+
 import { siswaSchema } from "./pelajar/siswa";
 import { tahunMasukSchema } from "./pelajar/tahun-masuk";
 
@@ -16,6 +18,9 @@ import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
+
+const pengajarDatabase = mongoose.connection.useDb("pengajar");
+export const Jabatan = pengajarDatabase.model("jabatan", jabatanSchema, "jabatan");
 
 const pelajarDatabase = mongoose.connection.useDb("pelajar");
 export const Siswa = pelajarDatabase.model("siswa", siswaSchema, "siswa");
