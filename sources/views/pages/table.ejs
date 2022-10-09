@@ -39,35 +39,43 @@
                                             </thead>
 
                                             <tbody>
-                                                <% let number = 0; tableItemArray.forEach(tableItemObject => { number += 1; %>
-                                                    <tr>
-                                                        <td class="td-custom"><%= number %></td>
+                                                <% 
+                                                    if (tableItemArray.length >= 1) { 
+                                                        let number = 0; 
+                                                        tableItemArray.forEach(tableItemObject => { 
+                                                            number += 1;
+                                                %>
+                                                            <tr>
+                                                                <td class="td-custom"><%= number %></td>
 
-                                                        <% tableAttributeArray.forEach(tableAttributeObject => {
-                                                                let tableItemValue;
-                                                                if (tableAttributeObject.value.length == 1) {
-                                                                    tableItemValue = tableItemObject[tableAttributeObject.value[0]];
-                                                                } else if (tableAttributeObject.value.length == 2) {
-                                                                    tableItemValue = tableItemObject[tableAttributeObject.value[0]][tableAttributeObject.value[1]];
-                                                                };
+                                                                <% tableAttributeArray.forEach(tableAttributeObject => {
+                                                                        let tableItemValue;
+                                                                        if (tableAttributeObject.value.length == 1) {
+                                                                            tableItemValue = tableItemObject[tableAttributeObject.value[0]];
+                                                                        } else if (tableAttributeObject.value.length == 2) {
+                                                                            tableItemValue = tableItemObject[tableAttributeObject.value[0]][tableAttributeObject.value[1]];
+                                                                        };
 
-                                                                if (tableAttributeObject.type == "date") {
-                                                                    tableItemValue = moment(tableItemValue).format("DD-MM-YYYY");
-                                                                };
-                                                        %>
-                                                                <td class="td-custom"><%= tableItemValue %></td>
-                                                        <%
-                                                            }); 
-                                                        %>
+                                                                        if (tableAttributeObject.type == "date") {
+                                                                            tableItemValue = moment(tableItemValue).format("DD-MM-YYYY");
+                                                                        };
+                                                                %>
+                                                                        <td class="td-custom"><%= tableItemValue %></td>
+                                                                <%
+                                                                    }); 
+                                                                %>
 
-                                                        <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
-                                                        <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
-                                                        <td class="td-custom">
-                                                            <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
-                                                            <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
-                                                        </td>
-                                                    </tr>
-                                                <% }); %>
+                                                                <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
+                                                                <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
+                                                                <td class="td-custom">
+                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
+                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                </td>
+                                                            </tr>
+                                                <% 
+                                                        });
+                                                    }
+                                                %>
                                             </tbody>
                                             
                                             <tfoot>
