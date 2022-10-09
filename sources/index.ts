@@ -5,6 +5,8 @@ import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
 import { JenisKelamin, Pendidikan, TempatLahir, Universitas } from "./models";
+
+import { instansiRouter } from "./routes/instansi";
 import { dataUmumRouter } from "./routes/data-umum";
 
 const app: Express = express();
@@ -37,6 +39,7 @@ app.get("/reset-collection", async (req, res) => {
     res.send("done");
 });
 
+app.use("/instansi", instansiRouter);
 app.use("/data-umum", dataUmumRouter);
 
 mongoose.connect(mongoDBURI, () => {
