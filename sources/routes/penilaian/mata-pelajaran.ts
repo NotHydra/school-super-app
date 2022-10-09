@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { MataPelajaran, Rombel, RombelMataPelajaran } from "../../models";
+import { MataPelajaran, Rombel } from "../../models";
 
 export const instansiMataPelajaranRouter = Router();
 
@@ -104,7 +104,7 @@ instansiMataPelajaranRouter
                     id: 2,
                     name: "bobot_pengetahuan",
                     display: "Bobot Pengetahuan",
-                    type: "text",
+                    type: "number",
                     value: null,
                     placeholder: "Input bobot pengetahuan disini",
                     enable: true,
@@ -113,7 +113,7 @@ instansiMataPelajaranRouter
                     id: 3,
                     name: "bobot_keterampilan",
                     display: "Bobot Keterampilan",
-                    type: "text",
+                    type: "number",
                     value: null,
                     placeholder: "Input bobot keterampilan disini",
                     enable: true,
@@ -132,20 +132,35 @@ instansiMataPelajaranRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new MataPelajaran({
-                _id: (await MataPelajaran.findOne().sort({ _id: -1 }))._id + 1,
+            const bobotPengetahuan: number = parseInt(req.body.bobot_pengetahuan);
+            const bobotKeterampilan: number = parseInt(req.body.bobot_keterampilan);
 
-                ...attributeArray,
+            if (bobotPengetahuan >= 0 && bobotPengetahuan <= 100) {
+                if (bobotKeterampilan >= 0 && bobotKeterampilan <= 100) {
+                    if (bobotPengetahuan + bobotKeterampilan == 100) {
+                        const itemObject = new MataPelajaran({
+                            _id: (await MataPelajaran.findOne().sort({ _id: -1 }))._id + 1,
 
-                dibuat: new Date(),
-                diubah: new Date(),
-            });
+                            ...attributeArray,
 
-            try {
-                await itemObject.save();
-                res.redirect("create?response=success");
-            } catch (error) {
-                res.redirect("create?response=error");
+                            dibuat: new Date(),
+                            diubah: new Date(),
+                        });
+
+                        try {
+                            await itemObject.save();
+                            res.redirect("create?response=success");
+                        } catch (error) {
+                            res.redirect("create?response=error");
+                        }
+                    } else if (bobotPengetahuan + bobotKeterampilan != 100) {
+                        res.redirect("create?response=error&text=Total bobot pengetahuan dan bobot keterampilan harus 100");
+                    }
+                } else if (bobotKeterampilan < 0 || bobotKeterampilan > 100) {
+                    res.redirect("create?response=error&text=Bobot keterampilan harus di antara 0 sampai 100");
+                }
+            } else if (bobotPengetahuan < 0 || bobotPengetahuan > 100) {
+                res.redirect("create?response=error&text=Bobot pengetahuan harus di antara 0 sampai 100");
             }
         } else if (inputArray.includes(undefined)) {
             res.redirect("create?response=error&text=Data tidak lengkap");
@@ -182,7 +197,7 @@ instansiMataPelajaranRouter
                         id: 2,
                         name: "bobot_pengetahuan",
                         display: "Bobot Pengetahuan",
-                        type: "text",
+                        type: "number",
                         value: itemObject.bobot_pengetahuan,
                         placeholder: "Input bobot pengetahuan disini",
                         enable: true,
@@ -191,7 +206,7 @@ instansiMataPelajaranRouter
                         id: 3,
                         name: "bobot_keterampilan",
                         display: "Bobot Keterampilan",
-                        type: "text",
+                        type: "number",
                         value: itemObject.bobot_keterampilan,
                         placeholder: "Input bobot keterampilan disini",
                         enable: true,
@@ -217,18 +232,34 @@ instansiMataPelajaranRouter
             });
 
             if (!inputArray.includes(undefined)) {
-                try {
-                    await MataPelajaran.updateOne(
-                        { _id: id },
-                        {
-                            ...attributeArray,
+                const bobotPengetahuan: number = parseInt(req.body.bobot_pengetahuan);
+                const bobotKeterampilan: number = parseInt(req.body.bobot_keterampilan);
 
-                            diubah: new Date(),
+                if (bobotPengetahuan >= 0 && bobotPengetahuan <= 100) {
+                    if (bobotKeterampilan >= 0 && bobotKeterampilan <= 100) {
+                        if (bobotPengetahuan + bobotKeterampilan == 100) {
+                            try {
+                                await MataPelajaran.updateOne(
+                                    { _id: id },
+                                    {
+                                        ...attributeArray,
+
+                                        diubah: new Date(),
+                                    }
+                                );
+
+                                res.redirect(`update?id=${id}&response=success`);
+                            } catch {
+                                res.redirect(`update?id=${id}&response=error`);
+                            }
+                        } else if (bobotPengetahuan + bobotKeterampilan != 100) {
+                            res.redirect(`update?id=${id}&response=error&text=Total bobot pengetahuan dan bobot keterampilan harus 100`);
                         }
-                    );
-                    res.redirect(`update?id=${id}&response=success`);
-                } catch {
-                    res.redirect(`update?id=${id}&response=error`);
+                    } else if (bobotKeterampilan < 0 || bobotKeterampilan > 100) {
+                        res.redirect(`update?id=${id}&response=error&text=Bobot keterampilan harus di antara 0 sampai 100`);
+                    }
+                } else if (bobotPengetahuan < 0 || bobotPengetahuan > 100) {
+                    res.redirect(`update?id=${id}&response=error&text=Bobot pengetahuan harus di antara 0 sampai 100`);
                 }
             } else if (inputArray.includes(undefined)) {
                 res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
@@ -268,7 +299,7 @@ instansiMataPelajaranRouter
                         id: 2,
                         name: "bobot_pengetahuan",
                         display: "Bobot Pengetahuan",
-                        type: "text",
+                        type: "number",
                         value: itemObject.bobot_pengetahuan,
                         placeholder: "Input bobot pengetahuan disini",
                         enable: false,
@@ -277,7 +308,7 @@ instansiMataPelajaranRouter
                         id: 3,
                         name: "bobot_keterampilan",
                         display: "Bobot Keterampilan",
-                        type: "text",
+                        type: "number",
                         value: itemObject.bobot_keterampilan,
                         placeholder: "Input bobot keterampilan disini",
                         enable: false,
