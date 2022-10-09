@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+import { guruSchema } from "./pengajar/guru";
 import { jabatanSchema } from "./pengajar/jabatan";
 
 import { siswaSchema } from "./pelajar/siswa";
@@ -20,6 +21,7 @@ import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
 
 const pengajarDatabase = mongoose.connection.useDb("pengajar");
+export const Guru = pengajarDatabase.model("guru", guruSchema, "guru");
 export const Jabatan = pengajarDatabase.model("jabatan", jabatanSchema, "jabatan");
 
 const pelajarDatabase = mongoose.connection.useDb("pelajar");
