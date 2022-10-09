@@ -2,33 +2,27 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Alumni, Guru, Pendidikan } from "../../models";
+import { Jurusan, Rombel } from "../../models";
 
-export const dataUmumPendidikanRouter = Router();
+export const instansiJurusanRouter = Router();
 
-const navActive = [6, 4];
+const navActive = [5, 3];
 const tableAttributeArray = [
     {
         id: 1,
-        label: "Pendidikan",
-        value: ["pendidikan"],
-        type: "text",
-    },
-    {
-        id: 2,
-        label: "Singkatan",
-        value: ["singkatan"],
+        label: "Jurusan",
+        value: ["jurusan"],
         type: "text",
     },
 ];
 
-dataUmumPendidikanRouter.use(express.static("sources/public"));
-dataUmumPendidikanRouter.use(express.urlencoded({ extended: false }));
+instansiJurusanRouter.use(express.static("sources/public"));
+instansiJurusanRouter.use(express.urlencoded({ extended: false }));
 
-dataUmumPendidikanRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Pendidikan.find().sort({ pendidikan: 1 });
+instansiJurusanRouter.route("/").get(async (req, res) => {
+    const tableItemArray = await Jurusan.find().sort({ tahun_rombel: 1 });
 
-    const documentCount = await Pendidikan.countDocuments();
+    const documentCount = await Jurusan.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -41,31 +35,21 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
                 cardItemChild: [
                     {
                         id: 1,
-                        title: "Pendidikan",
-                        icon: "tag",
+                        title: "Jurusan",
+                        icon: "wrench",
                         value: documentCount,
                     },
-                ],
-            },
-            {
-                id: 2,
-                cardItemChild: [
                     {
-                        id: 1,
+                        id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Pendidikan.findOne().sort({ dibuat: -1 })).pendidikan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Jurusan.findOne().sort({ dibuat: -1 })).jurusan : "Tidak Ada",
                     },
-                ],
-            },
-            {
-                id: 3,
-                cardItemChild: [
                     {
-                        id: 1,
+                        id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Pendidikan.findOne().sort({ diubah: -1 })).pendidikan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Jurusan.findOne().sort({ diubah: -1 })).jurusan : "Tidak Ada",
                     },
                 ],
             },
@@ -75,7 +59,7 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
     });
 });
 
-dataUmumPendidikanRouter
+instansiJurusanRouter
     .route("/create")
     .get(async (req, res) => {
         res.render("pages/create", {
@@ -87,20 +71,11 @@ dataUmumPendidikanRouter
             detailedInputArray: [
                 {
                     id: 1,
-                    name: "pendidikan",
-                    display: "Pendidikan",
+                    name: "jurusan",
+                    display: "Jurusan",
                     type: "text",
                     value: null,
-                    placeholder: "Input pendidikan disini",
-                    enable: true,
-                },
-                {
-                    id: 2,
-                    name: "singkatan",
-                    display: "Singkatan",
-                    type: "text",
-                    value: null,
-                    placeholder: "Input singkatan disini",
+                    placeholder: "Input jurusan disini",
                     enable: true,
                 },
             ],
@@ -117,8 +92,8 @@ dataUmumPendidikanRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new Pendidikan({
-                _id: (await Pendidikan.findOne().sort({ _id: -1 }))._id + 1,
+            const itemObject = new Jurusan({
+                _id: (await Jurusan.findOne().sort({ _id: -1 }))._id + 1,
 
                 ...attributeArray,
 
@@ -137,14 +112,14 @@ dataUmumPendidikanRouter
         }
     });
 
-dataUmumPendidikanRouter
+instansiJurusanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Pendidikan.findOne({ _id: id });
+            const itemObject = await Jurusan.findOne({ _id: id });
 
             res.render("pages/update", {
                 headTitle,
@@ -156,20 +131,11 @@ dataUmumPendidikanRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "pendidikan",
-                        display: "Pendidikan",
+                        name: "jurusan",
+                        display: "Jurusan",
                         type: "text",
-                        value: itemObject.pendidikan,
-                        placeholder: "Input pendidikan disini",
-                        enable: true,
-                    },
-                    {
-                        id: 2,
-                        name: "singkatan",
-                        display: "Singkatan",
-                        type: "text",
-                        value: itemObject.singkatan,
-                        placeholder: "Input singkatan disini",
+                        value: itemObject.jurusan,
+                        placeholder: "Input jurusan disini",
                         enable: true,
                     },
                 ],
@@ -180,7 +146,7 @@ dataUmumPendidikanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id });
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -194,7 +160,7 @@ dataUmumPendidikanRouter
 
             if (!inputArray.includes(undefined)) {
                 try {
-                    await Pendidikan.updateOne(
+                    await Jurusan.updateOne(
                         { _id: id },
                         {
                             ...attributeArray,
@@ -214,14 +180,14 @@ dataUmumPendidikanRouter
         }
     });
 
-dataUmumPendidikanRouter
+instansiJurusanRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Pendidikan.findOne({ _id: id });
+            const itemObject = await Jurusan.findOne({ _id: id });
 
             res.render("pages/delete", {
                 headTitle,
@@ -233,11 +199,11 @@ dataUmumPendidikanRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "pendidikan",
-                        display: "Pendidikan",
+                        name: "jurusan",
+                        display: "Jurusan",
                         type: "text",
-                        value: itemObject.pendidikan,
-                        placeholder: "Input pendidikan kelamin disini",
+                        value: itemObject.jurusan,
+                        placeholder: "Input jurusan disini",
                         enable: false,
                     },
                 ],
@@ -248,14 +214,14 @@ dataUmumPendidikanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = (await Alumni.exists({ id_pendidikan: id })) || (await Guru.exists({ id_pendidikan: id }));
+            const dataIsUsed = await Rombel.exists({ id_jurusan: id });
 
             if (dataIsUsed == null) {
                 try {
-                    await Pendidikan.deleteOne({ _id: id });
+                    await Jurusan.deleteOne({ _id: id });
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);

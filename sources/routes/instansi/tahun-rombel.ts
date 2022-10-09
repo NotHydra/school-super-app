@@ -219,8 +219,6 @@ instansiTahunRombelRouter
         if (dataExist != null) {
             const dataIsUsed = await Rombel.exists({ id_tahun_rombel: id });
 
-            console.log(dataIsUsed);
-
             if (dataIsUsed == null) {
                 try {
                     await TahunRombel.deleteOne({ _id: id });
