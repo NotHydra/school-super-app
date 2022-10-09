@@ -2,27 +2,27 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Jurusan, Rombel } from "../../models";
+import { Alumni, TahunLulus } from "../../models";
 
-export const instansiJurusanRouter = Router();
+export const lulusanTahunLulusRouter = Router();
 
-const navActive = [5, 3];
+const navActive = [3, 2];
 const tableAttributeArray = [
     {
         id: 1,
-        label: "Jurusan",
-        value: ["jurusan"],
+        label: "Tahun Lulus",
+        value: ["tahun_lulus"],
         type: "text",
     },
 ];
 
-instansiJurusanRouter.use(express.static("sources/public"));
-instansiJurusanRouter.use(express.urlencoded({ extended: false }));
+lulusanTahunLulusRouter.use(express.static("sources/public"));
+lulusanTahunLulusRouter.use(express.urlencoded({ extended: false }));
 
-instansiJurusanRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Jurusan.find().sort({ tahun_rombel: 1 });
+lulusanTahunLulusRouter.route("/").get(async (req, res) => {
+    const tableItemArray = await TahunLulus.find().sort({ tahun_rombel: 1 });
 
-    const documentCount = await Jurusan.countDocuments();
+    const documentCount = await TahunLulus.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -35,21 +35,21 @@ instansiJurusanRouter.route("/").get(async (req, res) => {
                 cardItemChild: [
                     {
                         id: 1,
-                        title: "Jurusan",
-                        icon: "wrench",
+                        title: "Tahun Lulus",
+                        icon: "calendar-days",
                         value: documentCount,
                     },
                     {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Jurusan.findOne().sort({ dibuat: -1 })).jurusan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunLulus.findOne().sort({ dibuat: -1 })).tahun_lulus : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Jurusan.findOne().sort({ diubah: -1 })).jurusan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunLulus.findOne().sort({ diubah: -1 })).tahun_lulus : "Tidak Ada",
                     },
                 ],
             },
@@ -59,7 +59,7 @@ instansiJurusanRouter.route("/").get(async (req, res) => {
     });
 });
 
-instansiJurusanRouter
+lulusanTahunLulusRouter
     .route("/create")
     .get(async (req, res) => {
         res.render("pages/create", {
@@ -71,11 +71,11 @@ instansiJurusanRouter
             detailedInputArray: [
                 {
                     id: 1,
-                    name: "jurusan",
-                    display: "Jurusan",
+                    name: "tahun_lulus",
+                    display: "Tahun Lulus",
                     type: "text",
                     value: null,
-                    placeholder: "Input jurusan disini",
+                    placeholder: "Input tahun lulus disini",
                     enable: true,
                 },
             ],
@@ -92,8 +92,8 @@ instansiJurusanRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new Jurusan({
-                _id: (await Jurusan.findOne().sort({ _id: -1 }))._id + 1,
+            const itemObject = new TahunLulus({
+                _id: (await TahunLulus.findOne().sort({ _id: -1 }))._id + 1,
 
                 ...attributeArray,
 
@@ -112,14 +112,14 @@ instansiJurusanRouter
         }
     });
 
-instansiJurusanRouter
+lulusanTahunLulusRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Jurusan.findOne({ _id: id });
+            const itemObject = await TahunLulus.findOne({ _id: id });
 
             res.render("pages/update", {
                 headTitle,
@@ -131,11 +131,11 @@ instansiJurusanRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "jurusan",
-                        display: "Jurusan",
+                        name: "tahun_lulus",
+                        display: "Tahun Lulus",
                         type: "text",
-                        value: itemObject.jurusan,
-                        placeholder: "Input jurusan disini",
+                        value: itemObject.tahun_lulus,
+                        placeholder: "Input tahun lulus disini",
                         enable: true,
                     },
                 ],
@@ -146,7 +146,7 @@ instansiJurusanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id });
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -160,7 +160,7 @@ instansiJurusanRouter
 
             if (!inputArray.includes(undefined)) {
                 try {
-                    await Jurusan.updateOne(
+                    await TahunLulus.updateOne(
                         { _id: id },
                         {
                             ...attributeArray,
@@ -181,14 +181,14 @@ instansiJurusanRouter
         }
     });
 
-instansiJurusanRouter
+lulusanTahunLulusRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Jurusan.findOne({ _id: id });
+            const itemObject = await TahunLulus.findOne({ _id: id });
 
             res.render("pages/delete", {
                 headTitle,
@@ -200,11 +200,11 @@ instansiJurusanRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "jurusan",
-                        display: "Jurusan",
+                        name: "tahun_lulus",
+                        display: "Tahun Lulus",
                         type: "text",
-                        value: itemObject.jurusan,
-                        placeholder: "Input jurusan disini",
+                        value: itemObject.tahun_lulus,
+                        placeholder: "Input tahun lulus disini",
                         enable: false,
                     },
                 ],
@@ -215,14 +215,13 @@ instansiJurusanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = await Rombel.exists({ id_jurusan: id });
-
+            const dataIsUsed = await Alumni.exists({ id_tahun_lulus: id });
             if (dataIsUsed == null) {
                 try {
-                    await Jurusan.deleteOne({ _id: id });
+                    await TahunLulus.deleteOne({ _id: id });
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);

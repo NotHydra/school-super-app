@@ -3,7 +3,7 @@ import { Router } from "express";
 import { instansiMataPelajaranRouter } from "./mata-pelajaran";
 
 export const penilaianRouter = Router();
-export const headTitle = "Instansi";
+export const headTitle = "Penilaian";
 const navActive = [4, 0];
 
 penilaianRouter.get("/", async (req, res) => {
