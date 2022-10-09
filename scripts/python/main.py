@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 
 
 class Utility:
+    nisnObject = {}
+    tingkatToTahunRombel = {1: 5, 2: 4, 3: 3}
     tingkatToTahunMasuk = {1: 5, 2: 4, 3: 3}
     tingkatToSemesterCount = {"X": 1, "XI": 3, "XII": 5}
 
@@ -69,22 +71,44 @@ class Dependency:
 
     namaArray = Utility.readJSON("scripts/json/dependency/nama.json")
 
+    guruArray = Utility.readJSON("scripts/json/pengajar/guru.json")
+
+    tahunMasukArray = Utility.readJSON("scripts/json/pelajar/tahun_masuk.json")
+
+    mataPelajaranArray = Utility.readJSON("scripts/json/penilaian/mata_pelajaran.json")
+
+    rombelArray = Utility.readJSON("scripts/json/instansi/rombel.json")
+    tingkatArray = Utility.readJSON("scripts/json/instansi/tingkat.json")
+    jurusanArray = Utility.readJSON("scripts/json/instansi/jurusan.json")
+
     tempatLahirArray = Utility.readJSON("scripts/json/data-umum/tempat_lahir.json")
     jenisKelaminArray = Utility.readJSON("scripts/json/data-umum/jenis_kelamin.json")
     jabatanArray = Utility.readJSON("scripts/json/pengajar/jabatan.json")
     universitasArray = Utility.readJSON("scripts/json/data-umum/universitas.json")
     pendidikanArray = Utility.readJSON("scripts/json/data-umum/pendidikan.json")
 
-    guruArray = Utility.readJSON("scripts/json/pengajar/guru.json")
-
-    mataPelajaranArray = Utility.readJSON("scripts/json/penilaian/mata_pelajaran.json")
-
-    tingkatArray = Utility.readJSON("scripts/json/instansi/tingkat.json")
-    jurusanArray = Utility.readJSON("scripts/json/instansi/jurusan.json")
-
 
 class Random:
     nipCount = 0
+
+    def nisn(tahunMasuk):
+        newEnrollmentNumber = True
+        for nisKey in Utility.nisnObject.items():
+            if tahunMasuk == nisKey[0]:
+                newEnrollmentNumber = False
+
+        if newEnrollmentNumber:
+            Utility.nisnObject[tahunMasuk] = 1
+
+        elif not newEnrollmentNumber:
+            Utility.nisnObject[tahunMasuk] += 1
+
+        idkNumber = str(719)
+        countNumber = str(Utility.nisnObject[tahunMasuk]).zfill(3)
+
+        nis = int(tahunMasuk + idkNumber + countNumber)
+
+        return nis
 
     def nip(tanggalLahir: str, jenisKelamin: int):
         Random.nipCount += 1
@@ -175,7 +199,51 @@ class Pengajar:
 
 class Pelajar:
     def main():
+        Pelajar.siswa()
         Pelajar.tahunMasuk()
+
+    def siswa():
+        siswaArray = []
+        siswaCount = 0
+
+        for rombel in Dependency.rombelArray:
+            tahunMasukValue = None
+            for tahunMasuk in Dependency.tahunMasukArray:
+                if (
+                    tahunMasuk["_id"]
+                    == Utility.tingkatToTahunMasuk[rombel["id_tingkat"]]
+                ):
+                    tahunMasukValue = tahunMasuk["tahun_masuk"]
+
+            tahunMasuk2Digit = int(str(tahunMasukValue)[-2:])
+            birthDateStart = f"{2004 - 20 + tahunMasuk2Digit}/01/01"
+            birthDateEnd = f"{2006 - 20 + tahunMasuk2Digit}/12/31"
+
+            for nama in random.sample(Dependency.namaArray, k=random.randint(34, 36)):
+                siswaObject = {
+                    "_id": siswaCount + 1,
+                    "nisn": Random.nisn(str(tahunMasuk2Digit)),
+                    "nama_lengkap": nama,
+                    "id_tempat_lahir": Random.tempatLahir(),
+                    "tanggal_lahir": {
+                        "$date": {
+                            "$numberLong": Utility.dateToUnix(
+                                Random.tanggalLahir(birthDateStart, birthDateEnd)
+                            )
+                        }
+                    },
+                    "id_jenis_kelamin": Random.jenisKelamin(),
+                    "id_tahun_masuk": Utility.tingkatToTahunMasuk[rombel["id_tingkat"]],
+                    "id_rombel": rombel["_id"],
+                    "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                    "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+                }
+
+                siswaCount += 1
+
+                siswaArray.append(siswaObject)
+
+        Utility.writeJSON("scripts/json/pelajar/siswa.json", siswaArray)
 
     def tahunMasuk():
         tahunMasukArray = []
@@ -270,7 +338,9 @@ class Instansi:
                     Dependency.mataPelajaranArray, k=random.randint(9, 11)
                 )
 
-                guruSample = random.sample(Dependency.guruArray, k=len(mataPelajaranSample))
+                guruSample = random.sample(
+                    Dependency.guruArray, k=len(mataPelajaranSample)
+                )
 
                 semesterArray = []
                 for i in range(Utility.tingkatToSemesterCount[tingkat["tingkat"]]):
@@ -282,7 +352,7 @@ class Instansi:
                         mataPelajaranObject = {
                             "_id": mataPelajaranIndex + 1,
                             "id_mata_pelajaran": mataPelajaran["_id"],
-                            "id_guru": guruSample[mataPelajaranIndex]["_id"]
+                            "id_guru": guruSample[mataPelajaranIndex]["_id"],
                         }
 
                         mataPelajaranArray.append(mataPelajaranObject)
@@ -301,7 +371,7 @@ class Instansi:
                     "id_wali_kelas": randomWaliKelas[rombelCount]["_id"],
                     "id_tingkat": tingkat["_id"],
                     "id_jurusan": validJurusan,
-                    "id_tahun_rombel": Utility.tingkatToTahunMasuk[tingkat["_id"]],
+                    "id_tahun_rombel": Utility.tingkatToTahunRombel[tingkat["_id"]],
                     "semester": semesterArray,
                     "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
                     "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
