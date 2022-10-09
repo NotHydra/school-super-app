@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import { rombelSchema } from "./instansi/rombel";
 import { tingkatSchema } from "./instansi/tingkat";
+import { jurusanSchema } from "./instansi/jurusan";
 
 import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
@@ -11,6 +12,7 @@ import { pendidikanSchema } from "./data-umum/pendidikan";
 const instansiDatabase = mongoose.connection.useDb("instansi");
 export const Rombel = instansiDatabase.model("rombel", rombelSchema, "rombel");
 export const Tingkat = instansiDatabase.model("tingkat", tingkatSchema, "tingkat");
+export const jurusan = instansiDatabase.model("jurusan", jurusanSchema, "jurusan");
 
 const dataUmumDatabase = mongoose.connection.useDb("data-umum");
 export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSchema, "tempat_lahir");
