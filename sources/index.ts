@@ -10,6 +10,7 @@ import { lulusanRouter } from "./routes/lulusan";
 import { penilaianRouter } from "./routes/penilaian";
 import { instansiRouter } from "./routes/instansi";
 import { dataUmumRouter } from "./routes/data-umum";
+import { pelajarRouter } from "./routes/pelajar";
 
 const app: Express = express();
 const port: number = 3000;
@@ -41,6 +42,7 @@ app.get("/reset-collection", async (req, res) => {
     res.send("done");
 });
 
+app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
 app.use("/penilaian", penilaianRouter);
 app.use("/instansi", instansiRouter);
