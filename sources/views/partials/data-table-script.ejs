@@ -18,7 +18,15 @@
                 responsive: true,
                 lengthChange: false,
                 autoWidth: false,
-                buttons: ["excel", "colvis"],
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: [".export"]
+                        }
+                    },
+                    "colvis"
+                ],
             })
             .buttons()
             .container()
