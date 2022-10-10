@@ -118,7 +118,7 @@ pelajarSiswaRouter
                     display: "NISN",
                     type: "number",
                     value: null,
-                    placeholder: "Input nisn disini",
+                    placeholder: "Input NISN disini",
                     enable: true,
                 },
                 {
@@ -256,7 +256,7 @@ pelajarSiswaRouter
                         display: "NISN",
                         type: "number",
                         value: itemObject.nisn,
-                        placeholder: "Input nisn disini",
+                        placeholder: "Input NISN disini",
                         enable: true,
                     },
                     {
@@ -407,7 +407,7 @@ pelajarSiswaRouter
                         display: "NISN",
                         type: "number",
                         value: itemObject.nisn,
-                        placeholder: "Input nisn disini",
+                        placeholder: "Input NISN disini",
                         enable: false,
                     },
                     {
