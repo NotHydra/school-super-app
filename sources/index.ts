@@ -4,7 +4,25 @@ import mongoose from "mongoose";
 import { mongoDBURI, pageItemArray } from "./depedency";
 import { localMoment } from "./utility";
 
-import { JenisKelamin, Pendidikan, TempatLahir, Universitas } from "./models";
+import {
+    Alumni,
+    Guru,
+    Jabatan,
+    JenisKelamin,
+    Jurusan,
+    MataPelajaran,
+    Pendidikan,
+    Rombel,
+    RombelMataPelajaran,
+    RombelSemester,
+    Siswa,
+    TahunLulus,
+    TahunMasuk,
+    TahunRombel,
+    TempatLahir,
+    Tingkat,
+    Universitas,
+} from "./models";
 
 import { pengajarRouter } from "./routes/pengajar";
 import { pelajarRouter } from "./routes/pelajar";
@@ -34,7 +52,25 @@ app.get("/", async (req, res) => {
     });
 });
 
-app.get("/reset-collection", async (req, res) => {
+app.get("/reset-database", async (req, res) => {
+    await Guru.deleteMany();
+    await Jabatan.deleteMany();
+
+    await Siswa.deleteMany();
+    await TahunMasuk.deleteMany();
+
+    await Alumni.deleteMany();
+    await TahunLulus.deleteMany();
+
+    await MataPelajaran.deleteMany();
+
+    await Rombel.deleteMany();
+    await RombelSemester.deleteMany();
+    await RombelMataPelajaran.deleteMany();
+    await Tingkat.deleteMany();
+    await Jurusan.deleteMany();
+    await TahunRombel.deleteMany();
+
     await TempatLahir.deleteMany();
     await JenisKelamin.deleteMany();
     await Universitas.deleteMany();
