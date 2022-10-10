@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { pengajarGuruRouter } from "./guru";
 import { pengajarJabatanRouter } from "./jabatan";
 
 export const pengajarRouter = Router();
@@ -14,4 +15,5 @@ pengajarRouter.get("/", async (req, res) => {
     });
 });
 
+pengajarRouter.use("/guru", pengajarGuruRouter);
 pengajarRouter.use("/jabatan", pengajarJabatanRouter);
