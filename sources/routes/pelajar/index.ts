@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
 
 export const pelajarRouter = Router();
@@ -14,4 +15,5 @@ pelajarRouter.get("/", async (req, res) => {
     });
 });
 
+pelajarRouter.use("/siswa", pelajarSiswaRouter);
 pelajarRouter.use("/tahun-masuk", pelajarTahunMasukRouter);
