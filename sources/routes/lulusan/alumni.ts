@@ -62,7 +62,9 @@ lulusanAlumniRouter.use(express.static("sources/public"));
 lulusanAlumniRouter.use(express.urlencoded({ extended: false }));
 
 lulusanAlumniRouter.route("/").get(async (req, res) => {
-    const tableItemArray: any = await Alumni.find()
+    const tahunLulusValue: any = req.query.tahunLulus;
+
+    const tableItemArray: any = await Alumni.find(tahunLulusValue != undefined && !isNaN(tahunLulusValue) ? { id_tahun_lulus: tahunLulusValue } : {})
         .populate({
             path: "id_siswa",
             select: "nisn nama_lengkap id_rombel id_tahun_masuk",
@@ -92,7 +94,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
     });
 
     const documentCount = await Alumni.countDocuments();
-    res.render("pages/table", {
+    res.render("pages/lulusan/alumni/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -133,6 +135,8 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        tahunLulusValue,
+        tahunLulusArray: await TahunLulus.find(),
     });
 });
 
