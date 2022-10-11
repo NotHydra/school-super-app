@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { instansiRombelRouter } from "./rombel";
 import { instansiTingkatRouter } from "./tingkat";
 import { instansiJurusanRouter } from "./jurusan";
 import { instansiTahunRombelRouter } from "./tahun-rombel";
@@ -16,6 +17,7 @@ instansiRouter.get("/", async (req, res) => {
     });
 });
 
+instansiRouter.use("/rombel", instansiRombelRouter);
 instansiRouter.use("/tingkat", instansiTingkatRouter);
 instansiRouter.use("/jurusan", instansiJurusanRouter);
 instansiRouter.use("/tahun-rombel", instansiTahunRombelRouter);

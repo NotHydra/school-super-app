@@ -142,7 +142,7 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 2,
-                title: "Rombel (WIP)",
+                title: "Rombel",
                 link: "instansi/rombel",
                 icon: "archway",
             },
