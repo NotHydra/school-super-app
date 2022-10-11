@@ -58,15 +58,17 @@ pelajarSiswaRouter.use(express.static("sources/public"));
 pelajarSiswaRouter.use(express.urlencoded({ extended: false }));
 
 pelajarSiswaRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Siswa.find()
+    const tahunMasukValue: any = req.query.tahunMasuk;
+
+    const tableItemArray = await Siswa.find(tahunMasukValue != undefined && !isNaN(tahunMasukValue) ? { id_tahun_masuk: tahunMasukValue } : {})
         .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
         .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
         .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
         .populate({ path: "id_rombel", select: "rombel", model: Rombel })
-        .sort({ nisn: 1 });
+        .sort({ nisn: -1 });
 
     const documentCount = await Siswa.countDocuments();
-    res.render("pages/table", {
+    res.render("pages/pelajar/siswa/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -99,6 +101,8 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        tahunMasukValue,
+        tahunMasukArray: await TahunMasuk.find(),
     });
 });
 
@@ -391,7 +395,7 @@ pelajarSiswaRouter
                 .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
                 .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
-                .populate({ path: "id_rombel", select: "rombel", model: Rombel })
+                .populate({ path: "id_rombel", select: "rombel", model: Rombel });
 
             res.render("pages/delete", {
                 headTitle,
