@@ -62,9 +62,10 @@ lulusanAlumniRouter.use(express.static("sources/public"));
 lulusanAlumniRouter.use(express.urlencoded({ extended: false }));
 
 lulusanAlumniRouter.route("/").get(async (req, res) => {
+    const tahunMasukValue: any = req.query.tahunMasuk;
     const tahunLulusValue: any = req.query.tahunLulus;
 
-    const tableItemArray: any = await Alumni.find(tahunLulusValue != undefined && !isNaN(tahunLulusValue) ? { id_tahun_lulus: tahunLulusValue } : {})
+    let tableItemArray: any = await Alumni.find(tahunLulusValue != undefined && !isNaN(tahunLulusValue) ? { id_tahun_lulus: tahunLulusValue } : {})
         .populate({
             path: "id_siswa",
             select: "nisn nama_lengkap id_rombel id_tahun_masuk",
@@ -92,6 +93,14 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
     tableItemArray.sort((a: any, b: any) => {
         return a.id_siswa.nisn - b.id_siswa.nisn;
     });
+
+    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_tahun_masuk._id == tahunMasukValue) {
+                return tableItemObject;
+            }
+        });
+    }
 
     const documentCount = await Alumni.countDocuments();
     res.render("pages/lulusan/alumni/table", {
@@ -137,6 +146,8 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         tableItemArray,
         tahunLulusValue,
         tahunLulusArray: await TahunLulus.find(),
+        tahunMasukValue,
+        tahunMasukArray: await TahunMasuk.find(),
     });
 });
 
