@@ -62,6 +62,7 @@ lulusanAlumniRouter.use(express.static("sources/public"));
 lulusanAlumniRouter.use(express.urlencoded({ extended: false }));
 
 lulusanAlumniRouter.route("/").get(async (req, res) => {
+    const rombelValue: any = req.query.rombel;
     const tahunMasukValue: any = req.query.tahunMasuk;
     const tahunLulusValue: any = req.query.tahunLulus;
 
@@ -93,6 +94,14 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
     tableItemArray.sort((a: any, b: any) => {
         return a.id_siswa.nisn - b.id_siswa.nisn;
     });
+
+    if (rombelValue != undefined && !isNaN(rombelValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_rombel._id == rombelValue) {
+                return tableItemObject;
+            }
+        });
+    }
 
     if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
         tableItemArray = tableItemArray.filter((tableItemObject: any) => {
@@ -144,10 +153,12 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
-        tahunLulusValue,
-        tahunLulusArray: await TahunLulus.find(),
+        rombelValue,
+        rombelArray: await Rombel.find(),
         tahunMasukValue,
         tahunMasukArray: await TahunMasuk.find(),
+        tahunLulusValue,
+        tahunLulusArray: await TahunLulus.find(),
     });
 });
 
