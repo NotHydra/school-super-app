@@ -47,6 +47,30 @@
                                                     
                                             </select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="rombel_select">Rombel</label>
+                                            <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
+                                                <option disabled>Pilih rombel</option>
+
+                                                <option value="semua" selected>Semua</option>
+                                                
+                                                <% 
+                                                    rombelArray.forEach(rombelObject => { 
+                                                        if (rombelObject._id == rombelValue) { 
+                                                %> 
+                                                            <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
+                                                    <% 
+                                                        } else if (rombelObject._id != rombelValue) {
+                                                    %>
+                                                            <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
+                                                <% 
+                                                        }
+                                                    });
+                                                %>
+                                                    
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -157,8 +181,9 @@
     <script>
         function filterSelect() {
             const tahunMasukValue = document.getElementById("tahun_masuk_select").value;
+            const rombelValue = document.getElementById("rombel_select").value;
 
-            window.location = `./?tahunMasuk=${tahunMasukValue}`;
+            window.location = `./?tahunMasuk=${tahunMasukValue}&rombel=${rombelValue}`;
         };
     </script>
 </html>

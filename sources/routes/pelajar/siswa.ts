@@ -59,8 +59,18 @@ pelajarSiswaRouter.use(express.urlencoded({ extended: false }));
 
 pelajarSiswaRouter.route("/").get(async (req, res) => {
     const tahunMasukValue: any = req.query.tahunMasuk;
+    const rombelValue: any = req.query.rombel;
+    let filterValue = {};
 
-    const tableItemArray = await Siswa.find(tahunMasukValue != undefined && !isNaN(tahunMasukValue) ? { id_tahun_masuk: tahunMasukValue } : {})
+    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
+        filterValue = { ...filterValue, id_tahun_masuk: tahunMasukValue };
+    }
+
+    if (rombelValue != undefined && !isNaN(rombelValue)) {
+        filterValue = { ...filterValue, id_rombel: rombelValue };
+    }
+
+    const tableItemArray = await Siswa.find(filterValue)
         .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
         .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
         .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
@@ -103,6 +113,8 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         tableItemArray,
         tahunMasukValue,
         tahunMasukArray: await TahunMasuk.find(),
+        rombelValue,
+        rombelArray: await Rombel.find(),
     });
 });
 
