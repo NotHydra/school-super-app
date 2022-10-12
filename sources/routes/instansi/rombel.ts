@@ -44,7 +44,24 @@ instansiRombelRouter.use(express.static("sources/public"));
 instansiRombelRouter.use(express.urlencoded({ extended: false }));
 
 instansiRombelRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Rombel.find()
+    const tingkatValue: any = req.query.tingkat;
+    const jurusanValue: any = req.query.jurusan;
+    const tahunRombelValue: any = req.query.tahunRombel;
+    let filterValue = {};
+
+    if (tingkatValue != undefined && !isNaN(tingkatValue)) {
+        filterValue = { ...filterValue, id_tingkat: tingkatValue };
+    }
+
+    if (jurusanValue != undefined && !isNaN(jurusanValue)) {
+        filterValue = { ...filterValue, id_jurusan: jurusanValue };
+    }
+
+    if (tahunRombelValue != undefined && !isNaN(tahunRombelValue)) {
+        filterValue = { ...filterValue, id_tahun_rombel: tahunRombelValue };
+    }
+
+    const tableItemArray = await Rombel.find(filterValue)
         .populate({
             path: "id_wali_kelas",
             select: "nama_lengkap",
@@ -68,7 +85,7 @@ instansiRombelRouter.route("/").get(async (req, res) => {
         .sort({ rombel: 1 });
 
     const documentCount = await Rombel.countDocuments();
-    res.render("pages/table", {
+    res.render("pages/instansi/rombel/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -101,6 +118,12 @@ instansiRombelRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        tingkatValue,
+        tingkatArray: await Tingkat.find(),
+        jurusanValue,
+        jurusanArray: await Jurusan.find(),
+        tahunRombelValue,
+        tahunRombelArray: await TahunRombel.find(),
     });
 });
 

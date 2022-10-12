@@ -1,0 +1,215 @@
+<% const pageItemCurrent = pageItemArray[navActive[0]].child[navActive[1]]; %>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include("./../../../partials/head.ejs"); -%> 
+        <%- include("./../../../partials/select-head.ejs"); -%>
+        <%- include("./../../../partials/data-table-head.ejs"); -%>
+        <%- include("./../../../partials/sweet-alert-head.ejs"); %>
+    </head>
+
+    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
+        <div class="wrapper">
+            <%- include("./../../../partials/nav.ejs"); -%> 
+            <%- include("./../../../partials/side.ejs"); -%>
+
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+                        <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
+                        <%- include("./../../../partials/card-item.ejs"); -%>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="tingkat_select">Tingkat</label>
+                                            <select name="tingkat_select" class="form-control select2bs4 full-width" id="tingkat_select" onchange="filterSelect();">
+                                                <option disabled>Pilih tingkat</option>
+
+                                                <option value="semua" selected>Semua</option>
+                                                
+                                                <% 
+                                                    tingkatArray.forEach(tingkatObject => { 
+                                                        if (tingkatObject._id == tingkatValue) { 
+                                                %> 
+                                                            <option value="<%= tingkatObject._id %>" selected><%= tingkatObject.tingkat %></option>
+                                                    <% 
+                                                        } else if (tingkatObject._id != tingkatValue) {
+                                                    %>
+                                                            <option value="<%= tingkatObject._id %>"><%= tingkatObject.tingkat %></option>
+                                                <% 
+                                                        }
+                                                    });
+                                                %>
+                                                    
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="jurusan_select">Jurusan</label>
+                                            <select name="jurusan_select" class="form-control select2bs4 full-width" id="jurusan_select" onchange="filterSelect();">
+                                                <option disabled>Pilih jurusan</option>
+
+                                                <option value="semua" selected>Semua</option>
+                                                
+                                                <% 
+                                                    jurusanArray.forEach(jurusanObject => { 
+                                                        if (jurusanObject._id == jurusanValue) { 
+                                                %> 
+                                                            <option value="<%= jurusanObject._id %>" selected><%= jurusanObject.jurusan %></option>
+                                                    <% 
+                                                        } else if (jurusanObject._id != jurusanValue) {
+                                                    %>
+                                                            <option value="<%= jurusanObject._id %>"><%= jurusanObject.jurusan %></option>
+                                                <% 
+                                                        }
+                                                    });
+                                                %>
+                                                    
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="tahun_rombel_select">Tahun Rombel</label>
+                                            <select name="tahun_rombel_select" class="form-control select2bs4 full-width" id="tahun_rombel_select" onchange="filterSelect();">
+                                                <option disabled>Pilih tahun rombel</option>
+
+                                                <option value="semua" selected>Semua</option>
+                                                
+                                                <% 
+                                                    tahunRombelArray.forEach(tahunRombelObject => { 
+                                                        if (tahunRombelObject._id == tahunRombelValue) { 
+                                                %> 
+                                                            <option value="<%= tahunRombelObject._id %>" selected><%= tahunRombelObject.tahun_rombel %></option>
+                                                    <% 
+                                                        } else if (tahunRombelObject._id != tahunRombelValue) {
+                                                    %>
+                                                            <option value="<%= tahunRombelObject._id %>"><%= tahunRombelObject.tahun_rombel %></option>
+                                                <% 
+                                                        }
+                                                    });
+                                                %>
+                                                    
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table id="main-table" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="th-custom export">No.</th>
+
+                                                    <% tableAttributeArray.forEach(tableAttributeObject => { %>
+                                                        <th class="th-custom export"><%= tableAttributeObject.label %></th>
+                                                    <% }); %>
+
+                                                    <th class="th-custom export">Dibuat</th>
+                                                    <th class="th-custom export">Diubah</th>
+                                                    <th class="th-custom">Aksi</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <% 
+                                                    if (tableItemArray.length >= 1) { 
+                                                        let number = 0; 
+                                                        tableItemArray.forEach(tableItemObject => { 
+                                                            number += 1;
+                                                %>
+                                                            <tr>
+                                                                <td class="td-custom"><%= number %></td>
+
+                                                                <% tableAttributeArray.forEach(tableAttributeObject => {
+                                                                        let tableItemValue = "tableItemObject";
+
+                                                                        let valueLength = tableAttributeObject.value.length;
+                                                                        let i = 0;
+                                                                        while (i < valueLength) {
+                                                                            tableItemValue = tableItemValue + `[tableAttributeObject.value[${i}]]`;
+
+                                                                            i += 1;
+                                                                        }
+
+                                                                        tableItemValue = eval(tableItemValue);
+
+                                                                        if (tableAttributeObject.type == "date") {
+                                                                            tableItemValue = moment(tableItemValue).format("DD-MM-YYYY");
+                                                                        };
+                                                                %>
+                                                                        <td class="td-custom"><%= tableItemValue %></td>
+                                                                <%
+                                                                    }); 
+                                                                %>
+
+                                                                <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
+                                                                <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
+                                                                <td class="td-custom">
+                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
+                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                </td>
+                                                            </tr>
+                                                <% 
+                                                        });
+                                                    }
+                                                %>
+                                            </tbody>
+                                            
+                                            <tfoot>
+                                                <tr>
+                                                    <th class="th-custom">No.</th>
+
+                                                    <% tableAttributeArray.forEach(tableAttributeObject => { %>
+                                                        <th class="th-custom"><%= tableAttributeObject.label %></th>
+                                                    <% }); %>
+
+                                                    <th class="th-custom">Dibuat</th>
+                                                    <th class="th-custom">Diubah</th>
+                                                    <th class="th-custom">Aksi</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include("./../../../partials/footer.ejs"); -%>
+        </div>
+
+        <%- include("./../../../partials/script.ejs"); -%>
+    </body>
+
+    <%- include("./../../../partials/select-script.ejs"); -%>
+    <%- include("./../../../partials/data-table-script.ejs"); -%>
+    <%- include("./../../../partials/toast-script.ejs"); -%>
+
+    <script>
+        function filterSelect() {
+            const tingkatValue = document.getElementById("tingkat_select").value;
+            const jurusanValue = document.getElementById("jurusan_select").value;
+            const tahunRombelValue = document.getElementById("tahun_rombel_select").value;
+
+
+            window.location = `./?tingkat=${tingkatValue}&jurusan=${jurusanValue}&tahunRombel=${tahunRombelValue}`;
+        };
+    </script>
+</html>
