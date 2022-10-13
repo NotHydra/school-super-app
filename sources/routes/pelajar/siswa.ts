@@ -101,6 +101,12 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                     },
                     {
                         id: 2,
+                        title: "Laki-Laki & Perempuan",
+                        icon: "restroom",
+                        value: `${await Siswa.find({ id_jenis_kelamin: 1 }).countDocuments()} - ${await Siswa.find({ id_jenis_kelamin: 2 }).countDocuments()}`,
+                    },
+                    {
+                        id: 3,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await Siswa.findOne().sort({ dibuat: -1 })).nisn : "Tidak Ada",
