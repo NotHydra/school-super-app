@@ -154,6 +154,7 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
+                                                                    <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?rombel=<%= tableItemObject._id %>&instansiRombel=<%= tableItemObject._id %>">Siswa</a>
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>

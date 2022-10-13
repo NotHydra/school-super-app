@@ -134,8 +134,8 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %>">Ubah</a>
-                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %>">Hapus</a>
+                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Ubah</a>
+                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Hapus</a>
                                                                 </td>
                                                             </tr>
                                                 <% 
@@ -166,9 +166,18 @@
                         <% if (siswaValue == undefined) { %>
                             <div class="row">
                                 <div class="col-12">
-                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create?instansiRombel=<%= instansiRombelValue %>">Buat</a>
                                 </div>
                             </div>
+
+                            <% if (instansiRombelValue != undefined) { %>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/instansi/rombel/')">Kembali</a>
+                                    </div>
+                                </div>
+                            <% } %>
+
                         <% } else if (siswaValue != undefined) { %>
                             <div class="row">
                                 <div class="col-12">
