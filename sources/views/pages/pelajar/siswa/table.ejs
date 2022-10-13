@@ -7,6 +7,7 @@
         <%- include("./../../../partials/select-head.ejs"); -%>
         <%- include("./../../../partials/data-table-head.ejs"); -%>
         <%- include("./../../../partials/sweet-alert-head.ejs"); %>
+        <%- include("./../../../partials/confirm-modal.ejs"); -%>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
@@ -18,63 +19,66 @@
                 <div class="content">
                     <div class="container-fluid">
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
-                        <%- include("./../../../partials/card-item.ejs"); -%>
                         
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label for="tahun_masuk_select">Tahun Masuk</label>
-                                            <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
-                                                <option disabled>Pilih tahun masuk</option>
+                        <% if (siswaValue == undefined) { %>
+                            <%- include("./../../../partials/card-item.ejs"); -%>
+                        
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="tahun_masuk_select">Tahun Masuk</label>
+                                                <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
+                                                    <option disabled>Pilih tahun masuk</option>
 
-                                                <option value="semua" selected>Semua</option>
-                                                
-                                                <% 
-                                                    tahunMasukArray.forEach(tahunMasukObject => { 
-                                                        if (tahunMasukObject._id == tahunMasukValue) { 
-                                                %> 
-                                                            <option value="<%= tahunMasukObject._id %>" selected><%= tahunMasukObject.tahun_masuk %></option>
-                                                    <% 
-                                                        } else if (tahunMasukObject._id != tahunMasukValue) {
-                                                    %>
-                                                            <option value="<%= tahunMasukObject._id %>"><%= tahunMasukObject.tahun_masuk %></option>
-                                                <% 
-                                                        }
-                                                    });
-                                                %>
+                                                    <option value="semua" selected>Semua</option>
                                                     
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="rombel_select">Rombel</label>
-                                            <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
-                                                <option disabled>Pilih rombel</option>
-
-                                                <option value="semua" selected>Semua</option>
-                                                
-                                                <% 
-                                                    rombelArray.forEach(rombelObject => { 
-                                                        if (rombelObject._id == rombelValue) { 
-                                                %> 
-                                                            <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
                                                     <% 
-                                                        } else if (rombelObject._id != rombelValue) {
+                                                        tahunMasukArray.forEach(tahunMasukObject => { 
+                                                            if (tahunMasukObject._id == tahunMasukValue) { 
+                                                    %> 
+                                                                <option value="<%= tahunMasukObject._id %>" selected><%= tahunMasukObject.tahun_masuk %></option>
+                                                        <% 
+                                                            } else if (tahunMasukObject._id != tahunMasukValue) {
+                                                        %>
+                                                                <option value="<%= tahunMasukObject._id %>"><%= tahunMasukObject.tahun_masuk %></option>
+                                                    <% 
+                                                            }
+                                                        });
                                                     %>
-                                                            <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
-                                                <% 
-                                                        }
-                                                    });
-                                                %>
+                                                        
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="rombel_select">Rombel</label>
+                                                <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
+                                                    <option disabled>Pilih rombel</option>
+
+                                                    <option value="semua" selected>Semua</option>
                                                     
-                                            </select>
+                                                    <% 
+                                                        rombelArray.forEach(rombelObject => { 
+                                                            if (rombelObject._id == rombelValue) { 
+                                                    %> 
+                                                                <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
+                                                        <% 
+                                                            } else if (rombelObject._id != rombelValue) {
+                                                        %>
+                                                                <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
+                                                    <% 
+                                                            }
+                                                        });
+                                                    %>
+                                                        
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <% } %>
 
                         <div class="row">
                             <div class="col-12">
@@ -130,8 +134,8 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
-                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %>">Ubah</a>
+                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %>">Hapus</a>
                                                                 </td>
                                                             </tr>
                                                 <% 
@@ -159,11 +163,19 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                        <% if (siswaValue == undefined) { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                                </div>
                             </div>
-                        </div>
+                        <% } else if (siswaValue != undefined) { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/lulusan/alumni/')">Kembali</a>
+                                </div>
+                            </div>
+                        <% }%>
                     </div>
                 </div>
             </div>

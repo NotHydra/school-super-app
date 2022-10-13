@@ -58,9 +58,14 @@ pelajarSiswaRouter.use(express.static("sources/public"));
 pelajarSiswaRouter.use(express.urlencoded({ extended: false }));
 
 pelajarSiswaRouter.route("/").get(async (req, res) => {
+    const siswaValue: any = req.query.siswa;
     const tahunMasukValue: any = req.query.tahunMasuk;
     const rombelValue: any = req.query.rombel;
     let filterValue = {};
+
+    if (siswaValue != undefined && !isNaN(siswaValue)) {
+        filterValue = { ...filterValue, _id: siswaValue };
+    }
 
     if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
         filterValue = { ...filterValue, id_tahun_masuk: tahunMasukValue };
@@ -111,6 +116,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        siswaValue,
         tahunMasukValue,
         tahunMasukArray: await TahunMasuk.find(),
         rombelValue,
@@ -253,18 +259,21 @@ pelajarSiswaRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
+        const siswaValue = req.query.siswa;
+
         const dataExist = await Siswa.exists({ _id: id });
 
         if (dataExist != null) {
             const itemObject = await Siswa.findOne({ _id: id });
 
-            res.render("pages/update", {
+            res.render("pages/pelajar/siswa/update", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
                 toastText: req.query.text,
                 id,
+                siswaValue,
                 detailedInputArray: [
                     {
                         id: 1,
@@ -400,6 +409,8 @@ pelajarSiswaRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
+        const siswaValue = req.query.siswa;
+
         const dataExist = await Siswa.exists({ _id: id });
 
         if (dataExist != null) {
@@ -409,13 +420,14 @@ pelajarSiswaRouter
                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
                 .populate({ path: "id_rombel", select: "rombel", model: Rombel });
 
-            res.render("pages/delete", {
+            res.render("pages/pelajar/siswa/delete", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
                 toastText: req.query.text,
                 id,
+                siswaValue,
                 detailedInputArray: [
                     {
                         id: 1,
