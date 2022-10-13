@@ -62,11 +62,11 @@
                                                         rombelArray.forEach(rombelObject => { 
                                                             if (rombelObject._id == rombelValue) { 
                                                     %> 
-                                                                <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
+                                                                <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %> - <%= rombelObject.id_tahun_rombel.tahun_rombel %></option>
                                                         <% 
                                                             } else if (rombelObject._id != rombelValue) {
                                                         %>
-                                                                <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
+                                                                <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %> - <%= rombelObject.id_tahun_rombel.tahun_rombel %></option>
                                                     <% 
                                                             }
                                                         });

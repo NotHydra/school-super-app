@@ -4,7 +4,7 @@ import { headTitle } from ".";
 
 import { localMoment } from "../../utility";
 
-import { Alumni, JenisKelamin, Rombel, Siswa, TahunMasuk, TempatLahir } from "../../models";
+import { Alumni, JenisKelamin, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
 
 export const pelajarSiswaRouter = Router();
 
@@ -82,6 +82,15 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         .populate({ path: "id_rombel", select: "rombel", model: Rombel })
         .sort({ nisn: -1 });
 
+    const rombelArray = await Rombel.find()
+        .select("rombel id_tahun_rombel")
+        .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
+        .sort({ rombel: 1 });
+
+    rombelArray.sort((a: any, b: any) => {
+        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+    });
+
     const documentCount = await Siswa.countDocuments();
     res.render("pages/pelajar/siswa/table", {
         headTitle,
@@ -126,7 +135,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         tahunMasukValue,
         tahunMasukArray: await TahunMasuk.find(),
         rombelValue,
-        rombelArray: await Rombel.find(),
+        rombelArray,
     });
 });
 
