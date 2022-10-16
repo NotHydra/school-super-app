@@ -2,27 +2,27 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Buku, Kategori } from "../../models";
+import { Buku, Penerbit } from "../../models";
 
-export const perpustakaanKategoriRouter = Router();
+export const perpustakaanPenerbitRouter = Router();
 
-const navActive = [6, 4];
+const navActive = [6, 6];
 const tableAttributeArray = [
     {
         id: 1,
-        label: "Kategori",
-        value: ["kategori"],
+        label: "Penerbit",
+        value: ["penerbit"],
         type: "text",
     },
 ];
 
-perpustakaanKategoriRouter.use(express.static("sources/public"));
-perpustakaanKategoriRouter.use(express.urlencoded({ extended: false }));
+perpustakaanPenerbitRouter.use(express.static("sources/public"));
+perpustakaanPenerbitRouter.use(express.urlencoded({ extended: false }));
 
-perpustakaanKategoriRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Kategori.find().sort({ kategori: 1 });
+perpustakaanPenerbitRouter.route("/").get(async (req, res) => {
+    const tableItemArray = await Penerbit.find().sort({ penerbit: 1 });
 
-    const documentCount = await Kategori.countDocuments();
+    const documentCount = await Penerbit.countDocuments();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -35,21 +35,21 @@ perpustakaanKategoriRouter.route("/").get(async (req, res) => {
                 cardItemChild: [
                     {
                         id: 1,
-                        title: "Kategori",
-                        icon: "tag",
+                        title: "Penerbit",
+                        icon: "globe",
                         value: documentCount,
                     },
                     {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Kategori.findOne().sort({ dibuat: -1 })).kategori : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Penerbit.findOne().sort({ dibuat: -1 })).penerbit : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Kategori.findOne().sort({ diubah: -1 })).kategori : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Penerbit.findOne().sort({ diubah: -1 })).penerbit : "Tidak Ada",
                     },
                 ],
             },
@@ -59,7 +59,7 @@ perpustakaanKategoriRouter.route("/").get(async (req, res) => {
     });
 });
 
-perpustakaanKategoriRouter
+perpustakaanPenerbitRouter
     .route("/create")
     .get(async (req, res) => {
         res.render("pages/create", {
@@ -71,11 +71,11 @@ perpustakaanKategoriRouter
             detailedInputArray: [
                 {
                     id: 1,
-                    name: "kategori",
-                    display: "Kategori",
+                    name: "penerbit",
+                    display: "Penerbit",
                     type: "text",
                     value: null,
-                    placeholder: "Input kategori disini",
+                    placeholder: "Input penerbit disini",
                     enable: true,
                 },
             ],
@@ -92,8 +92,8 @@ perpustakaanKategoriRouter
         });
 
         if (!inputArray.includes(undefined)) {
-            const itemObject = new Kategori({
-                _id: (await Kategori.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+            const itemObject = new Penerbit({
+                _id: (await Penerbit.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -112,14 +112,14 @@ perpustakaanKategoriRouter
         }
     });
 
-perpustakaanKategoriRouter
+perpustakaanPenerbitRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Kategori.findOne({ _id: id });
+            const itemObject = await Penerbit.findOne({ _id: id });
 
             res.render("pages/update", {
                 headTitle,
@@ -131,11 +131,11 @@ perpustakaanKategoriRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "kategori",
-                        display: "Kategori",
+                        name: "penerbit",
+                        display: "Penerbit",
                         type: "text",
-                        value: itemObject.kategori,
-                        placeholder: "Input kategori disini",
+                        value: itemObject.penerbit,
+                        placeholder: "Input penerbit disini",
                         enable: true,
                     },
                 ],
@@ -146,7 +146,7 @@ perpustakaanKategoriRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id });
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -160,7 +160,7 @@ perpustakaanKategoriRouter
 
             if (!inputArray.includes(undefined)) {
                 try {
-                    await Kategori.updateOne(
+                    await Penerbit.updateOne(
                         { _id: id },
                         {
                             ...attributeArray,
@@ -180,14 +180,14 @@ perpustakaanKategoriRouter
         }
     });
 
-perpustakaanKategoriRouter
+perpustakaanPenerbitRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id });
 
         if (dataExist != null) {
-            const itemObject = await Kategori.findOne({ _id: id });
+            const itemObject = await Penerbit.findOne({ _id: id });
 
             res.render("pages/delete", {
                 headTitle,
@@ -199,11 +199,11 @@ perpustakaanKategoriRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "kategori",
-                        display: "Kategori",
+                        name: "penerbit",
+                        display: "Penerbit",
                         type: "text",
-                        value: itemObject.kategori,
-                        placeholder: "Input kategori disini",
+                        value: itemObject.penerbit,
+                        placeholder: "Input penerbit disini",
                         enable: false,
                     },
                 ],
@@ -214,14 +214,14 @@ perpustakaanKategoriRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = await Buku.exists({ id_kategori: id });
+            const dataIsUsed = await Buku.exists({ id_penerbit: id });
 
             if (dataIsUsed == null) {
                 try {
-                    await Kategori.deleteOne({ _id: id });
+                    await Penerbit.deleteOne({ _id: id });
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);

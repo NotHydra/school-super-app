@@ -20,7 +20,7 @@ perpustakaanPenulisRouter.use(express.static("sources/public"));
 perpustakaanPenulisRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanPenulisRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Penulis.find().sort({ tahun_rombel: 1 });
+    const tableItemArray = await Penulis.find().sort({ penulis: 1 });
 
     const documentCount = await Penulis.countDocuments();
     res.render("pages/table", {
