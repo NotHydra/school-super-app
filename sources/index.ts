@@ -29,6 +29,7 @@ import { pelajarRouter } from "./routes/pelajar";
 import { lulusanRouter } from "./routes/lulusan";
 import { penilaianRouter } from "./routes/penilaian";
 import { instansiRouter } from "./routes/instansi";
+import { perpustakaanRouter } from "./routes/perpustakaan";
 import { dataUmumRouter } from "./routes/data-umum";
 
 const app: Express = express();
@@ -84,6 +85,7 @@ app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
 app.use("/penilaian", penilaianRouter);
 app.use("/instansi", instansiRouter);
+app.use("/perpustakaan", perpustakaanRouter);
 app.use("/data-umum", dataUmumRouter);
 
 mongoose.connect(mongoDBURI, () => {
