@@ -41,7 +41,7 @@ export const bukuSchema = new mongoose.Schema({
         required: true,
     },
     sinopsis: {
-        type: Text,
+        type: String,
         required: true,
     },
 });
