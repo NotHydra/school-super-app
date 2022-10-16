@@ -63,6 +63,7 @@ export const rombelSchema = new mongoose.Schema({
     },
     semester: {
         type: Array,
+        required: true,
         ref: "rombel_semester",
     },
     dibuat: {

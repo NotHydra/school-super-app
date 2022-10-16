@@ -16,6 +16,14 @@ import { tingkatSchema } from "./instansi/tingkat";
 import { jurusanSchema } from "./instansi/jurusan";
 import { tahunRombelSchema } from "./instansi/tahun-rombel";
 
+import { anggotaSchema } from "./perpustakaan/anggota";
+import { petugasSchema } from "./perpustakaan/petugas";
+import { bukuSchema } from "./perpustakaan/buku";
+import { kategoriSchema } from "./perpustakaan/kategori";
+import { penulisSchema } from "./perpustakaan/penulis";
+import { penerbitSchema } from "./perpustakaan/penerbit";
+import { peminjamanSchema } from "./perpustakaan/peminjaman";
+
 import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
@@ -43,6 +51,15 @@ export const RombelMataPelajaran = instansiDatabase.model("rombel_mata_pelajaran
 export const Tingkat = instansiDatabase.model("tingkat", tingkatSchema, "tingkat");
 export const Jurusan = instansiDatabase.model("jurusan", jurusanSchema, "jurusan");
 export const TahunRombel = instansiDatabase.model("tahun_rombel", tahunRombelSchema, "tahun_rombel");
+
+const perpustakaanDatabase = mongoose.connection.useDb("perpustakaan");
+export const Anggota = instansiDatabase.model("anggota", anggotaSchema, "anggota");
+export const Petugas = instansiDatabase.model("petugas", petugasSchema, "petugas");
+export const Buku = instansiDatabase.model("buku", bukuSchema, "buku");
+export const Kategori = instansiDatabase.model("kategori", kategoriSchema, "kategori");
+export const Penulis = instansiDatabase.model("penulis", penulisSchema, "penulis");
+export const Penerbit = instansiDatabase.model("penerbit", penerbitSchema, "penerbit");
+export const Peminjaman = instansiDatabase.model("peminjaman", peminjamanSchema, "peminjaman");
 
 const dataUmumDatabase = mongoose.connection.useDb("data-umum");
 export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSchema, "tempat_lahir");
