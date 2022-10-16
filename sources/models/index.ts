@@ -22,7 +22,7 @@ import { bukuSchema } from "./perpustakaan/buku";
 import { kategoriSchema } from "./perpustakaan/kategori";
 import { penulisSchema } from "./perpustakaan/penulis";
 import { penerbitSchema } from "./perpustakaan/penerbit";
-import { peminjamanSchema } from "./perpustakaan/peminjaman";
+import { peminjamanBukuSchema, peminjamanSchema } from "./perpustakaan/peminjaman";
 
 import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
@@ -60,6 +60,7 @@ export const Kategori = perpustakaanDatabase.model("kategori", kategoriSchema, "
 export const Penulis = perpustakaanDatabase.model("penulis", penulisSchema, "penulis");
 export const Penerbit = perpustakaanDatabase.model("penerbit", penerbitSchema, "penerbit");
 export const Peminjaman = perpustakaanDatabase.model("peminjaman", peminjamanSchema, "peminjaman");
+export const PeminjamanBuku = perpustakaanDatabase.model("peminjaman_buku", peminjamanBukuSchema, "peminjaman_buku");
 
 const dataUmumDatabase = mongoose.connection.useDb("data-umum");
 export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSchema, "tempat_lahir");
