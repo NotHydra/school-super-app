@@ -168,6 +168,61 @@ export const pageItemArray: pageItemType[] = [
     },
     {
         id: 7,
+        title: "Perpustakaan",
+        icon: "book-open",
+        child: [
+            {
+                id: 1,
+                title: "Utama (WIP)",
+                link: "perpustakaan",
+                icon: "circle",
+            },
+            {
+                id: 2,
+                title: "Anggota",
+                link: "perpustakaan/anggota",
+                icon: "user",
+            },
+            {
+                id: 3,
+                title: "Petugas",
+                link: "perpustakaan/petugas",
+                icon: "user-tie",
+            },
+            {
+                id: 4,
+                title: "Buku",
+                link: "perpustakaan/buku",
+                icon: "book",
+            },
+            {
+                id: 5,
+                title: "Kategori",
+                link: "perpustakaan/kategori",
+                icon: "tag",
+            },
+            {
+                id: 6,
+                title: "Penulis",
+                link: "perpustakaan/penulis",
+                icon: "pen-nib",
+            },
+            {
+                id: 7,
+                title: "Penerbit",
+                link: "perpustakaan/penerbit",
+                icon: "globe",
+            },
+            {
+                id: 8,
+                title: "Peminjaman",
+                link: "perpustakaan/peminjaman",
+                icon: "list",
+            },
+        ],
+    },
+    {
+        id: 8,
         title: "Data Umum",
         icon: "globe",
         child: [
