@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { perpustakaanAnggotaRouter } from "./anggota";
 import { perpustakaanPetugasRouter } from "./petugas";
+import { perpustakaanBukuRouter } from "./buku";
 import { perpustakaanKategoriRouter } from "./kategori";
 import { perpustakaanPenulisRouter } from "./penulis";
 import { perpustakaanPenerbitRouter } from "./penerbit";
@@ -20,6 +21,7 @@ perpustakaanRouter.get("/", async (req, res) => {
 
 perpustakaanRouter.use("/anggota", perpustakaanAnggotaRouter);
 perpustakaanRouter.use("/petugas", perpustakaanPetugasRouter);
+perpustakaanRouter.use("/buku", perpustakaanBukuRouter);
 perpustakaanRouter.use("/kategori", perpustakaanKategoriRouter);
 perpustakaanRouter.use("/penulis", perpustakaanPenulisRouter);
 perpustakaanRouter.use("/penerbit", perpustakaanPenerbitRouter);
