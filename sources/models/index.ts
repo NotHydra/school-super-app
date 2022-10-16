@@ -53,13 +53,13 @@ export const Jurusan = instansiDatabase.model("jurusan", jurusanSchema, "jurusan
 export const TahunRombel = instansiDatabase.model("tahun_rombel", tahunRombelSchema, "tahun_rombel");
 
 const perpustakaanDatabase = mongoose.connection.useDb("perpustakaan");
-export const Anggota = instansiDatabase.model("anggota", anggotaSchema, "anggota");
-export const Petugas = instansiDatabase.model("petugas", petugasSchema, "petugas");
-export const Buku = instansiDatabase.model("buku", bukuSchema, "buku");
-export const Kategori = instansiDatabase.model("kategori", kategoriSchema, "kategori");
-export const Penulis = instansiDatabase.model("penulis", penulisSchema, "penulis");
-export const Penerbit = instansiDatabase.model("penerbit", penerbitSchema, "penerbit");
-export const Peminjaman = instansiDatabase.model("peminjaman", peminjamanSchema, "peminjaman");
+export const Anggota = perpustakaanDatabase.model("anggota", anggotaSchema, "anggota");
+export const Petugas = perpustakaanDatabase.model("petugas", petugasSchema, "petugas");
+export const Buku = perpustakaanDatabase.model("buku", bukuSchema, "buku");
+export const Kategori = perpustakaanDatabase.model("kategori", kategoriSchema, "kategori");
+export const Penulis = perpustakaanDatabase.model("penulis", penulisSchema, "penulis");
+export const Penerbit = perpustakaanDatabase.model("penerbit", penerbitSchema, "penerbit");
+export const Peminjaman = perpustakaanDatabase.model("peminjaman", peminjamanSchema, "peminjaman");
 
 const dataUmumDatabase = mongoose.connection.useDb("data-umum");
 export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSchema, "tempat_lahir");
