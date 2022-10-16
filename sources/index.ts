@@ -6,12 +6,20 @@ import { localMoment } from "./utility";
 
 import {
     Alumni,
+    Anggota,
+    Buku,
     Guru,
     Jabatan,
     JenisKelamin,
     Jurusan,
+    Kategori,
     MataPelajaran,
+    Peminjaman,
+    PeminjamanBuku,
     Pendidikan,
+    Penerbit,
+    Penulis,
+    Petugas,
     Rombel,
     RombelMataPelajaran,
     RombelSemester,
@@ -76,6 +84,15 @@ app.get("/reset-database", async (req, res) => {
     await JenisKelamin.deleteMany();
     await Universitas.deleteMany();
     await Pendidikan.deleteMany();
+
+    await Anggota.deleteMany();
+    await Petugas.deleteMany();
+    await Buku.deleteMany();
+    await Kategori.deleteMany();
+    await Penulis.deleteMany();
+    await Penerbit.deleteMany();
+    await Peminjaman.deleteMany();
+    await PeminjamanBuku.deleteMany();
 
     res.send("done");
 });
