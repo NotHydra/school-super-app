@@ -93,7 +93,7 @@ instansiJurusanRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Jurusan({
-                _id: (await Jurusan.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await Jurusan.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

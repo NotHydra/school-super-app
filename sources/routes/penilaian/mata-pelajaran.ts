@@ -139,7 +139,7 @@ instansiMataPelajaranRouter
                 if (bobotKeterampilan >= 0 && bobotKeterampilan <= 100) {
                     if (bobotPengetahuan + bobotKeterampilan == 100) {
                         const itemObject = new MataPelajaran({
-                            _id: (await MataPelajaran.findOne().sort({ _id: -1 }))._id + 1,
+                            _id: (await MataPelajaran.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                             ...attributeArray,
 

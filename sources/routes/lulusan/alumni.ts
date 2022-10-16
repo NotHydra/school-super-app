@@ -261,7 +261,7 @@ lulusanAlumniRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Alumni({
-                _id: (await Alumni.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await Alumni.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

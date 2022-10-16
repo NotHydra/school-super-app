@@ -93,7 +93,7 @@ instansiTahunRombelRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TahunRombel({
-                _id: (await TahunRombel.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await TahunRombel.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

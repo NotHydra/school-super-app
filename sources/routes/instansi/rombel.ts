@@ -217,7 +217,7 @@ instansiRombelRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Rombel({
-                _id: (await Rombel.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await Rombel.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

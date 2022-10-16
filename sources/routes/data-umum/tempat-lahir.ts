@@ -93,7 +93,7 @@ dataUmumTempatLahirRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TempatLahir({
-                _id: (await TempatLahir.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await TempatLahir.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

@@ -118,7 +118,7 @@ dataUmumPendidikanRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Pendidikan({
-                _id: (await Pendidikan.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await Pendidikan.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

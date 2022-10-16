@@ -93,7 +93,7 @@ instansiTingkatRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Tingkat({
-                _id: (await Tingkat.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await Tingkat.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 

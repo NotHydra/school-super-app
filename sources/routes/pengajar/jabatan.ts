@@ -93,7 +93,7 @@ pengajarJabatanRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Jabatan({
-                _id: (await Jabatan.findOne().sort({ _id: -1 }))._id + 1,
+                _id: (await Jabatan.findOne().sort({ _id: -1 }))?._id + 1 || 1,
 
                 ...attributeArray,
 
