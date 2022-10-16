@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { perpustakaanAnggotaRouter } from "./anggota";
+import { perpustakaanPetugasRouter } from "./petugas";
 
 export const perpustakaanRouter = Router();
 export const headTitle = "Perpustakaan";
@@ -15,3 +16,4 @@ perpustakaanRouter.get("/", async (req, res) => {
 });
 
 perpustakaanRouter.use("/anggota", perpustakaanAnggotaRouter);
+perpustakaanRouter.use("/petugas", perpustakaanPetugasRouter);
