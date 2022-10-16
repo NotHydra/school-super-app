@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Guru, Siswa, TempatLahir } from "../../models";
+import { Guru, Petugas, Siswa, TempatLahir } from "../../models";
 
 export const dataUmumTempatLahirRouter = Router();
 
@@ -217,7 +217,8 @@ dataUmumTempatLahirRouter
         const dataExist = await TempatLahir.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = (await Siswa.exists({ id_tempat_lahir: id })) || (await Guru.exists({ id_tempat_lahir: id }));
+            const dataIsUsed =
+                (await Siswa.exists({ id_tempat_lahir: id })) || (await Guru.exists({ id_tempat_lahir: id })) || (await Petugas.exists({ id_tempat_lahir: id }));
 
             if (dataIsUsed == null) {
                 try {

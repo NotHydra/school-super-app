@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Guru, JenisKelamin, Siswa } from "../../models";
+import { Guru, JenisKelamin, Petugas, Siswa } from "../../models";
 
 export const dataUmumJenisKelaminRouter = Router();
 
@@ -217,7 +217,10 @@ dataUmumJenisKelaminRouter
         const dataExist = await JenisKelamin.exists({ _id: id });
 
         if (dataExist != null) {
-            const dataIsUsed = (await Siswa.exists({ id_jenis_kelamin: id })) || (await Guru.exists({ id_jenis_kelamin: id }));
+            const dataIsUsed =
+                (await Siswa.exists({ id_jenis_kelamin: id })) ||
+                (await Guru.exists({ id_jenis_kelamin: id })) ||
+                (await Petugas.exists({ id_jenis_kelamin: id }));
 
             if (dataIsUsed == null) {
                 try {
