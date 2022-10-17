@@ -6,6 +6,7 @@ import { perpustakaanBukuRouter } from "./buku";
 import { perpustakaanKategoriRouter } from "./kategori";
 import { perpustakaanPenulisRouter } from "./penulis";
 import { perpustakaanPenerbitRouter } from "./penerbit";
+import { perpustakaanPeminjamanRouter } from "./peminjaman";
 
 export const perpustakaanRouter = Router();
 export const headTitle = "Perpustakaan";
@@ -25,3 +26,4 @@ perpustakaanRouter.use("/buku", perpustakaanBukuRouter);
 perpustakaanRouter.use("/kategori", perpustakaanKategoriRouter);
 perpustakaanRouter.use("/penulis", perpustakaanPenulisRouter);
 perpustakaanRouter.use("/penerbit", perpustakaanPenerbitRouter);
+perpustakaanRouter.use("/peminjaman", perpustakaanPeminjamanRouter);

@@ -3,27 +3,26 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <%- include("./../partials/head.ejs"); -%> 
-        <%- include("./../partials/data-table-head.ejs"); -%>
-        <%- include("./../partials/sweet-alert-head.ejs"); %>
+        <%- include("./../../../partials/head.ejs"); -%>
+        <%- include("./../../../partials/sweet-alert-head.ejs"); %>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
         <div class="wrapper">
-            <%- include("./../partials/nav.ejs"); -%> 
-            <%- include("./../partials/side.ejs"); -%>
+            <%- include("./../../../partials/nav.ejs"); -%> 
+            <%- include("./../../../partials/side.ejs"); -%>
 
             <div class="content-wrapper">
                 <div class="content">
                     <div class="container-fluid">
-                        <%- include("./../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
-                        <%- include("./../partials/card-item.ejs"); -%>
+                        <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
+                        <%- include("./../../../partials/card-item.ejs"); -%>
                         
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-body">
-                                        <table id="main-table" class="table table-bordered table-striped">
+                                    <div class="card-body" style="overflow-x: auto;">
+                                        <table id="main-table" class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
                                                     <th class="th-custom export">No.</th>
@@ -45,7 +44,7 @@
                                                         tableItemArray.forEach(tableItemObject => { 
                                                             number += 1;
                                                 %>
-                                                            <tr>
+                                                            <tr data-widget="expandable-table" aria-expanded="false">
                                                                 <td class="td-custom"><%= number %></td>
 
                                                                 <% tableAttributeArray.forEach(tableAttributeObject => {
@@ -75,6 +74,33 @@
                                                                 <td class="td-custom">
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr class="expandable-body">
+                                                                <td colspan="11">
+                                                                    <div>
+                                                                        <table class="table table-bordered table-striped">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class="th-custom">No.</th>    
+                                                                                    <th class="th-custom">Kode</th>
+                                                                                    <th class="th-custom">Judul</th>
+                                                                                    <th class="th-custom">Kuantitas</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <% tableItemObject.buku.forEach((bukuObject, bukuIndex) => { %>
+                                                                                    <tr>
+                                                                                        <td class="td-custom"><%= bukuIndex += 1 %></td>
+                                                                                        <td class="td-custom"><%= bukuObject.id_buku.kode %></td>
+                                                                                        <td class="td-custom"><%= bukuObject.id_buku.judul %></td>
+                                                                                        <td class="td-custom"><%= bukuObject.kuantitas %></td>
+                                                                                    </tr>
+                                                                                <% }); %>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                 <% 
@@ -111,12 +137,11 @@
                 </div>
             </div>
 
-            <%- include("./../partials/footer.ejs"); -%>
+            <%- include("./../../../partials/footer.ejs"); -%>
         </div>
 
-        <%- include("./../partials/script.ejs"); -%>
+        <%- include("./../../../partials/script.ejs"); -%>
     </body>
 
-    <%- include("./../partials/data-table-script.ejs"); -%>
-    <%- include("./../partials/toast-script.ejs"); -%>
+    <%- include("./../../../partials/toast-script.ejs"); -%>
 </html>
