@@ -135,7 +135,10 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Ubah</a>
-                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Hapus</a>
+
+                                                                    <% if (siswaValue == undefined) { %>
+                                                                        <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Hapus</a>
+                                                                    <% } %>
                                                                 </td>
                                                             </tr>
                                                 <% 
