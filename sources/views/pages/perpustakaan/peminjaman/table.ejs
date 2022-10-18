@@ -4,6 +4,7 @@
 <html lang="en">
     <head>
         <%- include("./../../../partials/head.ejs"); -%>
+        <%- include("./../../../partials/data-table-head.ejs"); -%>
         <%- include("./../../../partials/sweet-alert-head.ejs"); %>
     </head>
 
@@ -21,20 +22,27 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-body" style="overflow-x: auto;">
-                                        <table id="main-table" class="table table-bordered table-striped table-sm">
+                                    <div class="card-body">
+                                        <table id="main-table" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th class="th-custom export">No.</th>
+                                                    <th class="th-custom export" rowspan="2">No.</th>
+                                                    <th class="th-custom export" colspan="3">Buku</th>
 
                                                     <% tableAttributeArray.forEach(tableAttributeObject => { %>
-                                                        <th class="th-custom export"><%= tableAttributeObject.label %></th>
+                                                        <th class="th-custom export" rowspan="2"><%= tableAttributeObject.label %></th>
                                                     <% }); %>
 
-                                                    <th class="th-custom export">Dibuat</th>
-                                                    <th class="th-custom export">Diubah</th>
-                                                    <th class="th-custom">Aksi</th>
+                                                    <th class="th-custom export" rowspan="2">Dibuat</th>
+                                                    <th class="th-custom export" rowspan="2">Diubah</th>
+                                                    <th class="th-custom" rowspan="2">Aksi</th>
                                                 </tr>
+
+                                                <tr>
+                                                    <th class="th-custom export">Kode</th>
+                                                    <th class="th-custom export">Judul</th>
+                                                    <th class="th-custom export">Kuantitas</th>
+                                                </tr>     
                                             </thead>
 
                                             <tbody>
@@ -44,9 +52,51 @@
                                                         tableItemArray.forEach(tableItemObject => { 
                                                             number += 1;
                                                 %>
-                                                            <tr data-widget="expandable-table" aria-expanded="false">
-                                                                <td class="td-custom"><%= number %></td>
+                                                            <tr>
+                                                                <td class="td-custom"><%= number %></td>            
+                                                                                                                
+                                                                <td class="p-0 m-0">
+                                                                    <div>
+                                                                        <table class="table table-bordered table-striped p-0 m-0" style="border: 0px solid !important;">
+                                                                            <tbody>
+                                                                                <% tableItemObject.buku.forEach((bukuObject) => { %>
+                                                                                    <tr>
+                                                                                        <td class="td-custom" style="border-top: 0px !important; border-right: 0px !important;"><%= bukuObject.id_buku.kode %></td>
+                                                                                    </tr>
+                                                                                <% }); %>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </td>
 
+                                                                <td class="p-0 m-0">
+                                                                    <div>
+                                                                        <table class="table table-bordered table-striped p-0 m-0" style="border: 0px solid !important;">
+                                                                            <tbody>
+                                                                                <% tableItemObject.buku.forEach((bukuObject) => { %>
+                                                                                    <tr>
+                                                                                        <td class="td-custom" style="border-top: 0px !important; border-right: 0px !important;"><%= bukuObject.id_buku.judul %></td>
+                                                                                    </tr>
+                                                                                <% }); %>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td class="p-0 m-0">
+                                                                    <div>
+                                                                        <table class="table table-bordered table-striped p-0 m-0" style="border: 0px solid !important;">
+                                                                            <tbody>
+                                                                                <% tableItemObject.buku.forEach((bukuObject) => { %>
+                                                                                    <tr>
+                                                                                        <td class="td-custom" style="border-top: 0px !important; border-right: 0px !important;"><%= bukuObject.kuantitas %></td>
+                                                                                    </tr>
+                                                                                <% }); %>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </td>
+                                                                
                                                                 <% tableAttributeArray.forEach(tableAttributeObject => {
                                                                         let tableItemValue = "tableItemObject";
 
@@ -76,50 +126,30 @@
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>
                                                             </tr>
-
-                                                            <tr class="expandable-body">
-                                                                <td colspan="11">
-                                                                    <div>
-                                                                        <table class="table table-bordered table-striped">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th class="th-custom">No.</th>    
-                                                                                    <th class="th-custom">Kode</th>
-                                                                                    <th class="th-custom">Judul</th>
-                                                                                    <th class="th-custom">Kuantitas</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <% tableItemObject.buku.forEach((bukuObject, bukuIndex) => { %>
-                                                                                    <tr>
-                                                                                        <td class="td-custom"><%= bukuIndex += 1 %></td>
-                                                                                        <td class="td-custom"><%= bukuObject.id_buku.kode %></td>
-                                                                                        <td class="td-custom"><%= bukuObject.id_buku.judul %></td>
-                                                                                        <td class="td-custom"><%= bukuObject.kuantitas %></td>
-                                                                                    </tr>
-                                                                                <% }); %>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
                                                 <% 
                                                         });
-                                                    }
+                                                    } 
                                                 %>
                                             </tbody>
                                             
                                             <tfoot>
                                                 <tr>
-                                                    <th class="th-custom">No.</th>
+                                                    <th class="th-custom export" rowspan="2">No.</th>
+                                                    <th class="th-custom export">Kode</th>
+                                                    <th class="th-custom export">Judul</th>
+                                                    <th class="th-custom export">Kuantitas</td>
 
                                                     <% tableAttributeArray.forEach(tableAttributeObject => { %>
-                                                        <th class="th-custom"><%= tableAttributeObject.label %></th>
+                                                        <th class="th-custom export" rowspan="2"><%= tableAttributeObject.label %></th>
                                                     <% }); %>
 
-                                                    <th class="th-custom">Dibuat</th>
-                                                    <th class="th-custom">Diubah</th>
-                                                    <th class="th-custom">Aksi</th>
+                                                    <th class="th-custom export" rowspan="2">Dibuat</th>
+                                                    <th class="th-custom export" rowspan="2">Diubah</th>
+                                                    <th class="th-custom" rowspan="2">Aksi</th>
+                                                </tr>
+
+                                                <tr>
+                                                    <th class="th-custom export" colspan="3">Buku</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -143,5 +173,6 @@
         <%- include("./../../../partials/script.ejs"); -%>
     </body>
 
+    <%- include("./../../../partials/data-table-script.ejs"); -%>
     <%- include("./../../../partials/toast-script.ejs"); -%>
 </html>
