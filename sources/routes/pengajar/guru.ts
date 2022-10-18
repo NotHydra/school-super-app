@@ -70,7 +70,9 @@ pengajarGuruRouter.use(express.static("sources/public"));
 pengajarGuruRouter.use(express.urlencoded({ extended: false }));
 
 pengajarGuruRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Guru.find()
+    const guruValue: any = req.query.guru;
+
+    const tableItemArray = await Guru.find(guruValue != undefined && !isNaN(guruValue) ? { _id: guruValue } : {})
         .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
         .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
         .populate({ path: "id_jabatan", select: "jabatan", model: Jabatan })
@@ -79,7 +81,7 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
         .sort({ nip: 1 });
 
     const documentCount = await Guru.countDocuments();
-    res.render("pages/table", {
+    res.render("pages/pengajar/guru/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -122,6 +124,7 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        guruValue,
     });
 });
 
@@ -283,12 +286,15 @@ pengajarGuruRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
+        const guruValue: any = req.query.guru;
+        const guruString: any = guruValue != undefined ? `&guru=${guruValue}` : "";
+
         const dataExist = await Guru.exists({ _id: id });
 
         if (dataExist != null) {
             const itemObject = await Guru.findOne({ _id: id });
 
-            res.render("pages/update", {
+            res.render("pages/pengajar/guru/update", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
@@ -403,14 +409,18 @@ pengajarGuruRouter
                         enable: true,
                     },
                 ],
+                guruValue,
             });
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${guruString}`);
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
         const dataExist = await Guru.exists({ _id: id });
+
+        const guruValue: any = req.query.guru;
+        const guruString: any = guruValue != undefined ? `&guru=${guruValue}` : "";
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -433,19 +443,19 @@ pengajarGuruRouter
                         }
                     );
 
-                    res.redirect(`update?id=${id}&response=success`);
+                    res.redirect(`update?id=${id}&response=success${guruString}`);
                 } catch (error: any) {
                     if (error.code == 11000) {
-                        res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan`);
+                        res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${guruString}`);
                     } else {
-                        res.redirect(`update?id=${id}&response=error`);
+                        res.redirect(`update?id=${id}&response=error${guruString}`);
                     }
                 }
             } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${guruString}`);
             }
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${guruString}`);
         }
     });
 
