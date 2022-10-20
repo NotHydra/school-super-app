@@ -2,9 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { localMoment } from "../../utility";
-
-import { Anggota, Buku, JenisKelamin, Peminjaman, Petugas, Rombel, Siswa, TahunMasuk, TempatLahir } from "../../models";
+import { Anggota, Buku, Kategori, Peminjaman, Penerbit, Penulis, Petugas } from "../../models";
 
 export const perpustakaanPeminjamanRouter = Router();
 
@@ -36,18 +34,6 @@ const tableAttributeArray = [
     },
     {
         id: 5,
-        label: "Tanggal Pengembalian",
-        value: ["tanggal_pengembalian"],
-        type: "date",
-    },
-    {
-        id: 6,
-        label: "Denda",
-        value: ["denda"],
-        type: "text",
-    },
-    {
-        id: 7,
         label: "Keterangan",
         value: ["keterangan"],
         type: "text",
@@ -55,7 +41,7 @@ const tableAttributeArray = [
 ];
 
 perpustakaanPeminjamanRouter.use(express.static("sources/public"));
-perpustakaanPeminjamanRouter.use(express.urlencoded({ extended: false }));
+perpustakaanPeminjamanRouter.use(express.urlencoded({ extended: true }));
 
 perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
     let tableItemArray: any = await Peminjaman.find()
@@ -78,7 +64,7 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
                 tableItemObject.buku.map(async (bukuObject: any) => {
                     return {
                         _id: bukuObject._id,
-                        id_buku: (await Buku.findOne({ _id: bukuObject.id_buku }).select("kode judul")).toObject(),
+                        id_buku: await Buku.findOne({ _id: bukuObject.id_buku }).select("kode judul").lean(),
                         kuantitas: bukuObject.kuantitas,
                     };
                 })
@@ -147,117 +133,159 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
     });
 });
 
-// perpustakaanPeminjamanRouter
-//     .route("/create")
-//     .get(async (req, res) => {
-//         res.render("pages/create", {
-//             headTitle,
-//             navActive,
-//             toastResponse: req.query.response,
-//             toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
-//             toastText: req.query.text,
-//             detailedInputArray: [
-//                 {
-//                     id: 1,
-//                     name: "nama",
-//                     display: "Nama",
-//                     type: "text",
-//                     value: null,
-//                     placeholder: "Input nama disini",
-//                     enable: true,
-//                 },
-//                 {
-//                     id: 2,
-//                     name: "id_tempat_lahir",
-//                     display: "Tempat Lahir",
-//                     type: "select",
-//                     value: [
-//                         (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 })).map((tempatLahirObject: any) => {
-//                             return [tempatLahirObject._id, tempatLahirObject.tempat_lahir];
-//                         }),
-//                         null,
-//                     ],
-//                     placeholder: "Input tempat lahir disini",
-//                     enable: true,
-//                 },
-//                 {
-//                     id: 3,
-//                     name: "tanggal_lahir",
-//                     display: "Tanggal Lahir",
-//                     type: "date",
-//                     value: null,
-//                     placeholder: "Input tanggal lahir disini",
-//                     enable: true,
-//                 },
-//                 {
-//                     id: 4,
-//                     name: "id_jenis_kelamin",
-//                     display: "Jenis Kelamin",
-//                     type: "select",
-//                     value: [
-//                         (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 })).map((jenisKelaminObject: any) => {
-//                             return [jenisKelaminObject._id, jenisKelaminObject.jenis_kelamin];
-//                         }),
-//                         null,
-//                     ],
-//                     placeholder: "Input jenis kelamin disini",
-//                     enable: true,
-//                 },
-//                 {
-//                     id: 5,
-//                     name: "jabatan",
-//                     display: "Jabatan",
-//                     type: "text",
-//                     value: null,
-//                     placeholder: "Input jabatan disini",
-//                     enable: true,
-//                 },
-//                 {
-//                     id: 6,
-//                     name: "nomor_telepon",
-//                     display: "Nomor Telepon",
-//                     type: "text",
-//                     value: null,
-//                     placeholder: "Input nomor telepon disini",
-//                     enable: true,
-//                 },
-//             ],
-//         });
-//     })
-//     .post(async (req, res) => {
-//         const attributeArray: any = {};
-//         const inputArray = tableAttributeArray.map((tableAttributeObject) => {
-//             const attributeCurrent = tableAttributeObject.value[0];
+perpustakaanPeminjamanRouter
+    .route("/create")
+    .get(async (req, res) => {
+        res.render("pages/perpustakaan/peminjaman/create", {
+            headTitle,
+            navActive,
+            toastResponse: req.query.response,
+            toastTitle: req.query.response == "success" ? "Data Berhasil Dibuat" : "Data Gagal Dibuat",
+            toastText: req.query.text,
+            detailedInputArray: [
+                {
+                    id: 1,
+                    name: "id_anggota",
+                    display: "Anggota",
+                    type: "select",
+                    value: [
+                        (await Anggota.find().select("nomor_anggota").sort({ nomor_anggota: 1 })).map((anggotaObject: any) => {
+                            return [anggotaObject._id, anggotaObject.nomor_anggota];
+                        }),
+                        null,
+                    ],
+                    placeholder: "Input anggota disini",
+                    enable: true,
+                },
+                {
+                    id: 2,
+                    name: "id_petugas",
+                    display: "Petugas",
+                    type: "select",
+                    value: [
+                        (await Petugas.find().select("nama").sort({ nama: 1 })).map((petugasObject: any) => {
+                            return [petugasObject._id, petugasObject.nama];
+                        }),
+                        null,
+                    ],
+                    placeholder: "Input petugas disini",
+                    enable: true,
+                },
+                {
+                    id: 3,
+                    name: "tanggal_peminjaman",
+                    display: "Tanggal Peminjaman",
+                    type: "date",
+                    value: null,
+                    placeholder: "Input tanggal peminjaman disini",
+                    enable: true,
+                },
+                {
+                    id: 4,
+                    name: "durasi_peminjaman",
+                    display: "Durasi Peminjaman",
+                    type: "date",
+                    value: null,
+                    placeholder: "Input durasi peminjaman disini",
+                    enable: true,
+                },
+                {
+                    id: 5,
+                    name: "keterangan",
+                    display: "Keterangan",
+                    type: "text",
+                    value: null,
+                    placeholder: "Input keterangan disini",
+                    enable: true,
+                },
+            ],
+            bukuArray: await Buku.find()
+                .select("kode judul id_kategori id_penulis id_penerbit tahun_terbit stok")
+                .populate({ path: "id_kategori", select: "kategori", model: Kategori })
+                .populate({ path: "id_penulis", select: "penulis", model: Penulis })
+                .populate({ path: "id_penerbit", select: "penerbit", model: Penerbit })
+                .sort({ kode: 1 })
+                .lean(),
+        });
+    })
+    .post(async (req, res) => {
+        const attributeArray: any = {};
+        const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+            const attributeCurrent = tableAttributeObject.value[0];
 
-//             attributeArray[attributeCurrent] = req.body[attributeCurrent];
+            attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-//             return req.body[attributeCurrent];
-//         });
+            return req.body[attributeCurrent];
+        });
 
-//         if (!inputArray.includes(undefined)) {
-//             const itemObject = new Petugas({
-//                 _id: (await Petugas.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+        const bukuArray: any = req.body.bukuArray;
+        const kuantitasArray: any = req.body.kuantitasArray;
 
-//                 ...attributeArray,
+        inputArray.push(bukuArray);
+        inputArray.push(kuantitasArray);
 
-//                 dibuat: new Date(),
-//                 diubah: new Date(),
-//             });
+        if (!inputArray.includes(undefined)) {
+            let kuantitasIsValid = true;
+            let stockIsValid = true;
+            const buku: any = await Promise.all(
+                bukuArray.map(async (bukuValue: any, bukuIndex: number) => {
+                    const idBuku = parseInt(bukuValue);
+                    const kuantitasBuku = parseInt(kuantitasArray[bukuIndex]);
+                    const stockBuku = (await Buku.findOne({ _id: idBuku }).select("stok").lean()).stok;
 
-//             try {
-//                 await itemObject.save();
-//                 res.redirect("create?response=success");
-//             } catch (error: any) {
-//                 if (error.code == 11000) {
-//                     res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
-//                 } else {
-//                     res.redirect("create?response=error");
-//                 }
-//             }
-//         } else if (inputArray.includes(undefined)) {
-//             res.redirect("create?response=error&text=Data tidak lengkap");
-//         }
-//     });
+                    if (kuantitasBuku >= 1) {
+                        if (kuantitasBuku <= stockBuku) {
+                            return { _id: bukuIndex + 1, id_buku: idBuku, kuantitas: kuantitasBuku };
+                        } else if (kuantitasBuku > stockBuku) {
+                            stockIsValid = false;
+                        }
+                    } else if (kuantitasBuku < 1) {
+                        kuantitasIsValid = false;
+                    }
+                })
+            );
+
+            if (kuantitasIsValid) {
+                if (stockIsValid) {
+                    const itemObject = new Peminjaman({
+                        _id: (await Peminjaman.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+
+                        id_anggota: attributeArray.id_anggota,
+                        id_petugas: attributeArray.id_petugas,
+                        buku,
+                        tanggal_peminjaman: attributeArray.tanggal_peminjaman,
+                        durasi_peminjaman: attributeArray.durasi_peminjaman,
+                        keterangan: attributeArray.keterangan,
+
+                        dibuat: new Date(),
+                        diubah: new Date(),
+                    });
+
+                    try {
+                        await itemObject.save();
+
+                        buku.forEach(async (bukuObject: any) => {
+                            const currentStockBuku = (await Buku.findOne({ _id: bukuObject._id }).select("stok").lean()).stok;
+
+                            const calculatedStockBuku: number = currentStockBuku - bukuObject.kuantitas;
+
+                            await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() });
+                        });
+
+                        res.redirect("create?response=success");
+                    } catch (error: any) {
+                        res.redirect("create?response=error");
+                    }
+                } else if (!stockIsValid) {
+                    res.redirect("create?response=error&text=Stok buku tidak cukup");
+                }
+            } else if (!kuantitasIsValid) {
+                res.redirect("create?response=error&text=Kuantitas tidak valid");
+            }
+        } else if (inputArray.includes(undefined)) {
+            res.redirect("create?response=error&text=Data tidak lengkap");
+        }
+    });
 
 // perpustakaanPeminjamanRouter
 //     .route("/update")

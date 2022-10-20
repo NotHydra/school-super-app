@@ -1,0 +1,186 @@
+<% const pageItemCurrent = pageItemArray[navActive[0]].child[navActive[1]]; %>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include("./../../../partials/head.ejs"); -%>
+        <%- include("./../../../partials/data-table-head.ejs"); -%>
+        <%- include("./../../../partials/select-head.ejs"); -%>
+        <%- include("./../../../partials/sweet-alert-head.ejs"); -%>
+        <%- include("./../../../partials/confirm-modal.ejs"); -%>
+    </head>
+
+    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
+        <div class="wrapper">
+            <%- include("./../../../partials/nav.ejs"); -%>
+            <%- include("./../../../partials/side.ejs"); -%>
+
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card py-2">
+                                    <div class="card-body pt-0 pb-3">
+                                        <%- include("./../../../partials/form-head.ejs", {extraTitle: "Buat"}); -%>
+
+                                        <form action="/<%= pageItemCurrent.link %>/create" method="POST" onsubmit="return confirmModal('form', this);">
+                                            <br>
+                                            
+                                            <div class="form-group">
+                                                <table id="buku-table" class="table table-bordered table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="th-custom">No.</th>
+                                                            <th class="th-custom">Kode</th>
+                                                            <th class="th-custom">Judul</th>
+                                                            <th class="th-custom">Kategori</th>
+                                                            <th class="th-custom">Penulis</th>
+                                                            <th class="th-custom">Penerbit</th>
+                                                            <th class="th-custom">Tahun Terbit</th>
+                                                            <th class="th-custom">Stok</th>
+                                                            <th class="th-custom">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <% 
+                                                            if (bukuArray.length >= 1) { 
+                                                                let number = 0; 
+                                                                bukuArray.forEach(bukuObject => { 
+                                                                    number += 1;
+                                                        %>
+                                                                    <tr>
+                                                                        <td class="td-custom"><%= number %></td>
+                                                                        <td class="th-custom"><%= bukuObject.kode %></td>
+                                                                        <td class="th-custom"><%= bukuObject.judul %></td>
+                                                                        <td class="th-custom"><%= bukuObject.id_kategori.kategori %></td>
+                                                                        <td class="th-custom"><%= bukuObject.id_penulis.penulis %></td>
+                                                                        <td class="th-custom"><%= bukuObject.id_penerbit.penerbit %></td>
+                                                                        <td class="th-custom"><%= bukuObject.tahun_terbit %></td>
+                                                                        <td class="th-custom"><%= bukuObject.stok %></td>
+                                                                        <td class="td-custom">
+                                                                            <% if (bukuObject.stok != 0) {%>
+                                                                                <button type="button" class="btn btn-block btn-primary" onclick="addBuku('<%= bukuObject._id %>', '<%= bukuObject.kode %>', '<%= bukuObject.judul %>');">Tambah</button>
+                                                                            <% } else if (bukuObject.stok == 0) {%>
+                                                                                <button type="button" class="btn btn-block btn-danger" style="opacity: 0.5 !important;" disabled>Habis</button>
+                                                                            <% } %>
+                                                                        </td>
+                                                                    </tr>
+                                                        <% 
+                                                                });
+                                                            }
+                                                        %>
+                                                    </tbody>
+                                                    
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th class="th-custom">No.</th>
+                                                            <th class="th-custom">Kode</th>
+                                                            <th class="th-custom">Judul</th>
+                                                            <th class="th-custom">Kategori</th>
+                                                            <th class="th-custom">Penulis</th>
+                                                            <th class="th-custom">Penerbit</th>
+                                                            <th class="th-custom">Tahun Terbit</th>
+                                                            <th class="th-custom">Stok</th>
+                                                            <th class="th-custom">Aksi</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <br>
+
+                                            <div class="form-group">
+                                                <label for="peminjaman-table">Buku</label>
+                                                <table id="peminjaman-table" class="table table-bordered table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="th-custom">No.</th>
+                                                            <th class="th-custom">Kode</th>
+                                                            <th class="th-custom">Judul</th>
+                                                            <th class="th-custom">Kuantitas</th>
+                                                            <th class="th-custom">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+    
+                                                    <tbody id="peminjaman-table-body">
+                                                        <tr id="peminjaman-table-body-none">
+                                                            <td class="td-custom" colspan="5">Tidak Ada</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <br>
+
+                                            <%- include("./../../../partials/input-detailed.ejs", {detailedInputArray}); -%>
+
+                                            <button type="submit" class="btn btn-block btn-primary">Buat</button>
+                                            <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '.')">Kembali</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include("./../../../partials/footer.ejs"); -%>
+        </div>
+
+        <%- include("./../../../partials/script.ejs"); -%>
+    </body>
+
+    <%- include("./../../../partials/select-script.ejs"); -%>
+    <%- include("./../../../partials/toast-script.ejs"); -%>
+
+    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="plugins/jszip/jszip.min.js"></script>
+    <script src="plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script>
+        $(function () {
+            $("#buku-table")
+                .DataTable({
+                    responsive: true,
+                    lengthChange: true,
+                    autoWidth: false,
+                });
+        });
+    </script>
+
+    <script>
+        function addBuku(id, kode, judul) {
+            
+            if (!document.getElementById(`${id}-buku`)) {
+                document.getElementById("peminjaman-table-body-none").style.display = "none";
+
+                const element = document.getElementById("peminjaman-table-body");
+                const elementCount = element.childElementCount;
+                element.innerHTML += `<tr id='${id}-buku'> <td class='td-custom'>${elementCount}</td> <td class='td-custom'>${kode}</td> <td class='td-custom'>${judul}</td> <td class='td-custom'> <input type='number' name='kuantitasArray[]' min='1' value='1' style='text-align: center; width:100% !important; height:100% !important;'> </td> <td class='td-custom'> <button type='button' class='btn btn-block btn-danger' onclick='removeBuku("${id}");'>Hapus</button> </td> <td style='display: none !important;'> <input type='number' name='bukuArray[]' value='${id}'> </td> </tr>`;
+            }
+        };
+
+        function removeBuku(id) {
+            document.getElementById(`${id}-buku`).remove();
+
+            const element = document.getElementById("peminjaman-table-body");
+            const elementCount = element.childElementCount;
+
+            if (elementCount == 1) {
+                document.getElementById("peminjaman-table-body-none").style.display = "table-row";
+            }
+        };
+    </script>
+</html>
