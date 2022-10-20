@@ -52,11 +52,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
             { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
         ],
         model: Siswa,
-    });
-
-    tableItemArray.sort((a: any, b: any) => {
-        return a.id_siswa.nisn - b.id_siswa.nisn;
-    });
+    }).sort({nomor_anggota: 1});
 
     const documentCount = await Anggota.countDocuments();
     res.render("pages/table", {
