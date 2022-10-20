@@ -219,6 +219,12 @@ export const pageItemArray: pageItemType[] = [
                 link: "perpustakaan/peminjaman",
                 icon: "list",
             },
+            {
+                id: 9,
+                title: "Pengembalian (WIP)",
+                link: "perpustakaan/pengembalian",
+                icon: "list-check",
+            },
         ],
     },
     {
