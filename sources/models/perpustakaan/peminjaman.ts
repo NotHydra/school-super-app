@@ -44,16 +44,8 @@ export const peminjamanSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    tanggal_pengembalian: {
-        type: Date || null,
-        required: true,
-    },
-    denda: {
-        type: Number || null,
-        required: true,
-    },
     keterangan: {
-        type: String || null,
+        type: String,
         required: true,
     },
     dibuat: {
