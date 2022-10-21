@@ -301,7 +301,17 @@ perpustakaanPeminjamanRouter
         if (dataExist != null) {
             const itemObject = await Peminjaman.findOne({ _id: id });
 
-            res.render("pages/update", {
+            itemObject.buku = await Promise.all(
+                itemObject.buku.map(async (bukuObject: any) => {
+                    return {
+                        _id: bukuObject._id,
+                        id_buku: await Buku.findOne({ _id: bukuObject.id_buku }).select("kode judul").lean(),
+                        kuantitas: bukuObject.kuantitas,
+                    };
+                })
+            );
+
+            res.render("pages/perpustakaan/peminjaman/update", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
@@ -365,6 +375,7 @@ perpustakaanPeminjamanRouter
                         enable: true,
                     },
                 ],
+                bukuArray: itemObject.buku,
             });
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
@@ -426,7 +437,17 @@ perpustakaanPeminjamanRouter
                 })
                 .lean();
 
-            res.render("pages/delete", {
+            itemObject.buku = await Promise.all(
+                itemObject.buku.map(async (bukuObject: any) => {
+                    return {
+                        _id: bukuObject._id,
+                        id_buku: await Buku.findOne({ _id: bukuObject.id_buku }).select("kode judul").lean(),
+                        kuantitas: bukuObject.kuantitas,
+                    };
+                })
+            );
+
+            res.render("pages/perpustakaan/peminjaman/delete", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
@@ -480,6 +501,7 @@ perpustakaanPeminjamanRouter
                         enable: false,
                     },
                 ],
+                bukuArray: itemObject.buku,
             });
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
