@@ -2,6 +2,8 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
+import { localMoment } from "../../utility";
+
 import { Anggota, Buku, Kategori, Peminjaman, Penerbit, Pengembalian, Penulis, Petugas } from "../../models";
 
 export const perpustakaanPeminjamanRouter = Router();
@@ -290,132 +292,119 @@ perpustakaanPeminjamanRouter
         }
     });
 
-// perpustakaanPeminjamanRouter
-//     .route("/update")
-//     .get(async (req, res) => {
-//         const id = req.query.id;
-//         const dataExist = await Petugas.exists({ _id: id });
+perpustakaanPeminjamanRouter
+    .route("/update")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await Peminjaman.exists({ _id: id });
 
-//         if (dataExist != null) {
-//             const itemObject = await Petugas.findOne({ _id: id });
+        if (dataExist != null) {
+            const itemObject = await Peminjaman.findOne({ _id: id });
 
-//             res.render("pages/update", {
-//                 headTitle,
-//                 navActive,
-//                 toastResponse: req.query.response,
-//                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
-//                 toastText: req.query.text,
-//                 id,
-//                 detailedInputArray: [
-//                     {
-//                         id: 1,
-//                         name: "nama",
-//                         display: "Nama",
-//                         type: "text",
-//                         value: itemObject.nama,
-//                         placeholder: "Input nama disini",
-//                         enable: true,
-//                     },
-//                     {
-//                         id: 2,
-//                         name: "id_tempat_lahir",
-//                         display: "Tempat Lahir",
-//                         type: "select",
-//                         value: [
-//                             (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 })).map((tempatLahirObject: any) => {
-//                                 return [tempatLahirObject._id, tempatLahirObject.tempat_lahir];
-//                             }),
-//                             itemObject.id_tempat_lahir,
-//                         ],
-//                         placeholder: "Input tempat lahir disini",
-//                         enable: true,
-//                     },
-//                     {
-//                         id: 3,
-//                         name: "tanggal_lahir",
-//                         display: "Tanggal Lahir",
-//                         type: "date",
-//                         value: localMoment(itemObject.tanggal_lahir).format("YYYY-MM-DD"),
-//                         placeholder: "Input tanggal lahir disini",
-//                         enable: true,
-//                     },
-//                     {
-//                         id: 4,
-//                         name: "id_jenis_kelamin",
-//                         display: "Jenis Kelamin",
-//                         type: "select",
-//                         value: [
-//                             (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 })).map((jenisKelaminObject: any) => {
-//                                 return [jenisKelaminObject._id, jenisKelaminObject.jenis_kelamin];
-//                             }),
-//                             itemObject.id_jenis_kelamin,
-//                         ],
-//                         placeholder: "Input jenis kelamin disini",
-//                         enable: true,
-//                     },
-//                     {
-//                         id: 5,
-//                         name: "jabatan",
-//                         display: "Jabatan",
-//                         type: "text",
-//                         value: itemObject.jabatan,
-//                         placeholder: "Input jabatan disini",
-//                         enable: true,
-//                     },
-//                     {
-//                         id: 6,
-//                         name: "nomor_telepon",
-//                         display: "Nomor Telepon",
-//                         type: "text",
-//                         value: itemObject.nomor_telepon,
-//                         placeholder: "Input nomor telepon disini",
-//                         enable: true,
-//                     },
-//                 ],
-//             });
-//         } else if (dataExist == null) {
-//             res.redirect("./?response=error&text=Data tidak valid");
-//         }
-//     })
-//     .post(async (req, res) => {
-//         const id = req.query.id;
-//         const dataExist = await Petugas.exists({ _id: id });
+            res.render("pages/update", {
+                headTitle,
+                navActive,
+                toastResponse: req.query.response,
+                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
+                toastText: req.query.text,
+                id,
+                detailedInputArray: [
+                    {
+                        id: 1,
+                        name: "id_anggota",
+                        display: "Anggota",
+                        type: "select",
+                        value: [
+                            (await Anggota.find().select("nomor_anggota").sort({ nomor_anggota: 1 })).map((anggotaObject: any) => {
+                                return [anggotaObject._id, anggotaObject.nomor_anggota];
+                            }),
+                            itemObject.id_anggota,
+                        ],
+                        placeholder: "Input anggota disini",
+                        enable: true,
+                    },
+                    {
+                        id: 2,
+                        name: "id_petugas",
+                        display: "Petugas",
+                        type: "select",
+                        value: [
+                            (await Petugas.find().select("nama").sort({ nama: 1 })).map((petugasObject: any) => {
+                                return [petugasObject._id, petugasObject.nama];
+                            }),
+                            itemObject.id_petugas,
+                        ],
+                        placeholder: "Input petugas disini",
+                        enable: true,
+                    },
+                    {
+                        id: 3,
+                        name: "tanggal_peminjaman",
+                        display: "Tanggal Peminjaman",
+                        type: "date",
+                        value: localMoment(itemObject.tanggal_peminjaman).format("YYYY-MM-DD"),
+                        placeholder: "Input tanggal peminjaman disini",
+                        enable: true,
+                    },
+                    {
+                        id: 4,
+                        name: "durasi_peminjaman",
+                        display: "Durasi Peminjaman",
+                        type: "date",
+                        value: localMoment(itemObject.durasi_peminjaman).format("YYYY-MM-DD"),
+                        placeholder: "Input durasi peminjaman disini",
+                        enable: true,
+                    },
+                    {
+                        id: 5,
+                        name: "keterangan",
+                        display: "Keterangan",
+                        type: "text",
+                        value: itemObject.keterangan,
+                        placeholder: "Input keterangan disini",
+                        enable: true,
+                    },
+                ],
+            });
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await Peminjaman.exists({ _id: id });
 
-//         if (dataExist != null) {
-//             const attributeArray: any = {};
-//             const inputArray = tableAttributeArray.map((tableAttributeObject) => {
-//                 const attributeCurrent = tableAttributeObject.value[0];
+        if (dataExist != null) {
+            const attributeArray: any = {};
+            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+                const attributeCurrent = tableAttributeObject.value[0];
 
-//                 attributeArray[attributeCurrent] = req.body[attributeCurrent];
+                attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-//                 return req.body[attributeCurrent];
-//             });
+                return req.body[attributeCurrent];
+            });
 
-//             if (!inputArray.includes(undefined)) {
-//                 try {
-//                     await Petugas.updateOne(
-//                         { _id: id },
-//                         {
-//                             ...attributeArray,
+            if (!inputArray.includes(undefined)) {
+                try {
+                    await Peminjaman.updateOne(
+                        { _id: id },
+                        {
+                            ...attributeArray,
 
-//                             diubah: new Date(),
-//                         }
-//                     );
-//                     res.redirect(`update?id=${id}&response=success`);
-//                 } catch (error: any) {
-//                     if (error.code == 11000) {
-//                         res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan`);
-//                     } else {
-//                         res.redirect(`update?id=${id}&response=error`);
-//                     }
-//                 }
-//             } else if (inputArray.includes(undefined)) {
-//                 res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
-//             }
-//         } else if (dataExist == null) {
-//             res.redirect("./?response=error&text=Data tidak valid");
-//         }
-//     });
+                            diubah: new Date(),
+                        }
+                    );
+                    res.redirect(`update?id=${id}&response=success`);
+                } catch (error: any) {
+                    res.redirect(`update?id=${id}&response=error`);
+                }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+            }
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    });
 
 // perpustakaanPeminjamanRouter
 //     .route("/delete")
