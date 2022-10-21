@@ -11,13 +11,18 @@ export const pengembalianSchema = new mongoose.Schema({
         unique: true,
         ref: "peminjaman",
     },
+    id_petugas: {
+        type: Number,
+        required: true,
+        ref: "petugas",
+    },
     tanggal_pengembalian: {
         type: Date,
-        required: true
+        required: true,
     },
     denda: {
         type: Number,
-        required: true
+        required: true,
     },
     dibuat: {
         type: Date,
