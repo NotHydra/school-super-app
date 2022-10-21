@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Anggota, Buku, Kategori, Peminjaman, Penerbit, Penulis, Petugas } from "../../models";
+import { Anggota, Buku, Kategori, Peminjaman, Penerbit, Pengembalian, Penulis, Petugas } from "../../models";
 
 export const perpustakaanPeminjamanRouter = Router();
 
@@ -70,7 +70,10 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
                 })
             );
 
-            return tableItemObject;
+            return {
+                ...tableItemObject,
+                status: (await Pengembalian.exists({ id_peminjaman: tableItemObject._id }).lean()) == null ? "Belum Dikembalikan" : "Sudah Dikembalikan",
+            };
         })
     );
 
