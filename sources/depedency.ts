@@ -215,7 +215,7 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 8,
-                title: "Peminjaman (WIP)",
+                title: "Peminjaman",
                 link: "perpustakaan/peminjaman",
                 icon: "list",
             },
