@@ -20,9 +20,9 @@ pelajarTahunMasukRouter.use(express.static("sources/public"));
 pelajarTahunMasukRouter.use(express.urlencoded({ extended: false }));
 
 pelajarTahunMasukRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TahunMasuk.find().sort({ tahun_masuk: 1 });
+    const tableItemArray = await TahunMasuk.find().sort({ tahun_masuk: 1 }).lean();
 
-    const documentCount = await TahunMasuk.countDocuments();
+    const documentCount = await TahunMasuk.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ pelajarTahunMasukRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await TahunMasuk.findOne().sort({ dibuat: -1 })).tahun_masuk : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunMasuk.findOne().select("tahun_masuk").sort({ dibuat: -1 }).lean()).tahun_masuk : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await TahunMasuk.findOne().sort({ diubah: -1 })).tahun_masuk : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunMasuk.findOne().select("tahun_masuk").sort({ diubah: -1 }).lean()).tahun_masuk : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ pelajarTahunMasukRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TahunMasuk({
-                _id: (await TahunMasuk.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await TahunMasuk.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +116,10 @@ pelajarTahunMasukRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunMasuk.exists({ _id: id });
+        const dataExist = await TahunMasuk.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TahunMasuk.findOne({ _id: id });
+            const itemObject = await TahunMasuk.findOne({ _id: id }).select("tahun_masuk").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ pelajarTahunMasukRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunMasuk.exists({ _id: id });
+        const dataExist = await TahunMasuk.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +167,7 @@ pelajarTahunMasukRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
 
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
@@ -185,10 +185,10 @@ pelajarTahunMasukRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunMasuk.exists({ _id: id });
+        const dataExist = await TahunMasuk.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TahunMasuk.findOne({ _id: id });
+            const itemObject = await TahunMasuk.findOne({ _id: id }).select("tahun_masuk").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -215,13 +215,13 @@ pelajarTahunMasukRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunMasuk.exists({ _id: id });
+        const dataExist = await TahunMasuk.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Siswa.exists({ id_tahun_masuk: id });
+            const dataIsUsed = await Siswa.exists({ id_tahun_masuk: id }).lean();
             if (dataIsUsed == null) {
                 try {
-                    await TahunMasuk.deleteOne({ _id: id });
+                    await TahunMasuk.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
