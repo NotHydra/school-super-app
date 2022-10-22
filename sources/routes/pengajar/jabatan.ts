@@ -20,9 +20,9 @@ pengajarJabatanRouter.use(express.static("sources/public"));
 pengajarJabatanRouter.use(express.urlencoded({ extended: false }));
 
 pengajarJabatanRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Jabatan.find().sort({ tahun_masuk: 1 });
+    const tableItemArray = await Jabatan.find().sort({ jabatan: 1 }).lean();
 
-    const documentCount = await Jabatan.countDocuments();
+    const documentCount = await Jabatan.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ pengajarJabatanRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Jabatan.findOne().sort({ dibuat: -1 })).jabatan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Jabatan.findOne().select("jabatan").sort({ dibuat: -1 }).lean()).jabatan : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Jabatan.findOne().sort({ diubah: -1 })).jabatan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Jabatan.findOne().select("jabatan").sort({ diubah: -1 }).lean()).jabatan : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ pengajarJabatanRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Jabatan({
-                _id: (await Jabatan.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Jabatan.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +116,10 @@ pengajarJabatanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jabatan.exists({ _id: id });
+        const dataExist = await Jabatan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Jabatan.findOne({ _id: id });
+            const itemObject = await Jabatan.findOne({ _id: id }).select("jabatan").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ pengajarJabatanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jabatan.exists({ _id: id });
+        const dataExist = await Jabatan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +167,7 @@ pengajarJabatanRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
 
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
@@ -185,10 +185,10 @@ pengajarJabatanRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jabatan.exists({ _id: id });
+        const dataExist = await Jabatan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Jabatan.findOne({ _id: id });
+            const itemObject = await Jabatan.findOne({ _id: id }).select("jabatan").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -215,13 +215,13 @@ pengajarJabatanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jabatan.exists({ _id: id });
+        const dataExist = await Jabatan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Guru.exists({ id_jabatan: id });
+            const dataIsUsed = await Guru.exists({ id_jabatan: id }).lean();
             if (dataIsUsed == null) {
                 try {
-                    await Jabatan.deleteOne({ _id: id });
+                    await Jabatan.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
