@@ -20,9 +20,9 @@ lulusanTahunLulusRouter.use(express.static("sources/public"));
 lulusanTahunLulusRouter.use(express.urlencoded({ extended: false }));
 
 lulusanTahunLulusRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TahunLulus.find().sort({ tahun_rombel: 1 });
+    const tableItemArray = await TahunLulus.find().sort({ tahun_lulus: 1 }).lean();
 
-    const documentCount = await TahunLulus.countDocuments();
+    const documentCount = await TahunLulus.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ lulusanTahunLulusRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await TahunLulus.findOne().sort({ dibuat: -1 })).tahun_lulus : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunLulus.findOne().select("tahun_lulus").sort({ dibuat: -1 }).lean()).tahun_lulus : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await TahunLulus.findOne().sort({ diubah: -1 })).tahun_lulus : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunLulus.findOne().select("tahun_lulus").sort({ diubah: -1 }).lean()).tahun_lulus : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ lulusanTahunLulusRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TahunLulus({
-                _id: (await TahunLulus.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await TahunLulus.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +116,10 @@ lulusanTahunLulusRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunLulus.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TahunLulus.findOne({ _id: id });
+            const itemObject = await TahunLulus.findOne({ _id: id }).select("tahun_lulus").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ lulusanTahunLulusRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunLulus.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +167,7 @@ lulusanTahunLulusRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
 
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
@@ -185,10 +185,10 @@ lulusanTahunLulusRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunLulus.exists({ _id: id });
+        const dataExist = await TahunLulus.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TahunLulus.findOne({ _id: id });
+            const itemObject = await TahunLulus.findOne({ _id: id }).select("tahun_lulus").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -214,14 +214,14 @@ lulusanTahunLulusRouter
         }
     })
     .post(async (req, res) => {
-        const id = req.query.id;
-        const dataExist = await TahunLulus.exists({ _id: id });
+        const id: any = req.query.id;
+        const dataExist = await TahunLulus.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Alumni.exists({ id_tahun_lulus: id });
+            const dataIsUsed = await Alumni.exists({ id_tahun_lulus: id }).lean();
             if (dataIsUsed == null) {
                 try {
-                    await TahunLulus.deleteOne({ _id: id });
+                    await TahunLulus.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
