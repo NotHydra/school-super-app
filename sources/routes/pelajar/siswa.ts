@@ -559,7 +559,7 @@ pelajarSiswaRouter
 
                     instansiRombelString = instansiRombelValue != undefined ? `&rombel=${instansiRombelValue}&instansiRombel=${instansiRombelValue}` : "";
                     res.redirect(`./?response=success${instansiRombelString}`);
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error${instansiRombelString}`);
                 }
             } else if (dataIsUsed != null) {

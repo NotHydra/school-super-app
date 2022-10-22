@@ -79,6 +79,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         .populate({
             path: "id_tahun_lulus",
             select: "tahun_lulus",
+            model: TahunLulus,
         })
         .populate({
             path: "id_universitas",
@@ -89,10 +90,11 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
             path: "id_pendidikan",
             select: "singkatan",
             model: Pendidikan,
-        });
+        })
+        .lean();
 
     tableItemArray.sort((a: any, b: any) => {
-        return a.id_siswa.nisn - b.id_siswa.nisn;
+        return b.id_siswa.nisn - a.id_siswa.nisn;
     });
 
     if (rombelValue != undefined && !isNaN(rombelValue)) {
@@ -111,7 +113,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         });
     }
 
-    const documentCount = await Alumni.countDocuments();
+    const documentCount = await Alumni.countDocuments().lean();
     res.render("pages/lulusan/alumni/table", {
         headTitle,
         navActive,
@@ -134,8 +136,13 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                         icon: "circle-plus",
                         value:
                             documentCount >= 1
-                                ? ((await Alumni.findOne().sort({ dibuat: -1 }).populate({ path: "id_siswa", select: "nama_lengkap", model: Siswa })) as any)
-                                      .id_siswa.nama_lengkap
+                                ? (
+                                      (await Alumni.findOne()
+                                          .select("id_siswa")
+                                          .populate({ path: "id_siswa", select: "nama_lengkap", model: Siswa })
+                                          .sort({ dibuat: -1 })
+                                          .lean()) as any
+                                  ).id_siswa.nama_lengkap
                                 : "Tidak Ada",
                     },
                     {
@@ -144,8 +151,13 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                         icon: "circle-exclamation",
                         value:
                             documentCount >= 1
-                                ? ((await Alumni.findOne().sort({ diubah: -1 }).populate({ path: "id_siswa", select: "nama_lengkap", model: Siswa })) as any)
-                                      .id_siswa.nama_lengkap
+                                ? (
+                                      (await Alumni.findOne()
+                                          .select("id_siswa")
+                                          .populate({ path: "id_siswa", select: "nama_lengkap", model: Siswa })
+                                          .sort({ diubah: -1 })
+                                          .lean()) as any
+                                  ).id_siswa.nama_lengkap
                                 : "Tidak Ada",
                     },
                 ],
@@ -154,11 +166,11 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         tableAttributeArray,
         tableItemArray,
         rombelValue,
-        rombelArray: await Rombel.find(),
+        rombelArray: await Rombel.find().select("rombel").lean(),
         tahunMasukValue,
-        tahunMasukArray: await TahunMasuk.find(),
+        tahunMasukArray: await TahunMasuk.find().select("tahun_masuk").lean(),
         tahunLulusValue,
-        tahunLulusArray: await TahunLulus.find(),
+        tahunLulusArray: await TahunLulus.find().select("tahun_lulus").lean(),
     });
 });
 
@@ -183,11 +195,12 @@ lulusanAlumniRouter
                                 .select("nisn nama_lengkap id_rombel id_tahun_masuk")
                                 .populate({ path: "id_rombel", select: "rombel", model: Rombel })
                                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
-                                .sort({ nisn: 1 })
-                        ).map((siswaObject: any) => {
+                                .sort({ nisn: -1 })
+                                .lean()
+                        ).map((itemObject: any) => {
                             return [
-                                siswaObject._id,
-                                `${siswaObject.nisn} - ${siswaObject.nama_lengkap} - ${siswaObject.id_rombel.rombel} - ${siswaObject.id_tahun_masuk.tahun_masuk}`,
+                                itemObject._id,
+                                `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - ${itemObject.id_tahun_masuk.tahun_masuk}`,
                             ];
                         }),
                         null,
@@ -201,8 +214,8 @@ lulusanAlumniRouter
                     display: "Tahun Lulus",
                     type: "select",
                     value: [
-                        (await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: 1 })).map((tahunLulusObject) => {
-                            return [tahunLulusObject._id, tahunLulusObject.tahun_lulus];
+                        (await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, itemObject.tahun_lulus];
                         }),
                         null,
                     ],
@@ -215,8 +228,8 @@ lulusanAlumniRouter
                     display: "Universitas",
                     type: "select",
                     value: [
-                        (await Universitas.find().select("universitas").sort({ universitas: 1 })).map((universitasObject) => {
-                            return [universitasObject._id, universitasObject.universitas];
+                        (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, itemObject.universitas];
                         }),
                         null,
                     ],
@@ -229,8 +242,8 @@ lulusanAlumniRouter
                     display: "Pendidikan",
                     type: "select",
                     value: [
-                        (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 })).map((pendidikanObject) => {
-                            return [pendidikanObject._id, `${pendidikanObject.pendidikan} - ${pendidikanObject.singkatan}`];
+                        (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, `${itemObject.pendidikan} - ${itemObject.singkatan}`];
                         }),
                         null,
                     ],
@@ -261,7 +274,7 @@ lulusanAlumniRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Alumni({
-                _id: (await Alumni.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Alumni.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -274,7 +287,9 @@ lulusanAlumniRouter
                 res.redirect("create?response=success");
             } catch (error: any) {
                 if (error.code == 11000) {
-                    res.redirect("create?response=error&text=Siswa sudah digunakan");
+                    if (error.keyPattern.id_siswa) {
+                        res.redirect("create?response=error&text=Siswa sudah digunakan");
+                    }
                 } else {
                     res.redirect("create?response=error");
                 }
@@ -288,10 +303,10 @@ lulusanAlumniRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Alumni.exists({ _id: id });
+        const dataExist = await Alumni.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Alumni.findOne({ _id: id });
+            const itemObject = await Alumni.findOne({ _id: id }).select("id_siswa id_tahun_lulus id_universitas id_pendidikan pekerjaan").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -312,11 +327,12 @@ lulusanAlumniRouter
                                     .select("nisn nama_lengkap id_rombel id_tahun_masuk")
                                     .populate({ path: "id_rombel", select: "rombel", model: Rombel })
                                     .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
-                                    .sort({ nisn: 1 })
-                            ).map((siswaObject: any) => {
+                                    .sort({ nisn: -1 })
+                                    .lean()
+                            ).map((itemObject: any) => {
                                 return [
-                                    siswaObject._id,
-                                    `${siswaObject.nisn} - ${siswaObject.nama_lengkap} - ${siswaObject.id_rombel.rombel} - ${siswaObject.id_tahun_masuk.tahun_masuk}`,
+                                    itemObject._id,
+                                    `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - ${itemObject.id_tahun_masuk.tahun_masuk}`,
                                 ];
                             }),
                             itemObject.id_siswa,
@@ -330,8 +346,8 @@ lulusanAlumniRouter
                         display: "Tahun Lulus",
                         type: "select",
                         value: [
-                            (await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: 1 })).map((tahunLulusObject) => {
-                                return [tahunLulusObject._id, tahunLulusObject.tahun_lulus];
+                            (await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.tahun_lulus];
                             }),
                             itemObject.id_tahun_lulus,
                         ],
@@ -344,8 +360,8 @@ lulusanAlumniRouter
                         display: "Universitas",
                         type: "select",
                         value: [
-                            (await Universitas.find().select("universitas").sort({ universitas: 1 })).map((universitasObject) => {
-                                return [universitasObject._id, universitasObject.universitas];
+                            (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.universitas];
                             }),
                             itemObject.id_universitas,
                         ],
@@ -358,8 +374,8 @@ lulusanAlumniRouter
                         display: "Pendidikan",
                         type: "select",
                         value: [
-                            (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 })).map((pendidikanObject) => {
-                                return [pendidikanObject._id, `${pendidikanObject.pendidikan} - ${pendidikanObject.singkatan}`];
+                            (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, `${itemObject.pendidikan} - ${itemObject.singkatan}`];
                             }),
                             itemObject.id_pendidikan,
                         ],
@@ -383,7 +399,7 @@ lulusanAlumniRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Alumni.exists({ _id: id });
+        const dataExist = await Alumni.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -404,12 +420,14 @@ lulusanAlumniRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
 
                     res.redirect(`update?id=${id}&response=success`);
                 } catch (error: any) {
                     if (error.code == 11000) {
-                        res.redirect(`update?id=${id}&response=error&text=Siswa sudah digunakan`);
+                        if (error.keyPattern.id_siswa) {
+                            res.redirect(`update?id=${id}&response=error&text=Siswa sudah digunakan`);
+                        }
                     } else {
                         res.redirect(`update?id=${id}&response=error`);
                     }
@@ -426,10 +444,11 @@ lulusanAlumniRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Alumni.exists({ _id: id });
+        const dataExist = await Alumni.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Alumni.findOne({ _id: id })
+                .select("id_siswa id_tahun_lulus id_universitas id_pendidikan pekerjaan")
                 .populate({
                     path: "id_siswa",
                     select: "nisn nama_lengkap id_rombel id_tahun_masuk",
@@ -452,7 +471,8 @@ lulusanAlumniRouter
                     path: "id_pendidikan",
                     select: "pendidikan singkatan",
                     model: Pendidikan,
-                });
+                })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -515,13 +535,13 @@ lulusanAlumniRouter
     })
     .post(async (req, res) => {
         const id: any = req.query.id;
-        const dataExist: any = await Alumni.exists({ _id: id });
+        const dataExist: any = await Alumni.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             try {
-                await Alumni.deleteOne({ _id: id });
+                await Alumni.deleteOne({ _id: id }).lean();
                 res.redirect("./?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect(`delete?id=${id}&response=error`);
             }
         } else if (dataExist == null) {

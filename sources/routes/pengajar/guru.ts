@@ -601,7 +601,7 @@ pengajarGuruRouter
                 try {
                     await Guru.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
