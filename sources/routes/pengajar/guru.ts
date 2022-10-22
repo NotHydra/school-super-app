@@ -4,7 +4,7 @@ import { headTitle } from ".";
 
 import { localMoment } from "../../utility";
 
-import { Guru, Jabatan, JenisKelamin, Pendidikan, TempatLahir, Universitas } from "../../models";
+import { Guru, Jabatan, JenisKelamin, Pendidikan, Rombel, TempatLahir, Universitas } from "../../models";
 
 export const pengajarGuruRouter = Router();
 
@@ -78,9 +78,10 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
         .populate({ path: "id_jabatan", select: "jabatan", model: Jabatan })
         .populate({ path: "id_universitas", select: "universitas", model: Universitas })
         .populate({ path: "id_pendidikan", select: "singkatan", model: Pendidikan })
-        .sort({ nip: 1 });
+        .sort({ nip: 1 })
+        .lean();
 
-    const documentCount = await Guru.countDocuments();
+    const documentCount = await Guru.countDocuments().lean();
     res.render("pages/pengajar/guru/table", {
         headTitle,
         navActive,
@@ -106,7 +107,7 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Guru.findOne().sort({ dibuat: -1 })).nip : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Guru.findOne().select("nip").sort({ dibuat: -1 }).lean()).nip : "Tidak Ada",
                     },
                 ],
             },
@@ -117,7 +118,7 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Guru.findOne().sort({ diubah: -1 })).nip : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Guru.findOne().select("nip").sort({ diubah: -1 }).lean()).nip : "Tidak Ada",
                     },
                 ],
             },
@@ -162,8 +163,8 @@ pengajarGuruRouter
                     display: "Tempat Lahir",
                     type: "select",
                     value: [
-                        (await TempatLahir.find().sort({ tempat_lahir: 1 })).map((tempatLahirObject: any) => {
-                            return [tempatLahirObject._id, tempatLahirObject.tempat_lahir];
+                        (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.tempat_lahir];
                         }),
                         null,
                     ],
@@ -185,8 +186,8 @@ pengajarGuruRouter
                     display: "Jenis Kelamin",
                     type: "select",
                     value: [
-                        (await JenisKelamin.find().sort({ jenis_kelamin: 1 })).map((jenisKelaminObject: any) => {
-                            return [jenisKelaminObject._id, jenisKelaminObject.jenis_kelamin];
+                        (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.jenis_kelamin];
                         }),
                         null,
                     ],
@@ -199,8 +200,8 @@ pengajarGuruRouter
                     display: "Jabatan",
                     type: "select",
                     value: [
-                        (await Jabatan.find().sort({ jabatan: 1 })).map((jabatanObject: any) => {
-                            return [jabatanObject._id, jabatanObject.jabatan];
+                        (await Jabatan.find().select("jabatan").sort({ jabatan: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.jabatan];
                         }),
                         null,
                     ],
@@ -213,8 +214,8 @@ pengajarGuruRouter
                     display: "Universitas",
                     type: "select",
                     value: [
-                        (await Universitas.find().sort({ universitas: 1 })).map((universitasObject: any) => {
-                            return [universitasObject._id, universitasObject.universitas];
+                        (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.universitas];
                         }),
                         null,
                     ],
@@ -227,8 +228,8 @@ pengajarGuruRouter
                     display: "Pendidikan",
                     type: "select",
                     value: [
-                        (await Pendidikan.find().sort({ pendidikan: 1 })).map((pendidikanObject: any) => {
-                            return [pendidikanObject._id, `${pendidikanObject.pendidikan} - ${pendidikanObject.singkatan}`];
+                        (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, `${itemObject.pendidikan} - ${itemObject.singkatan}`];
                         }),
                         null,
                     ],
@@ -259,7 +260,7 @@ pengajarGuruRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Guru({
-                _id: (await Guru.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Guru.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -272,7 +273,11 @@ pengajarGuruRouter
                 res.redirect("create?response=success");
             } catch (error: any) {
                 if (error.code == 11000) {
-                    res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
+                    if (error.keyPattern.nip) {
+                        res.redirect("create?response=error&text=NIP sudah digunakan");
+                    } else if (error.keyPattern.nomor_telepon) {
+                        res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
+                    }
                 } else {
                     res.redirect("create?response=error");
                 }
@@ -289,10 +294,12 @@ pengajarGuruRouter
         const guruValue: any = req.query.guru;
         const guruString: any = guruValue != undefined ? `&guru=${guruValue}` : "";
 
-        const dataExist = await Guru.exists({ _id: id });
+        const dataExist = await Guru.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Guru.findOne({ _id: id });
+            const itemObject = await Guru.findOne({ _id: id })
+                .select("nip nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_jabatan id_universitas id_pendidikan nomor_telepon")
+                .lean();
 
             res.render("pages/pengajar/guru/update", {
                 headTitle,
@@ -326,8 +333,8 @@ pengajarGuruRouter
                         display: "Tempat Lahir",
                         type: "select",
                         value: [
-                            (await TempatLahir.find().sort({ tempat_lahir: 1 })).map((tempatLahirObject: any) => {
-                                return [tempatLahirObject._id, tempatLahirObject.tempat_lahir];
+                            (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.tempat_lahir];
                             }),
                             itemObject.id_tempat_lahir,
                         ],
@@ -349,8 +356,8 @@ pengajarGuruRouter
                         display: "Jenis Kelamin",
                         type: "select",
                         value: [
-                            (await JenisKelamin.find().sort({ jenis_kelamin: 1 })).map((jenisKelaminObject: any) => {
-                                return [jenisKelaminObject._id, jenisKelaminObject.jenis_kelamin];
+                            (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.jenis_kelamin];
                             }),
                             itemObject.id_jenis_kelamin,
                         ],
@@ -363,8 +370,8 @@ pengajarGuruRouter
                         display: "Jabatan",
                         type: "select",
                         value: [
-                            (await Jabatan.find().sort({ jabatan: 1 })).map((jabatanObject: any) => {
-                                return [jabatanObject._id, jabatanObject.jabatan];
+                            (await Jabatan.find().select("jabatan").sort({ jabatan: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.jabatan];
                             }),
                             itemObject.id_jabatan,
                         ],
@@ -377,8 +384,8 @@ pengajarGuruRouter
                         display: "Universitas",
                         type: "select",
                         value: [
-                            (await Universitas.find().sort({ universitas: 1 })).map((universitasObject: any) => {
-                                return [universitasObject._id, universitasObject.universitas];
+                            (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.universitas];
                             }),
                             itemObject.id_universitas,
                         ],
@@ -391,8 +398,8 @@ pengajarGuruRouter
                         display: "Pendidikan",
                         type: "select",
                         value: [
-                            (await Pendidikan.find().sort({ pendidikan: 1 })).map((pendidikanObject: any) => {
-                                return [pendidikanObject._id, `${pendidikanObject.pendidikan} - ${pendidikanObject.singkatan}`];
+                            (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, `${itemObject.pendidikan} - ${itemObject.singkatan}`];
                             }),
                             itemObject.id_pendidikan,
                         ],
@@ -417,7 +424,7 @@ pengajarGuruRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Guru.exists({ _id: id });
+        const dataExist = await Guru.exists({ _id: id }).lean();
 
         const guruValue: any = req.query.guru;
         const guruString: any = guruValue != undefined ? `&guru=${guruValue}` : "";
@@ -441,12 +448,16 @@ pengajarGuruRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
 
                     res.redirect(`update?id=${id}&response=success${guruString}`);
                 } catch (error: any) {
                     if (error.code == 11000) {
-                        res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${guruString}`);
+                        if (error.keyPattern.nip) {
+                            res.redirect(`update?id=${id}&response=error&text=NIP sudah digunakan${guruString}`);
+                        } else if (error.keyPattern.nomor_telepon) {
+                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${guruString}`);
+                        }
                     } else {
                         res.redirect(`update?id=${id}&response=error${guruString}`);
                     }
@@ -463,15 +474,17 @@ pengajarGuruRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Guru.exists({ _id: id });
+        const dataExist = await Guru.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Guru.findOne({ _id: id })
+                .select("nip nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_jabatan id_universitas id_pendidikan nomor_telepon")
                 .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
                 .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
                 .populate({ path: "id_jabatan", select: "jabatan", model: Jabatan })
                 .populate({ path: "id_universitas", select: "universitas", model: Universitas })
-                .populate({ path: "id_pendidikan", select: "pendidikan singkatan", model: Pendidikan });
+                .populate({ path: "id_pendidikan", select: "pendidikan singkatan", model: Pendidikan })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -570,14 +583,29 @@ pengajarGuruRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Guru.exists({ _id: id });
+        const dataExist = await Guru.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            try {
-                await Guru.deleteOne({ _id: id });
-                res.redirect("./?response=success");
-            } catch (error) {
-                res.redirect(`delete?id=${id}&response=error`);
+            let dataIsUsed = null;
+            (await Rombel.find().select("semester").lean()).forEach((rombelObject: any) => {
+                rombelObject.semester.forEach((semesterObject: any) => {
+                    semesterObject.mata_pelajaran.forEach((mataPelajaranObject: any) => {
+                        if (mataPelajaranObject.id_guru == id) {
+                            dataIsUsed = mataPelajaranObject;
+                        }
+                    });
+                });
+            });
+
+            if (dataIsUsed == null) {
+                try {
+                    await Guru.deleteOne({ _id: id }).lean();
+                    res.redirect("./?response=success");
+                } catch (error) {
+                    res.redirect(`delete?id=${id}&response=error`);
+                }
+            } else if (dataIsUsed != null) {
+                res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain`);
             }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
