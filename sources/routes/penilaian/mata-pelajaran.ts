@@ -32,9 +32,9 @@ instansiMataPelajaranRouter.use(express.static("sources/public"));
 instansiMataPelajaranRouter.use(express.urlencoded({ extended: false }));
 
 instansiMataPelajaranRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await MataPelajaran.find().sort({ tahun_rombel: 1 });
+    const tableItemArray = await MataPelajaran.find().sort({ mata_pelajaran: 1 }).lean();
 
-    const documentCount = await MataPelajaran.countDocuments();
+    const documentCount = await MataPelajaran.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -60,7 +60,10 @@ instansiMataPelajaranRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await MataPelajaran.findOne().sort({ dibuat: -1 })).mata_pelajaran : "Tidak Ada",
+                        value:
+                            documentCount >= 1
+                                ? (await MataPelajaran.findOne().select("mata_pelajaran").sort({ dibuat: -1 }).lean()).mata_pelajaran
+                                : "Tidak Ada",
                     },
                 ],
             },
@@ -71,7 +74,10 @@ instansiMataPelajaranRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await MataPelajaran.findOne().sort({ diubah: -1 })).mata_pelajaran : "Tidak Ada",
+                        value:
+                            documentCount >= 1
+                                ? (await MataPelajaran.findOne().select("mata_pelajaran").sort({ diubah: -1 }).lean()).mata_pelajaran
+                                : "Tidak Ada",
                     },
                 ],
             },
@@ -139,7 +145,7 @@ instansiMataPelajaranRouter
                 if (bobotKeterampilan >= 0 && bobotKeterampilan <= 100) {
                     if (bobotPengetahuan + bobotKeterampilan == 100) {
                         const itemObject = new MataPelajaran({
-                            _id: (await MataPelajaran.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                            _id: (await MataPelajaran.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                             ...attributeArray,
 
@@ -171,10 +177,10 @@ instansiMataPelajaranRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await MataPelajaran.exists({ _id: id });
+        const dataExist = await MataPelajaran.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await MataPelajaran.findOne({ _id: id });
+            const itemObject = await MataPelajaran.findOne({ _id: id }).select("mata_pelajaran bobot_pengetahuan bobot_keterampilan").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -219,7 +225,7 @@ instansiMataPelajaranRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await MataPelajaran.exists({ _id: id });
+        const dataExist = await MataPelajaran.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -246,7 +252,7 @@ instansiMataPelajaranRouter
 
                                         diubah: new Date(),
                                     }
-                                );
+                                ).lean();
 
                                 res.redirect(`update?id=${id}&response=success`);
                             } catch {
@@ -272,11 +278,11 @@ instansiMataPelajaranRouter
 instansiMataPelajaranRouter
     .route("/delete")
     .get(async (req, res) => {
-        const id = req.query.id;
-        const dataExist = await MataPelajaran.exists({ _id: id });
+        const id: any = req.query.id;
+        const dataExist = await MataPelajaran.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await MataPelajaran.findOne({ _id: id });
+            const itemObject = await MataPelajaran.findOne({ _id: id }).select("mata_pelajaran bobot_pengetahuan bobot_keterampilan").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -321,12 +327,12 @@ instansiMataPelajaranRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await MataPelajaran.exists({ _id: id });
+        const dataExist = await MataPelajaran.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             let dataIsUsed = null;
-            (await Rombel.find()).forEach((rombelObject) => {
-                rombelObject.semester.forEach((semesterObject) => {
+            (await Rombel.find().select("semester").lean()).forEach((rombelObject: any) => {
+                rombelObject.semester.forEach((semesterObject: any) => {
                     semesterObject.mata_pelajaran.forEach((mataPelajaranObject: any) => {
                         if (mataPelajaranObject.id_mata_pelajaran == id) {
                             dataIsUsed = mataPelajaranObject;
@@ -337,7 +343,7 @@ instansiMataPelajaranRouter
 
             if (dataIsUsed == null) {
                 try {
-                    await MataPelajaran.deleteOne({ _id: id });
+                    await MataPelajaran.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
