@@ -79,7 +79,7 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
         })
     );
 
-    const documentCount = await Peminjaman.countDocuments();
+    const documentCount = await Peminjaman.countDocuments().lean();
     const latestDibuat: any = await Peminjaman.findOne()
         .select("id_anggota")
         .populate({ path: "id_anggota", select: "nomor_anggota", model: Anggota })
@@ -154,8 +154,8 @@ perpustakaanPeminjamanRouter
                     display: "Anggota",
                     type: "select",
                     value: [
-                        (await Anggota.find().select("nomor_anggota").sort({ nomor_anggota: 1 })).map((anggotaObject: any) => {
-                            return [anggotaObject._id, anggotaObject.nomor_anggota];
+                        (await Anggota.find().select("nomor_anggota").sort({ nomor_anggota: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.nomor_anggota];
                         }),
                         null,
                     ],
@@ -168,8 +168,8 @@ perpustakaanPeminjamanRouter
                     display: "Petugas",
                     type: "select",
                     value: [
-                        (await Petugas.find().select("nama").sort({ nama: 1 })).map((petugasObject: any) => {
-                            return [petugasObject._id, petugasObject.nama];
+                        (await Petugas.find().select("nama").sort({ nama: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.nama];
                         }),
                         null,
                     ],
@@ -253,7 +253,7 @@ perpustakaanPeminjamanRouter
             if (kuantitasIsValid) {
                 if (stockIsValid) {
                     const itemObject = new Peminjaman({
-                        _id: (await Peminjaman.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                        _id: (await Peminjaman.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                         id_anggota: attributeArray.id_anggota,
                         id_petugas: attributeArray.id_petugas,
@@ -274,7 +274,7 @@ perpustakaanPeminjamanRouter
 
                             const calculatedStockBuku: number = currentStockBuku - bukuObject.kuantitas;
 
-                            await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() });
+                            await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() }).lean();
                         });
 
                         res.redirect("create?response=success");
@@ -296,10 +296,12 @@ perpustakaanPeminjamanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Peminjaman.exists({ _id: id });
+        const dataExist = await Peminjaman.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Peminjaman.findOne({ _id: id });
+            const itemObject: any = await Peminjaman.findOne({ _id: id })
+                .select("id_anggota id_petugas buku tanggal_peminjaman durasi_peminjaman keterangan")
+                .lean();
 
             itemObject.buku = await Promise.all(
                 itemObject.buku.map(async (bukuObject: any) => {
@@ -325,8 +327,8 @@ perpustakaanPeminjamanRouter
                         display: "Anggota",
                         type: "select",
                         value: [
-                            (await Anggota.find().select("nomor_anggota").sort({ nomor_anggota: 1 })).map((anggotaObject: any) => {
-                                return [anggotaObject._id, anggotaObject.nomor_anggota];
+                            (await Anggota.find().select("nomor_anggota").sort({ nomor_anggota: 1 }).lean()).map((itemmObject: any) => {
+                                return [itemmObject._id, itemmObject.nomor_anggota];
                             }),
                             itemObject.id_anggota,
                         ],
@@ -339,8 +341,8 @@ perpustakaanPeminjamanRouter
                         display: "Petugas",
                         type: "select",
                         value: [
-                            (await Petugas.find().select("nama").sort({ nama: 1 })).map((petugasObject: any) => {
-                                return [petugasObject._id, petugasObject.nama];
+                            (await Petugas.find().select("nama").sort({ nama: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.nama];
                             }),
                             itemObject.id_petugas,
                         ],
@@ -382,8 +384,8 @@ perpustakaanPeminjamanRouter
         }
     })
     .post(async (req, res) => {
-        const id = req.query.id;
-        const dataExist = await Peminjaman.exists({ _id: id });
+        const id: any = req.query.id;
+        const dataExist = await Peminjaman.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -404,7 +406,7 @@ perpustakaanPeminjamanRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
@@ -421,10 +423,11 @@ perpustakaanPeminjamanRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Peminjaman.exists({ _id: id });
+        const dataExist = await Peminjaman.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Peminjaman.findOne({ _id: id })
+                .select("id_anggota id_petugas buku tanggal_peminjaman durasi_peminjaman keterangan")
                 .populate({
                     path: "id_anggota",
                     select: "nomor_anggota",
@@ -509,10 +512,10 @@ perpustakaanPeminjamanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Peminjaman.exists({ _id: id });
+        const dataExist = await Peminjaman.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Pengembalian.exists({ id_peminjaman: id });
+            const dataIsUsed = await Pengembalian.exists({ id_peminjaman: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
@@ -523,13 +526,13 @@ perpustakaanPeminjamanRouter
 
                         const calculatedStockBuku: number = currentStockBuku + bukuObject.kuantitas;
 
-                        await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() });
+                        await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() }).lean();
                     });
 
-                    await Peminjaman.deleteOne({ _id: id });
+                    await Peminjaman.deleteOne({ _id: id }).lean();
 
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
