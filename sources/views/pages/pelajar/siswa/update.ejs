@@ -21,7 +21,7 @@
                             <div class="col-12">
                                 <div class="card py-2">
                                     <div class="card-body pt-0 pb-3">
-                                        <%- include("./../../../partials/form-head.ejs", {extraTitle: "Update"}); -%>
+                                        <%- include("./../../../partials/form-head.ejs", {extraTitle: "Ubah"}); -%>
 
                                         <form action="/<%= pageItemCurrent.link %>/update?id=<%= id; %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : ''; %>" method="POST" onsubmit="return confirmModal('form', this);">
                                             <%- include("./../../../partials/input-detailed.ejs", {detailedInputArray}); -%>
