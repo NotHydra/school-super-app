@@ -11,6 +11,12 @@
                     <div class="icon">
                         <i class="fas fa-<%= cardItemChildObject.icon %>"></i>
                     </div>
+
+                    <% if (cardItemChildObject.link) { %>
+                        <a href="/<%= cardItemChildObject.link %>" class="small-box-footer">
+                            Informasi Tambahan <i class="fas fa-arrow-circle-right"></i>
+                        </a>
+                    <% } %>
                 </div>
             </div>
         <% }); %>
