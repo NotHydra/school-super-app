@@ -20,9 +20,9 @@ instansiJurusanRouter.use(express.static("sources/public"));
 instansiJurusanRouter.use(express.urlencoded({ extended: false }));
 
 instansiJurusanRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Jurusan.find().sort({ tahun_rombel: 1 });
+    const tableItemArray = await Jurusan.find().sort({ tahun_rombel: 1 }).lean();
 
-    const documentCount = await Jurusan.countDocuments();
+    const documentCount = await Jurusan.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ instansiJurusanRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Jurusan.findOne().sort({ dibuat: -1 })).jurusan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Jurusan.findOne().select("jurusan").sort({ dibuat: -1 }).lean()).jurusan : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Jurusan.findOne().sort({ diubah: -1 })).jurusan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Jurusan.findOne().select("jurusan").sort({ diubah: -1 }).lean()).jurusan : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ instansiJurusanRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Jurusan({
-                _id: (await Jurusan.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Jurusan.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +116,10 @@ instansiJurusanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Jurusan.findOne({ _id: id });
+            const itemObject = await Jurusan.findOne({ _id: id }).select("jurusan").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ instansiJurusanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +167,7 @@ instansiJurusanRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
 
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
@@ -185,10 +185,10 @@ instansiJurusanRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Jurusan.findOne({ _id: id });
+            const itemObject = await Jurusan.findOne({ _id: id }).select("jurusan").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -215,14 +215,14 @@ instansiJurusanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Jurusan.exists({ _id: id });
+        const dataExist = await Jurusan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Rombel.exists({ id_jurusan: id });
+            const dataIsUsed = await Rombel.exists({ id_jurusan: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await Jurusan.deleteOne({ _id: id });
+                    await Jurusan.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
