@@ -20,9 +20,9 @@ dataUmumUniversitasRouter.use(express.static("sources/public"));
 dataUmumUniversitasRouter.use(express.urlencoded({ extended: false }));
 
 dataUmumUniversitasRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Universitas.find().sort({ universitas: 1 });
+    const tableItemArray = await Universitas.find().sort({ universitas: 1 }).lean();
 
-    const documentCount = await Universitas.countDocuments();
+    const documentCount = await Universitas.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -48,7 +48,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Universitas.findOne().sort({ dibuat: -1 })).universitas : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Universitas.findOne().select("universitas").sort({ dibuat: -1 }).lean()).universitas : "Tidak Ada",
                     },
                 ],
             },
@@ -59,7 +59,7 @@ dataUmumUniversitasRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Universitas.findOne().sort({ diubah: -1 })).universitas : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Universitas.findOne().select("universitas").sort({ diubah: -1 }).lean()).universitas : "Tidak Ada",
                     },
                 ],
             },
@@ -103,7 +103,7 @@ dataUmumUniversitasRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Universitas({
-                _id: (await Universitas.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Universitas.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -126,10 +126,10 @@ dataUmumUniversitasRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Universitas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Universitas.findOne({ _id: id });
+            const itemObject = await Universitas.findOne({ _id: id }).select("universitas").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -156,7 +156,7 @@ dataUmumUniversitasRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Universitas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -177,7 +177,7 @@ dataUmumUniversitasRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
                     res.redirect(`update?id=${id}&response=error`);
@@ -194,10 +194,10 @@ dataUmumUniversitasRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Universitas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Universitas.findOne({ _id: id });
+            const itemObject = await Universitas.findOne({ _id: id }).select("universitas").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -224,14 +224,14 @@ dataUmumUniversitasRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Universitas.exists({ _id: id });
+        const dataExist = await Universitas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = (await Alumni.exists({ id_universitas: id })) || (await Guru.exists({ id_universitas: id }));
+            const dataIsUsed = (await Alumni.exists({ id_universitas: id }).lean()) || (await Guru.exists({ id_universitas: id }).lean());
 
             if (dataIsUsed == null) {
                 try {
-                    await Universitas.deleteOne({ _id: id });
+                    await Universitas.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
