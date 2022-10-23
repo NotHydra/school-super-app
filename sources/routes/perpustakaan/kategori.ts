@@ -20,9 +20,9 @@ perpustakaanKategoriRouter.use(express.static("sources/public"));
 perpustakaanKategoriRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanKategoriRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Kategori.find().sort({ kategori: 1 });
+    const tableItemArray = await Kategori.find().sort({ kategori: 1 }).lean();
 
-    const documentCount = await Kategori.countDocuments();
+    const documentCount = await Kategori.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ perpustakaanKategoriRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Kategori.findOne().sort({ dibuat: -1 })).kategori : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Kategori.findOne().select("kategori").sort({ dibuat: -1 }).lean()).kategori : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Kategori.findOne().sort({ diubah: -1 })).kategori : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Kategori.findOne().select("kategori").sort({ diubah: -1 }).lean()).kategori : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ perpustakaanKategoriRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Kategori({
-                _id: (await Kategori.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Kategori.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -104,7 +104,7 @@ perpustakaanKategoriRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
@@ -116,10 +116,10 @@ perpustakaanKategoriRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Kategori.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Kategori.findOne({ _id: id });
+            const itemObject = await Kategori.findOne({ _id: id }).select("kategori").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ perpustakaanKategoriRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Kategori.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,9 +167,9 @@ perpustakaanKategoriRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
-                } catch {
+                } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
                 }
             } else if (inputArray.includes(undefined)) {
@@ -184,10 +184,10 @@ perpustakaanKategoriRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Kategori.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Kategori.findOne({ _id: id });
+            const itemObject = await Kategori.findOne({ _id: id }).select("kategori").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -214,16 +214,16 @@ perpustakaanKategoriRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Kategori.exists({ _id: id });
+        const dataExist = await Kategori.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Buku.exists({ id_kategori: id });
+            const dataIsUsed = await Buku.exists({ id_kategori: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await Kategori.deleteOne({ _id: id });
+                    await Kategori.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
