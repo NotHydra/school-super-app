@@ -44,17 +44,20 @@ perpustakaanAnggotaRouter.use(express.static("sources/public"));
 perpustakaanAnggotaRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Anggota.find().populate({
-        path: "id_siswa",
-        select: "nisn nama_lengkap id_rombel id_tahun_masuk",
-        populate: [
-            { path: "id_rombel", select: "rombel", model: Rombel },
-            { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
-        ],
-        model: Siswa,
-    }).sort({nomor_anggota: 1});
+    const tableItemArray = await Anggota.find()
+        .populate({
+            path: "id_siswa",
+            select: "nisn nama_lengkap id_rombel id_tahun_masuk",
+            populate: [
+                { path: "id_rombel", select: "rombel", model: Rombel },
+                { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+            ],
+            model: Siswa,
+        })
+        .sort({ nomor_anggota: 1 })
+        .lean();
 
-    const documentCount = await Anggota.countDocuments();
+    const documentCount = await Anggota.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -80,7 +83,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Anggota.findOne().sort({ dibuat: -1 })).nomor_anggota : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Anggota.findOne().select("nomor_anggota").sort({ dibuat: -1 }).lean()).nomor_anggota : "Tidak Ada",
                     },
                 ],
             },
@@ -91,7 +94,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Anggota.findOne().sort({ diubah: -1 })).nomor_anggota : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Anggota.findOne().select("nomor_anggota").sort({ diubah: -1 }).lean()).nomor_anggota : "Tidak Ada",
                     },
                 ],
             },
@@ -132,10 +135,11 @@ perpustakaanAnggotaRouter
                                 .populate({ path: "id_rombel", select: "rombel", model: Rombel })
                                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
                                 .sort({ nisn: 1 })
-                        ).map((siswaObject: any) => {
+                                .lean()
+                        ).map((itemObject: any) => {
                             return [
-                                siswaObject._id,
-                                `${siswaObject.nisn} - ${siswaObject.nama_lengkap} - ${siswaObject.id_rombel.rombel} - ${siswaObject.id_tahun_masuk.tahun_masuk}`,
+                                itemObject._id,
+                                `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - ${itemObject.id_tahun_masuk.tahun_masuk}`,
                             ];
                         }),
                         null,
@@ -158,7 +162,7 @@ perpustakaanAnggotaRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Anggota({
-                _id: (await Anggota.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Anggota.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -171,7 +175,9 @@ perpustakaanAnggotaRouter
                 res.redirect("create?response=success");
             } catch (error: any) {
                 if (error.code == 11000) {
-                    res.redirect("create?response=error&text=Siswa sudah digunakan");
+                    if (error.keyPattern.id_siswa) {
+                        res.redirect("create?response=error&text=Siswa sudah digunakan");
+                    }
                 } else {
                     res.redirect("create?response=error");
                 }
@@ -185,10 +191,10 @@ perpustakaanAnggotaRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Anggota.exists({ _id: id });
+        const dataExist = await Anggota.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Anggota.findOne({ _id: id });
+            const itemObject = await Anggota.findOne({ _id: id }).select("nomor_anggota id_siswa").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -219,10 +225,11 @@ perpustakaanAnggotaRouter
                                     .populate({ path: "id_rombel", select: "rombel", model: Rombel })
                                     .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
                                     .sort({ nisn: 1 })
-                            ).map((siswaObject: any) => {
+                                    .lean()
+                            ).map((itemObject: any) => {
                                 return [
-                                    siswaObject._id,
-                                    `${siswaObject.nisn} - ${siswaObject.nama_lengkap} - ${siswaObject.id_rombel.rombel} - ${siswaObject.id_tahun_masuk.tahun_masuk}`,
+                                    itemObject._id,
+                                    `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - ${itemObject.id_tahun_masuk.tahun_masuk}`,
                                 ];
                             }),
                             itemObject.id_siswa,
@@ -238,7 +245,7 @@ perpustakaanAnggotaRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Anggota.exists({ _id: id });
+        const dataExist = await Anggota.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -259,11 +266,13 @@ perpustakaanAnggotaRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch (error: any) {
                     if (error.code == 11000) {
-                        res.redirect(`update?id=${id}&response=error&text=Siswa sudah digunakan`);
+                        if (error.keyPattern.id_siswa) {
+                            res.redirect(`update?id=${id}&response=error&text=Siswa sudah digunakan`);
+                        }
                     } else {
                         res.redirect(`update?id=${id}&response=error`);
                     }
@@ -280,18 +289,21 @@ perpustakaanAnggotaRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Anggota.exists({ _id: id });
+        const dataExist = await Anggota.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject: any = await Anggota.findOne({ _id: id }).populate({
-                path: "id_siswa",
-                select: "nisn nama_lengkap id_rombel id_tahun_masuk",
-                populate: [
-                    { path: "id_rombel", select: "rombel", model: Rombel },
-                    { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
-                ],
-                model: Siswa,
-            });
+            const itemObject: any = await Anggota.findOne({ _id: id })
+                .select("nomor_anggota id_siswa")
+                .populate({
+                    path: "id_siswa",
+                    select: "nisn nama_lengkap id_rombel id_tahun_masuk",
+                    populate: [
+                        { path: "id_rombel", select: "rombel", model: Rombel },
+                        { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+                    ],
+                    model: Siswa,
+                })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -326,17 +338,17 @@ perpustakaanAnggotaRouter
         }
     })
     .post(async (req, res) => {
-        const id = req.query.id;
-        const dataExist = await Anggota.exists({ _id: id });
+        const id: any = req.query.id;
+        const dataExist = await Anggota.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Peminjaman.exists({ id_anggota: id });
+            const dataIsUsed = await Peminjaman.exists({ id_anggota: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await Anggota.deleteOne({ _id: id });
+                    await Anggota.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
