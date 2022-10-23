@@ -20,9 +20,9 @@ instansiTahunRombelRouter.use(express.static("sources/public"));
 instansiTahunRombelRouter.use(express.urlencoded({ extended: false }));
 
 instansiTahunRombelRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TahunRombel.find().sort({ tahun_rombel: 1 });
+    const tableItemArray = await TahunRombel.find().sort({ tahun_rombel: 1 }).lean();
 
-    const documentCount = await TahunRombel.countDocuments();
+    const documentCount = await TahunRombel.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ instansiTahunRombelRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await TahunRombel.findOne().sort({ dibuat: -1 })).tahun_rombel : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunRombel.findOne().select("tahun_rombel").sort({ dibuat: -1 }).lean()).tahun_rombel : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await TahunRombel.findOne().sort({ diubah: -1 })).tahun_rombel : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TahunRombel.findOne().select("tahun_rombel").sort({ diubah: -1 }).lean()).tahun_rombel : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ instansiTahunRombelRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TahunRombel({
-                _id: (await TahunRombel.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await TahunRombel.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +116,10 @@ instansiTahunRombelRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunRombel.exists({ _id: id });
+        const dataExist = await TahunRombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TahunRombel.findOne({ _id: id });
+            const itemObject = await TahunRombel.findOne({ _id: id }).select("tahun_rombel").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ instansiTahunRombelRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunRombel.exists({ _id: id });
+        const dataExist = await TahunRombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +167,7 @@ instansiTahunRombelRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
                     res.redirect(`update?id=${id}&response=error`);
@@ -184,10 +184,10 @@ instansiTahunRombelRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunRombel.exists({ _id: id });
+        const dataExist = await TahunRombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TahunRombel.findOne({ _id: id });
+            const itemObject = await TahunRombel.findOne({ _id: id }).select("tahun_rombel").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -214,14 +214,14 @@ instansiTahunRombelRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TahunRombel.exists({ _id: id });
+        const dataExist = await TahunRombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Rombel.exists({ id_tahun_rombel: id });
+            const dataIsUsed = await Rombel.exists({ id_tahun_rombel: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await TahunRombel.deleteOne({ _id: id });
+                    await TahunRombel.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
