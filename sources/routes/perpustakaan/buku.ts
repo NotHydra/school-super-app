@@ -84,9 +84,10 @@ perpustakaanBukuRouter.route("/").get(async (req, res) => {
             select: "penerbit",
             model: Penerbit,
         })
-        .sort({ kode: 1 });
+        .sort({ kode: 1 })
+        .lean();
 
-    const documentCount = await Buku.countDocuments();
+    const documentCount = await Buku.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -107,13 +108,13 @@ perpustakaanBukuRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Buku.findOne().sort({ dibuat: -1 })).kode : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Buku.findOne().select("kode").sort({ dibuat: -1 }).lean()).kode : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Buku.findOne().sort({ diubah: -1 })).kode : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Buku.findOne().select("kode").sort({ diubah: -1 }).lean()).kode : "Tidak Ada",
                     },
                 ],
             },
@@ -157,8 +158,8 @@ perpustakaanBukuRouter
                     display: "Kategori",
                     type: "select",
                     value: [
-                        (await Kategori.find().select("kategori").sort({ kategori: 1 })).map((kategoriObject: any) => {
-                            return [kategoriObject._id, kategoriObject.kategori];
+                        (await Kategori.find().select("kategori").sort({ kategori: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.kategori];
                         }),
                         null,
                     ],
@@ -171,8 +172,8 @@ perpustakaanBukuRouter
                     display: "Penulis",
                     type: "select",
                     value: [
-                        (await Penulis.find().select("penulis").sort({ penulis: 1 })).map((penulisObject: any) => {
-                            return [penulisObject._id, penulisObject.penulis];
+                        (await Penulis.find().select("penulis").sort({ penulis: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.penulis];
                         }),
                         null,
                     ],
@@ -185,8 +186,8 @@ perpustakaanBukuRouter
                     display: "Penerbit",
                     type: "select",
                     value: [
-                        (await Penerbit.find().select("penerbit").sort({ penerbit: 1 })).map((penerbitObject: any) => {
-                            return [penerbitObject._id, penerbitObject.penerbit];
+                        (await Penerbit.find().select("penerbit").sort({ penerbit: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.penerbit];
                         }),
                         null,
                     ],
@@ -244,7 +245,7 @@ perpustakaanBukuRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Buku({
-                _id: (await Buku.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Buku.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -255,7 +256,7 @@ perpustakaanBukuRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
@@ -267,10 +268,12 @@ perpustakaanBukuRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Buku.exists({ _id: id });
+        const dataExist = await Buku.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Buku.findOne({ _id: id });
+            const itemObject = await Buku.findOne({ _id: id })
+                .select("kode judul id_kategori id_penulis id_penerbit tahun_terbit halaman stok sinopsis")
+                .lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -304,8 +307,8 @@ perpustakaanBukuRouter
                         display: "Kategori",
                         type: "select",
                         value: [
-                            (await Kategori.find().select("kategori").sort({ kategori: 1 })).map((kategoriObject: any) => {
-                                return [kategoriObject._id, kategoriObject.kategori];
+                            (await Kategori.find().select("kategori").sort({ kategori: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.kategori];
                             }),
                             itemObject.id_kategori,
                         ],
@@ -318,8 +321,8 @@ perpustakaanBukuRouter
                         display: "Penulis",
                         type: "select",
                         value: [
-                            (await Penulis.find().select("penulis").sort({ penulis: 1 })).map((penulisObject: any) => {
-                                return [penulisObject._id, penulisObject.penulis];
+                            (await Penulis.find().select("penulis").sort({ penulis: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.penulis];
                             }),
                             itemObject.id_penulis,
                         ],
@@ -332,8 +335,8 @@ perpustakaanBukuRouter
                         display: "Penerbit",
                         type: "select",
                         value: [
-                            (await Penerbit.find().select("penerbit").sort({ penerbit: 1 })).map((penerbitObject: any) => {
-                                return [penerbitObject._id, penerbitObject.penerbit];
+                            (await Penerbit.find().select("penerbit").sort({ penerbit: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.penerbit];
                             }),
                             itemObject.id_penerbit,
                         ],
@@ -384,7 +387,7 @@ perpustakaanBukuRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Buku.exists({ _id: id });
+        const dataExist = await Buku.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -405,9 +408,9 @@ perpustakaanBukuRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
                 }
             } else if (inputArray.includes(undefined)) {
@@ -422,10 +425,11 @@ perpustakaanBukuRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Buku.exists({ _id: id });
+        const dataExist = await Buku.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Buku.findOne({ _id: id })
+                .select("kode judul id_kategori id_penulis id_penerbit tahun_terbit halaman stok sinopsis")
                 .populate({
                     path: "id_kategori",
                     select: "kategori",
@@ -440,7 +444,8 @@ perpustakaanBukuRouter
                     path: "id_penerbit",
                     select: "penerbit",
                     model: Penerbit,
-                });
+                })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -539,12 +544,12 @@ perpustakaanBukuRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Buku.exists({ _id: id });
+        const dataExist = await Buku.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             let dataIsUsed: any = null;
-            (await Peminjaman.find()).forEach((peminjamanObject) => {
-                peminjamanObject.buku.forEach((bukuObject) => {
+            (await Peminjaman.find().select("buku").lean()).forEach((peminjamanObject: any) => {
+                peminjamanObject.buku.forEach((bukuObject: any) => {
                     if (bukuObject.id_buku == id) {
                         dataIsUsed = bukuObject;
                     }
@@ -553,9 +558,9 @@ perpustakaanBukuRouter
 
             if (dataIsUsed == null) {
                 try {
-                    await Buku.deleteOne({ _id: id });
+                    await Buku.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
