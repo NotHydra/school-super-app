@@ -47,7 +47,7 @@ pengajarRouter.get("/", async (req, res) => {
                 lineChartChild: [
                     {
                         id: 1,
-                        title: "Statistik Guru",
+                        title: "Statistik Guru Baru",
                         link: { link: "pengajar/guru", title: "Guru", subTitle: "Pengajar" },
                         value: guruChartData.currentYearValue,
                         text: "Guru Baru",
@@ -59,7 +59,7 @@ pengajarRouter.get("/", async (req, res) => {
                     },
                     {
                         id: 2,
-                        title: "Statistik Jabatan",
+                        title: "Statistik Jabatan Baru",
                         link: { link: "pengajar/jabatan", title: "Jabatan", subTitle: "Pengajar" },
                         value: jabatanChartData.currentYearValue,
                         text: "Jabatan Baru",
