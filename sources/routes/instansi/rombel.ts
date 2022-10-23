@@ -82,9 +82,10 @@ instansiRombelRouter.route("/").get(async (req, res) => {
             select: "tahun_rombel",
             model: TahunRombel,
         })
-        .sort({ rombel: 1 });
+        .sort({ rombel: 1 })
+        .lean();
 
-    const documentCount = await Rombel.countDocuments();
+    const documentCount = await Rombel.countDocuments().lean();
     res.render("pages/instansi/rombel/table", {
         headTitle,
         navActive,
@@ -105,13 +106,13 @@ instansiRombelRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Rombel.findOne().sort({ dibuat: -1 })).rombel : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Rombel.findOne().select("rombel").sort({ dibuat: -1 }).lean()).rombel : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Rombel.findOne().sort({ diubah: -1 })).rombel : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Rombel.findOne().select("rombel").sort({ diubah: -1 }).lean()).rombel : "Tidak Ada",
                     },
                 ],
             },
@@ -119,11 +120,11 @@ instansiRombelRouter.route("/").get(async (req, res) => {
         tableAttributeArray,
         tableItemArray,
         tingkatValue,
-        tingkatArray: await Tingkat.find(),
+        tingkatArray: await Tingkat.find().select("tingkat").lean(),
         jurusanValue,
-        jurusanArray: await Jurusan.find(),
+        jurusanArray: await Jurusan.find().select("jurusan").lean(),
         tahunRombelValue,
-        tahunRombelArray: await TahunRombel.find(),
+        tahunRombelArray: await TahunRombel.find().select("tahun_rombel").lean(),
     });
 });
 
@@ -152,8 +153,8 @@ instansiRombelRouter
                     display: "Wali Kelas",
                     type: "select",
                     value: [
-                        (await Guru.find().select("nip nama_lengkap").sort({ nip: 1 })).map((guruObject) => {
-                            return [guruObject._id, `${guruObject.nip} - ${guruObject.nama_lengkap}`];
+                        (await Guru.find().select("nip nama_lengkap").sort({ nip: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, `${itemObject.nip} - ${itemObject.nama_lengkap}`];
                         }),
                         null,
                     ],
@@ -166,8 +167,8 @@ instansiRombelRouter
                     display: "Tingkat",
                     type: "select",
                     value: [
-                        (await Tingkat.find().select("tingkat").sort({ tingkat: 1 })).map((tingkatObject) => {
-                            return [tingkatObject._id, tingkatObject.tingkat];
+                        (await Tingkat.find().select("tingkat").sort({ tingkat: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, itemObject.tingkat];
                         }),
                         null,
                     ],
@@ -180,8 +181,8 @@ instansiRombelRouter
                     display: "Jurusan",
                     type: "select",
                     value: [
-                        (await Jurusan.find().select("jurusan").sort({ jurusan: 1 })).map((jurusanObject) => {
-                            return [jurusanObject._id, jurusanObject.jurusan];
+                        (await Jurusan.find().select("jurusan").sort({ jurusan: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, itemObject.jurusan];
                         }),
                         null,
                     ],
@@ -194,8 +195,8 @@ instansiRombelRouter
                     display: "Tahun Rombel",
                     type: "select",
                     value: [
-                        (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 })).map((tahunRombelObject) => {
-                            return [tahunRombelObject._id, tahunRombelObject.tahun_rombel];
+                        (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, itemObject.tahun_rombel];
                         }),
                         null,
                     ],
@@ -217,7 +218,7 @@ instansiRombelRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Rombel({
-                _id: (await Rombel.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Rombel.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -241,10 +242,10 @@ instansiRombelRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Rombel.exists({ _id: id });
+        const dataExist = await Rombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Rombel.findOne({ _id: id });
+            const itemObject = await Rombel.findOne({ _id: id }).select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_rombel").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -269,8 +270,8 @@ instansiRombelRouter
                         display: "Wali Kelas",
                         type: "select",
                         value: [
-                            (await Guru.find().select("nip nama_lengkap").sort({ nip: 1 })).map((guruObject) => {
-                                return [guruObject._id, `${guruObject.nip} ${guruObject.nama_lengkap}`];
+                            (await Guru.find().select("nip nama_lengkap").sort({ nip: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, `${itemObject.nip} ${itemObject.nama_lengkap}`];
                             }),
                             itemObject.id_wali_kelas,
                         ],
@@ -283,8 +284,8 @@ instansiRombelRouter
                         display: "Tingkat",
                         type: "select",
                         value: [
-                            (await Tingkat.find().select("tingkat").sort({ tingkat: 1 })).map((tingkatObject) => {
-                                return [tingkatObject._id, tingkatObject.tingkat];
+                            (await Tingkat.find().select("tingkat").sort({ tingkat: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.tingkat];
                             }),
                             itemObject.id_tingkat,
                         ],
@@ -297,8 +298,8 @@ instansiRombelRouter
                         display: "Jurusan",
                         type: "select",
                         value: [
-                            (await Jurusan.find().select("jurusan").sort({ jurusan: 1 })).map((jurusanObject) => {
-                                return [jurusanObject._id, jurusanObject.jurusan];
+                            (await Jurusan.find().select("jurusan").sort({ jurusan: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.jurusan];
                             }),
                             itemObject.id_jurusan,
                         ],
@@ -311,8 +312,8 @@ instansiRombelRouter
                         display: "Tahun Rombel",
                         type: "select",
                         value: [
-                            (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 })).map((tahunRombelObject) => {
-                                return [tahunRombelObject._id, tahunRombelObject.tahun_rombel];
+                            (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.tahun_rombel];
                             }),
                             itemObject.id_tahun_rombel,
                         ],
@@ -327,7 +328,7 @@ instansiRombelRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Rombel.exists({ _id: id });
+        const dataExist = await Rombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -348,7 +349,7 @@ instansiRombelRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
@@ -365,10 +366,11 @@ instansiRombelRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Rombel.exists({ _id: id });
+        const dataExist = await Rombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Rombel.findOne({ _id: id })
+                .select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_rombel")
                 .populate({
                     path: "id_wali_kelas",
                     select: "nama_lengkap",
@@ -388,7 +390,8 @@ instansiRombelRouter
                     path: "id_tahun_rombel",
                     select: "tahun_rombel",
                     model: TahunRombel,
-                });
+                })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -451,16 +454,16 @@ instansiRombelRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Rombel.exists({ _id: id });
+        const dataExist = await Rombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Siswa.exists({ id_rombel: id });
+            const dataIsUsed = await Siswa.exists({ id_rombel: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await Rombel.deleteOne({ _id: id });
+                    await Rombel.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
