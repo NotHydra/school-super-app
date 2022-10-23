@@ -20,9 +20,9 @@ perpustakaanPenerbitRouter.use(express.static("sources/public"));
 perpustakaanPenerbitRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanPenerbitRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Penerbit.find().sort({ penerbit: 1 });
+    const tableItemArray = await Penerbit.find().sort({ penerbit: 1 }).lean();
 
-    const documentCount = await Penerbit.countDocuments();
+    const documentCount = await Penerbit.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ perpustakaanPenerbitRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Penerbit.findOne().sort({ dibuat: -1 })).penerbit : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Penerbit.findOne().select("penerbit").sort({ dibuat: -1 }).lean()).penerbit : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Penerbit.findOne().sort({ diubah: -1 })).penerbit : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Penerbit.findOne().select("penerbit").sort({ diubah: -1 }).lean()).penerbit : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ perpustakaanPenerbitRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Penerbit({
-                _id: (await Penerbit.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Penerbit.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -104,7 +104,7 @@ perpustakaanPenerbitRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
@@ -116,10 +116,10 @@ perpustakaanPenerbitRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Penerbit.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Penerbit.findOne({ _id: id });
+            const itemObject = await Penerbit.findOne({ _id: id }).select("penerbit").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ perpustakaanPenerbitRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Penerbit.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,9 +167,9 @@ perpustakaanPenerbitRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
-                } catch {
+                } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
                 }
             } else if (inputArray.includes(undefined)) {
@@ -184,10 +184,10 @@ perpustakaanPenerbitRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Penerbit.exists({ _id: id });
+        const dataExist = await Penerbit.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Penerbit.findOne({ _id: id });
+            const itemObject = await Penerbit.findOne({ _id: id }).select("penerbit").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -213,17 +213,17 @@ perpustakaanPenerbitRouter
         }
     })
     .post(async (req, res) => {
-        const id = req.query.id;
-        const dataExist = await Penerbit.exists({ _id: id });
+        const id: any = req.query.id;
+        const dataExist = await Penerbit.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Buku.exists({ id_penerbit: id });
+            const dataIsUsed = await Buku.exists({ id_penerbit: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await Penerbit.deleteOne({ _id: id });
+                    await Penerbit.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
