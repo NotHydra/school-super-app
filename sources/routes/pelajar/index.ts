@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { Siswa, TahunMasuk } from "../../models";
 
 import { datasetYear } from "../../utility";
+
+import { Siswa, TahunMasuk } from "../../models";
 
 import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
