@@ -4,7 +4,7 @@ import { headTitle } from ".";
 
 import { localMoment } from "../../utility";
 
-import { Anggota, Buku, Peminjaman, Pengembalian, Petugas, Rombel, Siswa, TahunMasuk } from "../../models";
+import { Anggota, Buku, Peminjaman, Pengembalian, Petugas } from "../../models";
 
 export const perpustakaanPengembalianRouter = Router();
 
@@ -64,9 +64,10 @@ perpustakaanPengembalianRouter.route("/").get(async (req, res) => {
             select: "nama",
             model: Petugas,
         })
-        .sort({ dibuat: -1 });
+        .sort({ dibuat: -1 })
+        .lean();
 
-    const documentCount = await Pengembalian.countDocuments();
+    const documentCount = await Pengembalian.countDocuments().lean();
     const latestDibuat: any = await Pengembalian.findOne()
         .select("id_peminjaman")
         .populate({
@@ -156,12 +157,13 @@ perpustakaanPengembalianRouter
                                 .select("id_anggota tanggal_peminjaman durasi_peminjaman")
                                 .populate({ path: "id_anggota", select: "nomor_anggota", model: Anggota })
                                 .sort({ dibuat: -1 })
-                        ).map((peminjamanObject: any) => {
+                                .lean()
+                        ).map((itemObject: any) => {
                             return [
-                                peminjamanObject._id,
-                                `${peminjamanObject.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(peminjamanObject.tanggal_peminjaman).format(
+                                itemObject._id,
+                                `${itemObject.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(itemObject.tanggal_peminjaman).format(
                                     "YYYY-MM-DD"
-                                )} - Durasi Peminjaman ${localMoment(peminjamanObject.durasi_peminjaman).format("YYYY-MM-DD")}`,
+                                )} - Durasi Peminjaman ${localMoment(itemObject.durasi_peminjaman).format("YYYY-MM-DD")}`,
                             ];
                         }),
                         null,
@@ -175,8 +177,8 @@ perpustakaanPengembalianRouter
                     display: "Petugas",
                     type: "select",
                     value: [
-                        (await Petugas.find().select("nama").sort({ nama: 1 })).map((petugasObject: any) => {
-                            return [petugasObject._id, petugasObject.nama];
+                        (await Petugas.find().select("nama").sort({ nama: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.nama];
                         }),
                         null,
                     ],
@@ -216,7 +218,7 @@ perpustakaanPengembalianRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Pengembalian({
-                _id: (await Pengembalian.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Pengembalian.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -234,13 +236,15 @@ perpustakaanPengembalianRouter
 
                     const calculatedStockBuku: number = currentStockBuku + bukuObject.kuantitas;
 
-                    await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() });
+                    await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() }).lean();
                 });
 
                 res.redirect("create?response=success");
             } catch (error: any) {
                 if (error.code == 11000) {
-                    res.redirect("create?response=error&text=Peminjaman sudah digunakan");
+                    if (error.keyPattern.id_peminjaman) {
+                        res.redirect("create?response=error&text=Peminjaman sudah digunakan");
+                    }
                 } else {
                     res.redirect("create?response=error");
                 }
@@ -254,15 +258,18 @@ perpustakaanPengembalianRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pengembalian.exists({ _id: id });
+        const dataExist = await Pengembalian.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject: any = await Pengembalian.findOne({ _id: id }).populate({
-                path: "id_peminjaman",
-                select: "id_anggota tanggal_peminjaman durasi_peminjaman",
-                populate: [{ path: "id_anggota", select: "nomor_anggota", model: Anggota }],
-                model: Peminjaman,
-            });
+            const itemObject: any = await Pengembalian.findOne({ _id: id })
+                .select("id_peminjaman id_petugas tanggal_pengembalian denda")
+                .populate({
+                    path: "id_peminjaman",
+                    select: "id_anggota tanggal_peminjaman durasi_peminjaman",
+                    populate: [{ path: "id_anggota", select: "nomor_anggota", model: Anggota }],
+                    model: Peminjaman,
+                })
+                .lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -289,8 +296,8 @@ perpustakaanPengembalianRouter
                         display: "Petugas",
                         type: "select",
                         value: [
-                            (await Petugas.find().select("nama").sort({ nama: 1 })).map((petugasObject: any) => {
-                                return [petugasObject._id, petugasObject.nama];
+                            (await Petugas.find().select("nama").sort({ nama: 1 })).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.nama];
                             }),
                             itemObject.id_petugas,
                         ],
@@ -323,7 +330,7 @@ perpustakaanPengembalianRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pengembalian.exists({ _id: id });
+        const dataExist = await Pengembalian.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -344,11 +351,13 @@ perpustakaanPengembalianRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch (error: any) {
                     if (error.code == 11000) {
-                        res.redirect(`update?id=${id}&response=error&text=Peminjaman sudah digunakan`);
+                        if (error.keyPattern.id_peminjaman) {
+                            res.redirect(`update?id=${id}&response=error&text=Peminjaman sudah digunakan`);
+                        }
                     } else {
                         res.redirect(`update?id=${id}&response=error`);
                     }
@@ -365,10 +374,11 @@ perpustakaanPengembalianRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pengembalian.exists({ _id: id });
+        const dataExist = await Pengembalian.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Pengembalian.findOne({ _id: id })
+                .select("id_peminjaman id_petugas tanggal_pengembalian denda")
                 .populate({
                     path: "id_peminjaman",
                     select: "id_anggota tanggal_peminjaman durasi_peminjaman",
@@ -379,7 +389,8 @@ perpustakaanPengembalianRouter
                     path: "id_petugas",
                     select: "nama",
                     model: Petugas,
-                });
+                })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -435,7 +446,7 @@ perpustakaanPengembalianRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pengembalian.exists({ _id: id });
+        const dataExist = await Pengembalian.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             try {
@@ -450,13 +461,13 @@ perpustakaanPengembalianRouter
 
                     const calculatedStockBuku: number = currentStockBuku - bukuObject.kuantitas;
 
-                    await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() });
+                    await Buku.updateOne({ _id: bukuObject._id }, { stok: calculatedStockBuku, diubah: new Date() }).lean();
                 });
 
-                await Pengembalian.deleteOne({ _id: id });
+                await Pengembalian.deleteOne({ _id: id }).lean();
 
                 res.redirect("./?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect(`delete?id=${id}&response=error`);
             }
         } else if (dataExist == null) {
