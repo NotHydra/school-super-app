@@ -20,9 +20,9 @@ instansiTingkatRouter.use(express.static("sources/public"));
 instansiTingkatRouter.use(express.urlencoded({ extended: false }));
 
 instansiTingkatRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Tingkat.find().sort({ tahun_rombel: 1 });
+    const tableItemArray = await Tingkat.find().sort({ tahun_rombel: 1 }).lean();
 
-    const documentCount = await Tingkat.countDocuments();
+    const documentCount = await Tingkat.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ instansiTingkatRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Tingkat.findOne().sort({ dibuat: -1 })).tingkat : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Tingkat.findOne().select("tingkat").sort({ dibuat: -1 }).lean()).tingkat : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Tingkat.findOne().sort({ diubah: -1 })).tingkat : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Tingkat.findOne().select("tingkat").sort({ diubah: -1 }).lean()).tingkat : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ instansiTingkatRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Tingkat({
-                _id: (await Tingkat.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Tingkat.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -104,7 +104,7 @@ instansiTingkatRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
@@ -116,10 +116,10 @@ instansiTingkatRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Tingkat.exists({ _id: id });
+        const dataExist = await Tingkat.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Tingkat.findOne({ _id: id });
+            const itemObject = await Tingkat.findOne({ _id: id }).select("tingkat").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ instansiTingkatRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Tingkat.exists({ _id: id });
+        const dataExist = await Tingkat.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,9 +167,9 @@ instansiTingkatRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
-                } catch {
+                } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
                 }
             } else if (inputArray.includes(undefined)) {
@@ -184,10 +184,10 @@ instansiTingkatRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Tingkat.exists({ _id: id });
+        const dataExist = await Tingkat.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Tingkat.findOne({ _id: id });
+            const itemObject = await Tingkat.findOne({ _id: id }).select("tingkat").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -199,11 +199,11 @@ instansiTingkatRouter
                 detailedInputArray: [
                     {
                         id: 1,
-                        name: "jurusan",
-                        display: "Jurusan",
+                        name: "tingkat",
+                        display: "Tingkat",
                         type: "text",
                         value: itemObject.tingkat,
-                        placeholder: "Input jurusan disini",
+                        placeholder: "Input tingkat disini",
                         enable: false,
                     },
                 ],
@@ -214,16 +214,16 @@ instansiTingkatRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Tingkat.exists({ _id: id });
+        const dataExist = await Tingkat.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Rombel.exists({ id_tingkat: id });
+            const dataIsUsed = await Rombel.exists({ id_tingkat: id }).lean();
 
             if (dataIsUsed == null) {
                 try {
-                    await Tingkat.deleteOne({ _id: id });
+                    await Tingkat.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
