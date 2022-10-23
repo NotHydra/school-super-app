@@ -20,9 +20,9 @@ dataUmumTempatLahirRouter.use(express.static("sources/public"));
 dataUmumTempatLahirRouter.use(express.urlencoded({ extended: false }));
 
 dataUmumTempatLahirRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TempatLahir.find().sort({ tempat_lahir: 1 });
+    const tableItemArray = await TempatLahir.find().sort({ tempat_lahir: 1 }).lean();
 
-    const documentCount = await TempatLahir.countDocuments();
+    const documentCount = await TempatLahir.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,13 @@ dataUmumTempatLahirRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await TempatLahir.findOne().sort({ dibuat: -1 })).tempat_lahir : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TempatLahir.findOne().select("tempat_lahir").sort({ dibuat: -1 }).lean()).tempat_lahir : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await TempatLahir.findOne().sort({ diubah: -1 })).tempat_lahir : "Tidak Ada",
+                        value: documentCount >= 1 ? (await TempatLahir.findOne().select("tempat_lahir").sort({ diubah: -1 }).lean()).tempat_lahir : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +93,7 @@ dataUmumTempatLahirRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TempatLahir({
-                _id: (await TempatLahir.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await TempatLahir.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +116,10 @@ dataUmumTempatLahirRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TempatLahir.exists({ _id: id });
+        const dataExist = await TempatLahir.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TempatLahir.findOne({ _id: id });
+            const itemObject = await TempatLahir.findOne({ _id: id }).select("tempat_lahir").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +146,7 @@ dataUmumTempatLahirRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TempatLahir.exists({ _id: id });
+        const dataExist = await TempatLahir.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +167,7 @@ dataUmumTempatLahirRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
                     res.redirect(`update?id=${id}&response=error`);
@@ -184,10 +184,10 @@ dataUmumTempatLahirRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TempatLahir.exists({ _id: id });
+        const dataExist = await TempatLahir.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await TempatLahir.findOne({ _id: id });
+            const itemObject = await TempatLahir.findOne({ _id: id }).select("tempat_lahir").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -214,15 +214,17 @@ dataUmumTempatLahirRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await TempatLahir.exists({ _id: id });
+        const dataExist = await TempatLahir.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const dataIsUsed =
-                (await Siswa.exists({ id_tempat_lahir: id })) || (await Guru.exists({ id_tempat_lahir: id })) || (await Petugas.exists({ id_tempat_lahir: id }));
+                (await Siswa.exists({ id_tempat_lahir: id }).lean()) ||
+                (await Guru.exists({ id_tempat_lahir: id }).lean()) ||
+                (await Petugas.exists({ id_tempat_lahir: id }).lean());
 
             if (dataIsUsed == null) {
                 try {
-                    await TempatLahir.deleteOne({ _id: id });
+                    await TempatLahir.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
