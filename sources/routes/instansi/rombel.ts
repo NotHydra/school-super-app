@@ -271,7 +271,7 @@ instansiRombelRouter
                         type: "select",
                         value: [
                             (await Guru.find().select("nip nama_lengkap").sort({ nip: 1 }).lean()).map((itemObject) => {
-                                return [itemObject._id, `${itemObject.nip} ${itemObject.nama_lengkap}`];
+                                return [itemObject._id, `${itemObject.nip} - ${itemObject.nama_lengkap}`];
                             }),
                             itemObject.id_wali_kelas,
                         ],
@@ -373,7 +373,7 @@ instansiRombelRouter
                 .select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_rombel")
                 .populate({
                     path: "id_wali_kelas",
-                    select: "nama_lengkap",
+                    select: "nip nama_lengkap",
                     model: Guru,
                 })
                 .populate({
@@ -415,7 +415,7 @@ instansiRombelRouter
                         name: "id_wali_kelas",
                         display: "Wali Kelas",
                         type: "text",
-                        value: itemObject.id_wali_kelas.nama_lengkap,
+                        value: `${itemObject.id_wali_kelas.nip} - ${itemObject.id_wali_kelas.nama_lengkap}`,
                         placeholder: "Input wali kelas disini",
                         enable: false,
                     },
