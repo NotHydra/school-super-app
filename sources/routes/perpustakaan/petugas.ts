@@ -4,7 +4,7 @@ import { headTitle } from ".";
 
 import { localMoment } from "../../utility";
 
-import { JenisKelamin, Peminjaman, Petugas, TempatLahir } from "../../models";
+import { JenisKelamin, Peminjaman, Pengembalian, Petugas, TempatLahir } from "../../models";
 
 export const perpustakaanPetugasRouter = Router();
 
@@ -63,9 +63,10 @@ perpustakaanPetugasRouter.route("/").get(async (req, res) => {
             select: "jenis_kelamin",
             model: JenisKelamin,
         })
-        .sort({ nama: 1 });
+        .sort({ nama: 1 })
+        .lean();
 
-    const documentCount = await Petugas.countDocuments();
+    const documentCount = await Petugas.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -86,13 +87,13 @@ perpustakaanPetugasRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Petugas.findOne().sort({ dibuat: -1 })).nama : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Petugas.findOne().select("nama").sort({ dibuat: -1 }).lean()).nama : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Petugas.findOne().sort({ diubah: -1 })).nama : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Petugas.findOne().select("nama").sort({ diubah: -1 }).lean()).nama : "Tidak Ada",
                     },
                 ],
             },
@@ -127,8 +128,8 @@ perpustakaanPetugasRouter
                     display: "Tempat Lahir",
                     type: "select",
                     value: [
-                        (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 })).map((tempatLahirObject: any) => {
-                            return [tempatLahirObject._id, tempatLahirObject.tempat_lahir];
+                        (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.tempat_lahir];
                         }),
                         null,
                     ],
@@ -150,8 +151,8 @@ perpustakaanPetugasRouter
                     display: "Jenis Kelamin",
                     type: "select",
                     value: [
-                        (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 })).map((jenisKelaminObject: any) => {
-                            return [jenisKelaminObject._id, jenisKelaminObject.jenis_kelamin];
+                        (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.jenis_kelamin];
                         }),
                         null,
                     ],
@@ -191,7 +192,7 @@ perpustakaanPetugasRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Petugas({
-                _id: (await Petugas.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Petugas.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -204,7 +205,9 @@ perpustakaanPetugasRouter
                 res.redirect("create?response=success");
             } catch (error: any) {
                 if (error.code == 11000) {
-                    res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
+                    if (error.keyPattern.nomor_telepon) {
+                        res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
+                    }
                 } else {
                     res.redirect("create?response=error");
                 }
@@ -218,10 +221,10 @@ perpustakaanPetugasRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Petugas.exists({ _id: id });
+        const dataExist = await Petugas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Petugas.findOne({ _id: id });
+            const itemObject = await Petugas.findOne({ _id: id }).select("nama id_tempat_lahir tanggal_lahir id_jenis_kelamin jabatan nomor_telepon").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -246,8 +249,8 @@ perpustakaanPetugasRouter
                         display: "Tempat Lahir",
                         type: "select",
                         value: [
-                            (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 })).map((tempatLahirObject: any) => {
-                                return [tempatLahirObject._id, tempatLahirObject.tempat_lahir];
+                            (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.tempat_lahir];
                             }),
                             itemObject.id_tempat_lahir,
                         ],
@@ -269,8 +272,8 @@ perpustakaanPetugasRouter
                         display: "Jenis Kelamin",
                         type: "select",
                         value: [
-                            (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 })).map((jenisKelaminObject: any) => {
-                                return [jenisKelaminObject._id, jenisKelaminObject.jenis_kelamin];
+                            (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.jenis_kelamin];
                             }),
                             itemObject.id_jenis_kelamin,
                         ],
@@ -303,7 +306,7 @@ perpustakaanPetugasRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Petugas.exists({ _id: id });
+        const dataExist = await Petugas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -324,11 +327,13 @@ perpustakaanPetugasRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch (error: any) {
                     if (error.code == 11000) {
-                        res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan`);
+                        if (error.keyPattern.nomor_telepon) {
+                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan`);
+                        }
                     } else {
                         res.redirect(`update?id=${id}&response=error`);
                     }
@@ -344,11 +349,12 @@ perpustakaanPetugasRouter
 perpustakaanPetugasRouter
     .route("/delete")
     .get(async (req, res) => {
-        const id = req.query.id;
-        const dataExist = await Petugas.exists({ _id: id });
+        const id: any = req.query.id;
+        const dataExist = await Petugas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject: any = await Petugas.findOne({ _id: id })
+                .select("nama id_tempat_lahir tanggal_lahir id_jenis_kelamin jabatan nomor_telepon")
                 .populate({
                     path: "id_tempat_lahir",
                     select: "tempat_lahir",
@@ -358,7 +364,8 @@ perpustakaanPetugasRouter
                     path: "id_jenis_kelamin",
                     select: "jenis_kelamin",
                     model: JenisKelamin,
-                });
+                })
+                .lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -430,16 +437,16 @@ perpustakaanPetugasRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Petugas.exists({ _id: id });
+        const dataExist = await Petugas.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = await Peminjaman.exists({ id_petugas: id });
+            const dataIsUsed = (await Peminjaman.exists({ id_petugas: id }).lean()) || (await Pengembalian.exists({ id_petugas: id }).lean());
 
             if (dataIsUsed == null) {
                 try {
-                    await Petugas.deleteOne({ _id: id });
+                    await Petugas.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
