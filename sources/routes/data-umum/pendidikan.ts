@@ -26,9 +26,9 @@ dataUmumPendidikanRouter.use(express.static("sources/public"));
 dataUmumPendidikanRouter.use(express.urlencoded({ extended: false }));
 
 dataUmumPendidikanRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Pendidikan.find().sort({ pendidikan: 1 });
+    const tableItemArray = await Pendidikan.find().sort({ pendidikan: 1 }).lean();
 
-    const documentCount = await Pendidikan.countDocuments();
+    const documentCount = await Pendidikan.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -54,7 +54,7 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await Pendidikan.findOne().sort({ dibuat: -1 })).pendidikan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Pendidikan.findOne().select("pendidikan").sort({ dibuat: -1 }).lean()).pendidikan : "Tidak Ada",
                     },
                 ],
             },
@@ -65,7 +65,7 @@ dataUmumPendidikanRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await Pendidikan.findOne().sort({ diubah: -1 })).pendidikan : "Tidak Ada",
+                        value: documentCount >= 1 ? (await Pendidikan.findOne().select("pendidikan").sort({ diubah: -1 }).lean()).pendidikan : "Tidak Ada",
                     },
                 ],
             },
@@ -118,7 +118,7 @@ dataUmumPendidikanRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Pendidikan({
-                _id: (await Pendidikan.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await Pendidikan.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -129,7 +129,7 @@ dataUmumPendidikanRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
@@ -141,10 +141,10 @@ dataUmumPendidikanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Pendidikan.findOne({ _id: id });
+            const itemObject = await Pendidikan.findOne({ _id: id }).select("pendidikan singkatan").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -180,7 +180,7 @@ dataUmumPendidikanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -201,9 +201,9 @@ dataUmumPendidikanRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
-                } catch {
+                } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
                 }
             } else if (inputArray.includes(undefined)) {
@@ -218,10 +218,10 @@ dataUmumPendidikanRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Pendidikan.findOne({ _id: id });
+            const itemObject = await Pendidikan.findOne({ _id: id }).select("pendidikan singkatan").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -240,6 +240,15 @@ dataUmumPendidikanRouter
                         placeholder: "Input pendidikan kelamin disini",
                         enable: false,
                     },
+                    {
+                        id: 2,
+                        name: "singkatan",
+                        display: "Singkatan",
+                        type: "text",
+                        value: itemObject.singkatan,
+                        placeholder: "Input singkatan disini",
+                        enable: false,
+                    },
                 ],
             });
         } else if (dataExist == null) {
@@ -248,16 +257,16 @@ dataUmumPendidikanRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await Pendidikan.exists({ _id: id });
+        const dataExist = await Pendidikan.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const dataIsUsed = (await Alumni.exists({ id_pendidikan: id })) || (await Guru.exists({ id_pendidikan: id }));
+            const dataIsUsed = (await Alumni.exists({ id_pendidikan: id }).lean()) || (await Guru.exists({ id_pendidikan: id }).lean());
 
             if (dataIsUsed == null) {
                 try {
-                    await Pendidikan.deleteOne({ _id: id });
+                    await Pendidikan.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {

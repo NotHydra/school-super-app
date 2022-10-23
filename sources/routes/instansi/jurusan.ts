@@ -104,7 +104,7 @@ instansiJurusanRouter
             try {
                 await itemObject.save();
                 res.redirect("create?response=success");
-            } catch (error) {
+            } catch (error: any) {
                 res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
@@ -170,7 +170,7 @@ instansiJurusanRouter
                     ).lean();
 
                     res.redirect(`update?id=${id}&response=success`);
-                } catch {
+                } catch (error: any) {
                     res.redirect(`update?id=${id}&response=error`);
                 }
             } else if (inputArray.includes(undefined)) {
@@ -224,7 +224,7 @@ instansiJurusanRouter
                 try {
                     await Jurusan.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
-                } catch (error) {
+                } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
                 }
             } else if (dataIsUsed != null) {
