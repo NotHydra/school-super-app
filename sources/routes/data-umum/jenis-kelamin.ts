@@ -20,9 +20,9 @@ dataUmumJenisKelaminRouter.use(express.static("sources/public"));
 dataUmumJenisKelaminRouter.use(express.urlencoded({ extended: false }));
 
 dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await JenisKelamin.find().sort({ jenis_kelamin: 1 });
+    const tableItemArray = await JenisKelamin.find().sort({ jenis_kelamin: 1 }).lean();
 
-    const documentCount = await JenisKelamin.countDocuments();
+    const documentCount = await JenisKelamin.countDocuments().lean();
     res.render("pages/table", {
         headTitle,
         navActive,
@@ -43,13 +43,15 @@ dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value: documentCount >= 1 ? (await JenisKelamin.findOne().sort({ dibuat: -1 })).jenis_kelamin : "Tidak Ada",
+                        value:
+                            documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ dibuat: -1 }).lean()).jenis_kelamin : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value: documentCount >= 1 ? (await JenisKelamin.findOne().sort({ diubah: -1 })).jenis_kelamin : "Tidak Ada",
+                        value:
+                            documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ diubah: -1 }).lean()).jenis_kelamin : "Tidak Ada",
                     },
                 ],
             },
@@ -93,7 +95,7 @@ dataUmumJenisKelaminRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new JenisKelamin({
-                _id: (await JenisKelamin.findOne().sort({ _id: -1 }))?._id + 1 || 1,
+                _id: (await JenisKelamin.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
 
                 ...attributeArray,
 
@@ -116,10 +118,10 @@ dataUmumJenisKelaminRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await JenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await JenisKelamin.findOne({ _id: id });
+            const itemObject = await JenisKelamin.findOne({ _id: id }).select("jenis_kelamin").lean();
 
             res.render("pages/update", {
                 headTitle,
@@ -146,7 +148,7 @@ dataUmumJenisKelaminRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await JenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -167,7 +169,7 @@ dataUmumJenisKelaminRouter
 
                             diubah: new Date(),
                         }
-                    );
+                    ).lean();
                     res.redirect(`update?id=${id}&response=success`);
                 } catch {
                     res.redirect(`update?id=${id}&response=error`);
@@ -184,10 +186,10 @@ dataUmumJenisKelaminRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await JenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await JenisKelamin.findOne({ _id: id });
+            const itemObject = await JenisKelamin.findOne({ _id: id }).select("jenis_kelamin").lean();
 
             res.render("pages/delete", {
                 headTitle,
@@ -214,17 +216,17 @@ dataUmumJenisKelaminRouter
     })
     .post(async (req, res) => {
         const id = req.query.id;
-        const dataExist = await JenisKelamin.exists({ _id: id });
+        const dataExist = await JenisKelamin.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const dataIsUsed =
-                (await Siswa.exists({ id_jenis_kelamin: id })) ||
-                (await Guru.exists({ id_jenis_kelamin: id })) ||
-                (await Petugas.exists({ id_jenis_kelamin: id }));
+                (await Siswa.exists({ id_jenis_kelamin: id }).lean()) ||
+                (await Guru.exists({ id_jenis_kelamin: id }).lean()) ||
+                (await Petugas.exists({ id_jenis_kelamin: id }).lean());
 
             if (dataIsUsed == null) {
                 try {
-                    await JenisKelamin.deleteOne({ _id: id });
+                    await JenisKelamin.deleteOne({ _id: id }).lean();
                     res.redirect("./?response=success");
                 } catch (error) {
                     res.redirect(`delete?id=${id}&response=error`);
