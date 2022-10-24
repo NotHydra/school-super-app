@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { Jurusan, Rombel, TahunRombel, Tingkat } from "../../models";
 
-import { datasetYear } from "../../utility";
+import { blueColorPattern, datasetYear } from "../../utility";
 
 import { instansiRombelRouter } from "./rombel";
 import { instansiTingkatRouter } from "./tingkat";
@@ -20,6 +20,10 @@ instansiRouter.get("/", async (req, res) => {
     const tingkatChartData: any = await datasetYear(Tingkat, currentYear);
     const jurusanChartData: any = await datasetYear(Jurusan, currentYear);
     const tahunRombelChartData: any = await datasetYear(TahunRombel, currentYear);
+
+    const tingkatTotal = await Tingkat.countDocuments().lean();
+    const jurusanTotal = await Jurusan.countDocuments().lean();
+    const tahunRombelTotal = await TahunRombel.countDocuments().lean();
 
     res.render("pages/index", {
         headTitle,
@@ -115,6 +119,61 @@ instansiRouter.get("/", async (req, res) => {
                         dataset: tahunRombelChartData.dataset,
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
+                    },
+                ],
+            },
+        ],
+        donutChartArray: [
+            {
+                id: 1,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Rombel Berdasarkan Tingkat",
+                        dataset: await Promise.all(
+                            (
+                                await Tingkat.find().select("tingkat").sort({ tingkat: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.tingkat,
+                                    value: await Rombel.countDocuments({ id_tingkat: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tingkatTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Rombel Berdasarkan Jurusan",
+                        dataset: await Promise.all(
+                            (
+                                await Jurusan.find().select("jurusan").sort({ jurusan: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.jurusan,
+                                    value: await Rombel.countDocuments({ id_jurusan: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, jurusanTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 3,
+                        title: "Statistik Rombel Berdasarkan Tahun Rombel",
+                        dataset: await Promise.all(
+                            (
+                                await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.tahun_rombel,
+                                    value: await Rombel.countDocuments({ id_tahun_rombel: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tahunRombelTotal),
+                                };
+                            })
+                        ),
                     },
                 ],
             },
