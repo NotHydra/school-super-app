@@ -119,6 +119,7 @@ dataUmumRouter.get("/", async (req, res) => {
                 ],
             },
         ],
+        donutChartArray: [],
     });
 });
 

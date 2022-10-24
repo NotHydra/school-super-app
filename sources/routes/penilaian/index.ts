@@ -51,6 +51,7 @@ penilaianRouter.get("/", async (req, res) => {
                 ],
             },
         ],
+        donutChartArray: [],
     });
 });
 

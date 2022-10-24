@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import { datasetYear } from "../../utility";
+import { blueColorPattern, datasetYear } from "../../utility";
 
-import { Anggota, Buku, Kategori, Peminjaman, Penerbit, Pengembalian, Penulis, Petugas } from "../../models";
+import { Anggota, Buku, JenisKelamin, Kategori, Peminjaman, Penerbit, Pengembalian, Penulis, Petugas, TempatLahir } from "../../models";
 
 import { perpustakaanAnggotaRouter } from "./anggota";
 import { perpustakaanPetugasRouter } from "./petugas";
@@ -28,6 +28,12 @@ perpustakaanRouter.get("/", async (req, res) => {
     const penerbitChartData: any = await datasetYear(Penerbit, currentYear);
     const peminjamanChartData: any = await datasetYear(Peminjaman, currentYear);
     const pengembalianChartData: any = await datasetYear(Pengembalian, currentYear);
+
+    const tempatLahirTotal = await TempatLahir.countDocuments().lean();
+    const jenisKelaminTotal = await JenisKelamin.countDocuments().lean();
+    const kategoriTotal = await Kategori.countDocuments().lean();
+    const penulisTotal = await Penulis.countDocuments().lean();
+    const penerbitTotal = await Penerbit.countDocuments().lean();
 
     res.render("pages/index", {
         headTitle,
@@ -214,6 +220,121 @@ perpustakaanRouter.get("/", async (req, res) => {
                         dataset: pengembalianChartData.dataset,
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
+                    },
+                ],
+            },
+        ],
+        donutChartArray: [
+            {
+                id: 1,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Petugas Berdasarkan Tempat Lahir",
+                        dataset: await Promise.all(
+                            (
+                                await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.tempat_lahir,
+                                    value: await Petugas.countDocuments({ id_tempat_lahir: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tempatLahirTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Petugas Berdasarkan Jenis Kelamin",
+                        dataset: await Promise.all(
+                            (
+                                await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.jenis_kelamin,
+                                    value: await Petugas.countDocuments({ id_jenis_kelamin: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, jenisKelaminTotal),
+                                };
+                            })
+                        ),
+                    },
+                ],
+            },
+            {
+                id: 2,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Buku Berdasarkan Kategori",
+                        dataset: await Promise.all(
+                            (
+                                await Kategori.find().select("kategori").sort({ kategori: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.kategori,
+                                    value: await Buku.countDocuments({ id_kategori: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, kategoriTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Buku Berdasarkan Penulis",
+                        dataset: await Promise.all(
+                            (
+                                await Penulis.find().select("penulis").sort({ penulis: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.penulis,
+                                    value: await Buku.countDocuments({ id_penulis: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, penulisTotal),
+                                };
+                            })
+                        ),
+                    },
+                ],
+            },
+            {
+                id: 3,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Buku Berdasarkan Penerbit",
+                        dataset: await Promise.all(
+                            (
+                                await Penerbit.find().select("penerbit").sort({ penerbit: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.penerbit,
+                                    value: await Buku.countDocuments({ id_penerbit: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, penerbitTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Peminjaman & Pengembalian",
+                        dataset: [
+                            {
+                                id: 1,
+                                label: "Peminjaman",
+                                value: await Peminjaman.countDocuments().lean(),
+                                color: blueColorPattern(1, 2),
+                            },
+                            {
+                                id: 2,
+                                label: "Pengembalian",
+                                value: await Pengembalian.countDocuments().lean(),
+                                color: blueColorPattern(2, 2),
+                            },
+                        ],
                     },
                 ],
             },
