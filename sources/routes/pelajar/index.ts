@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import { datasetYear } from "../../utility";
+import { blueColorPattern, datasetYear } from "../../utility";
 
-import { Siswa, TahunMasuk } from "../../models";
+import { JenisKelamin, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
 
 import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
@@ -16,6 +16,11 @@ pelajarRouter.get("/", async (req, res) => {
 
     const siswaChartData: any = await datasetYear(Siswa, currentYear);
     const tahunMasukChartData: any = await datasetYear(TahunMasuk, currentYear);
+
+    const jenisKelaminTotal = await JenisKelamin.countDocuments().lean();
+    const tempatLahirTotal = await TempatLahir.countDocuments().lean();
+    const tahunMasukTotal = await TahunMasuk.countDocuments().lean();
+    const rombelTotal = await Rombel.countDocuments().lean();
 
     res.render("pages/index", {
         headTitle,
@@ -68,6 +73,86 @@ pelajarRouter.get("/", async (req, res) => {
                         dataset: tahunMasukChartData.dataset,
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
+                    },
+                ],
+            },
+        ],
+        donutChartArray: [
+            {
+                id: 1,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Siswa Berdasarkan Jenis Kelamin",
+                        dataset: await Promise.all(
+                            (
+                                await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.jenis_kelamin,
+                                    value: await Siswa.countDocuments({ id_jenis_kelamin: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, jenisKelaminTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Siswa Berdasarkan Tempat Lahir",
+                        dataset: await Promise.all(
+                            (
+                                await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.tempat_lahir,
+                                    value: await Siswa.countDocuments({ id_tempat_lahir: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tempatLahirTotal),
+                                };
+                            })
+                        ),
+                    },
+                ],
+            },
+            {
+                id: 2,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Siswa Berdasarkan Tahun Masuk",
+                        dataset: await Promise.all(
+                            (
+                                await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.tahun_masuk,
+                                    value: await Siswa.countDocuments({ id_tahun_masuk: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tahunMasukTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Siswa Berdasarkan Rombel",
+                        dataset: await Promise.all(
+                            (
+                                await Rombel.find()
+                                    .select("rombel id_tahun_rombel")
+                                    .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
+                                    .sort({ rombel: 1 })
+                                    .lean()
+                            ).map(async (itemObject: any, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: `${itemObject.rombel} - ${itemObject.id_tahun_rombel.tahun_rombel}`,
+                                    value: await Siswa.countDocuments({ id_rombel: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, rombelTotal),
+                                };
+                            })
+                        ),
                     },
                 ],
             },
