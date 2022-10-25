@@ -82,6 +82,7 @@ pengajarRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Guru Berdasarkan Jenis Kelamin",
+                        link: { link: "pengajar/guru", title: "Guru", subTitle: "Pengajar" },
                         dataset: await Promise.all(
                             (
                                 await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()
@@ -98,6 +99,7 @@ pengajarRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Guru Berdasarkan Tempat Lahir",
+                        link: { link: "pengajar/guru", title: "Guru", subTitle: "Pengajar" },
                         dataset: await Promise.all(
                             (
                                 await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()

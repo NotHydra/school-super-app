@@ -84,6 +84,7 @@ pelajarRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Siswa Berdasarkan Jenis Kelamin",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
                             (
                                 await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()
@@ -100,6 +101,7 @@ pelajarRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Siswa Berdasarkan Tempat Lahir",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
                             (
                                 await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()
@@ -121,6 +123,7 @@ pelajarRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Siswa Berdasarkan Tahun Masuk",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
                             (
                                 await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()
@@ -137,6 +140,7 @@ pelajarRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Siswa Berdasarkan Rombel",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
                             (
                                 await Rombel.find()

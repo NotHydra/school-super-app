@@ -130,6 +130,7 @@ instansiRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Rombel Berdasarkan Tingkat",
+                        link: { link: "instansi/rombel", title: "Rombel", subTitle: "Instansi" },
                         dataset: await Promise.all(
                             (
                                 await Tingkat.find().select("tingkat").sort({ tingkat: 1 }).lean()
@@ -146,6 +147,7 @@ instansiRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Rombel Berdasarkan Jurusan",
+                        link: { link: "instansi/rombel", title: "Rombel", subTitle: "Instansi" },
                         dataset: await Promise.all(
                             (
                                 await Jurusan.find().select("jurusan").sort({ jurusan: 1 }).lean()
@@ -159,9 +161,15 @@ instansiRouter.get("/", async (req, res) => {
                             })
                         ),
                     },
+                ],
+            },
+            {
+                id: 2,
+                donutChartChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Statistik Rombel Berdasarkan Tahun Rombel",
+                        link: { link: "instansi/rombel", title: "Rombel", subTitle: "Instansi" },
                         dataset: await Promise.all(
                             (
                                 await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()

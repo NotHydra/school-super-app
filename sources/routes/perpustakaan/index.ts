@@ -231,6 +231,7 @@ perpustakaanRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Petugas Berdasarkan Tempat Lahir",
+                        link: { link: "perpustakaan/petugas", title: "Petugas", subTitle: "Perpustakaan" },
                         dataset: await Promise.all(
                             (
                                 await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()
@@ -247,6 +248,7 @@ perpustakaanRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Petugas Berdasarkan Jenis Kelamin",
+                        link: { link: "perpustakaan/petugas", title: "Petugas", subTitle: "Perpustakaan" },
                         dataset: await Promise.all(
                             (
                                 await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()
@@ -268,6 +270,7 @@ perpustakaanRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Buku Berdasarkan Kategori",
+                        link: { link: "perpustakaan/buku", title: "Buku", subTitle: "Perpustakaan" },
                         dataset: await Promise.all(
                             (
                                 await Kategori.find().select("kategori").sort({ kategori: 1 }).lean()
@@ -284,6 +287,7 @@ perpustakaanRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Buku Berdasarkan Penulis",
+                        link: { link: "perpustakaan/buku", title: "Buku", subTitle: "Perpustakaan" },
                         dataset: await Promise.all(
                             (
                                 await Penulis.find().select("penulis").sort({ penulis: 1 }).lean()
@@ -305,6 +309,7 @@ perpustakaanRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Buku Berdasarkan Penerbit",
+                        link: { link: "perpustakaan/buku", title: "Buku", subTitle: "Perpustakaan" },
                         dataset: await Promise.all(
                             (
                                 await Penerbit.find().select("penerbit").sort({ penerbit: 1 }).lean()
@@ -321,6 +326,7 @@ perpustakaanRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Peminjaman & Pengembalian",
+                        link: { link: "perpustakaan/pengembalian", title: "Pengembalian", subTitle: "Perpustakaan" },
                         dataset: [
                             {
                                 id: 1,

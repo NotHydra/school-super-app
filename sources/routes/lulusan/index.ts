@@ -84,6 +84,7 @@ lulusanRouter.get("/", async (req, res) => {
                     {
                         id: 1,
                         title: "Statistik Alumni Berdasarkan Rombel",
+                        link: { link: "lulusan/alumni", title: "Alumni", subTitle: "Lulusan" },
                         dataset: await Promise.all(
                             (
                                 await Rombel.find()
@@ -110,6 +111,7 @@ lulusanRouter.get("/", async (req, res) => {
                     {
                         id: 2,
                         title: "Statistik Alumni Berdasarkan Tahun Masuk",
+                        link: { link: "lulusan/alumni", title: "Alumni", subTitle: "Lulusan" },
                         dataset: await Promise.all(
                             (
                                 await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()
@@ -132,6 +134,7 @@ lulusanRouter.get("/", async (req, res) => {
                     {
                         id: 3,
                         title: "Statistik Alumni Berdasarkan Tahun Lulus",
+                        link: { link: "lulusan/alumni", title: "Alumni", subTitle: "Lulusan" },
                         dataset: await Promise.all(
                             (
                                 await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: 1 }).lean()
