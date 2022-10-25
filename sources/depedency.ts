@@ -11,7 +11,7 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama (WIP)",
+                title: "Utama",
                 link: "",
                 icon: "circle",
             },
