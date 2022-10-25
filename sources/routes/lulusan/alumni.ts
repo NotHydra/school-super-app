@@ -204,6 +204,9 @@ lulusanAlumniRouter
                             ];
                         }),
                         null,
+                        (await Alumni.find().select("id_siswa").lean()).map((itemObject: any) => {
+                            return itemObject.id_siswa;
+                        }),
                     ],
                     placeholder: "Input siswa disini",
                     enable: true,
@@ -336,6 +339,9 @@ lulusanAlumniRouter
                                 ];
                             }),
                             itemObject.id_siswa,
+                            (await Alumni.find().select("id_siswa").lean()).map((itemObject: any) => {
+                                return itemObject.id_siswa;
+                            }),
                         ],
                         placeholder: "Input siswa disini",
                         enable: true,

@@ -143,6 +143,9 @@ perpustakaanAnggotaRouter
                             ];
                         }),
                         null,
+                        (await Anggota.find().select("id_siswa").lean()).map((itemObject: any) => {
+                            return itemObject.id_siswa;
+                        }),
                     ],
                     placeholder: "Input siswa disini",
                     enable: true,
@@ -233,6 +236,9 @@ perpustakaanAnggotaRouter
                                 ];
                             }),
                             itemObject.id_siswa,
+                            (await Anggota.find().select("id_siswa").lean()).map((itemObject: any) => {
+                                return itemObject.id_siswa;
+                            }),
                         ],
                         placeholder: "Input siswa disini",
                         enable: true,

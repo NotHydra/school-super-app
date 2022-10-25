@@ -167,6 +167,9 @@ perpustakaanPengembalianRouter
                             ];
                         }),
                         null,
+                        (await Pengembalian.find().select("id_peminjaman").lean()).map((itemObject: any) => {
+                            return itemObject.id_peminjaman;
+                        }),
                     ],
                     placeholder: "Input peminjaman disini",
                     enable: true,

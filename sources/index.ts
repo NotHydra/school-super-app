@@ -132,41 +132,41 @@ app.get("/", async (req, res) => {
     });
 });
 
-app.get("/reset-database", async (req, res) => {
-    await Guru.deleteMany();
-    await Jabatan.deleteMany();
+// app.get("/reset-database", async (req, res) => {
+//     await Guru.deleteMany();
+//     await Jabatan.deleteMany();
 
-    await Siswa.deleteMany();
-    await TahunMasuk.deleteMany();
+//     await Siswa.deleteMany();
+//     await TahunMasuk.deleteMany();
 
-    await Alumni.deleteMany();
-    await TahunLulus.deleteMany();
+//     await Alumni.deleteMany();
+//     await TahunLulus.deleteMany();
 
-    await MataPelajaran.deleteMany();
+//     await MataPelajaran.deleteMany();
 
-    await Rombel.deleteMany();
-    await RombelSemester.deleteMany();
-    await RombelMataPelajaran.deleteMany();
-    await Tingkat.deleteMany();
-    await Jurusan.deleteMany();
-    await TahunRombel.deleteMany();
+//     await Rombel.deleteMany();
+//     await RombelSemester.deleteMany();
+//     await RombelMataPelajaran.deleteMany();
+//     await Tingkat.deleteMany();
+//     await Jurusan.deleteMany();
+//     await TahunRombel.deleteMany();
 
-    await TempatLahir.deleteMany();
-    await JenisKelamin.deleteMany();
-    await Universitas.deleteMany();
-    await Pendidikan.deleteMany();
+//     await TempatLahir.deleteMany();
+//     await JenisKelamin.deleteMany();
+//     await Universitas.deleteMany();
+//     await Pendidikan.deleteMany();
 
-    await Anggota.deleteMany();
-    await Petugas.deleteMany();
-    await Buku.deleteMany();
-    await Kategori.deleteMany();
-    await Penulis.deleteMany();
-    await Penerbit.deleteMany();
-    await Peminjaman.deleteMany();
-    await PeminjamanBuku.deleteMany();
+//     await Anggota.deleteMany();
+//     await Petugas.deleteMany();
+//     await Buku.deleteMany();
+//     await Kategori.deleteMany();
+//     await Penulis.deleteMany();
+//     await Penerbit.deleteMany();
+//     await Peminjaman.deleteMany();
+//     await PeminjamanBuku.deleteMany();
 
-    res.send("done");
-});
+//     res.send("done");
+// });
 
 app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);

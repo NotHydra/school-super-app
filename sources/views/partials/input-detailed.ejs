@@ -20,9 +20,15 @@
                                 <option value="<%= detailedInputValue[0] %>" selected><%= detailedInputValue[1] %></option>
                         <% 
                             } else if (detailedInputObject.value[1] != detailedInputValue[0]) {
+                                if (detailedInputObject.value[2] == null || (detailedInputObject.value[2] != null && !(detailedInputObject.value[2].includes(detailedInputValue[0])))) {
                         %>
-                                <option value="<%= detailedInputValue[0] %>"><%= detailedInputValue[1] %></option>
-                    <% 
+                                    <option value="<%= detailedInputValue[0] %>"><%= detailedInputValue[1] %></option>
+                        <%
+                                }  else if (detailedInputObject.value[2] != null && detailedInputObject.value[2].includes(detailedInputValue[0])) {     
+                        %>
+                                    <option value="<%= detailedInputValue[0] %>" disabled><%= detailedInputValue[1] %> - (Sudah Digunakan)</option>
+                        <%
+                                }
                             }
                         });
                     %>
