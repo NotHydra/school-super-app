@@ -41,18 +41,18 @@
         const filterArray = eval('<%- JSON.stringify(filterArray.map(filterObject => {return {name: filterObject.name, query: filterObject.query}})) %>');
 
         function filterSelect() {
-            let redirectString = "?";
+            let redirectString = ".";
             let queryLength = 0;
             
             filterArray.forEach((filterObject) => {
                 const value = document.getElementById(`${filterObject.name}_select`).value;
 
                 if (value != "semua") {
-                    redirectString += `${queryLength > 0 ? '&' : ''}${filterObject.query}=${value}`;
+                    redirectString += `${queryLength == 0 ? '?' : '&'}${filterObject.query}=${value}`;
                     queryLength += 1;
                 }
             });
-
+            
             window.location = redirectString;
         };
     </script>
