@@ -61,12 +61,22 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
     const typeValue: any = req.query.type;
     const siswaValue: any = req.query.siswa;
 
+    const tempatLahirValue: any = req.query.tempatLahir;
+    const jenisKelaminValue: any = req.query.jenisKelamin;
     const tahunMasukValue: any = req.query.tahunMasuk;
     const rombelValue: any = req.query.rombel;
     let filterValue = {};
 
     if (siswaValue != undefined && !isNaN(siswaValue)) {
         filterValue = { ...filterValue, _id: siswaValue };
+    }
+
+    if (tempatLahirValue != undefined && !isNaN(tempatLahirValue)) {
+        filterValue = { ...filterValue, id_tempat_lahir: tempatLahirValue };
+    }
+
+    if (jenisKelaminValue != undefined && !isNaN(jenisKelaminValue)) {
+        filterValue = { ...filterValue, id_jenis_kelamin: jenisKelaminValue };
     }
 
     if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
@@ -139,6 +149,34 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         filterArray: [
             {
                 id: 1,
+                display: "Tempat Lahir",
+                name: "tempat_lahir",
+                query: "tempatLahir",
+                placeholder: "Pilih tempat lahir",
+                value: tempatLahirValue,
+                option: (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tempat_lahir,
+                    };
+                }),
+            },
+            {
+                id: 2,
+                display: "Jenis Kelamin",
+                name: "jenis_kelamin",
+                query: "jenisKelamin",
+                placeholder: "Pilih jenis kelamin",
+                value: jenisKelaminValue,
+                option: (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.jenis_kelamin,
+                    };
+                }),
+            },
+            {
+                id: 3,
                 display: "Tahun Masuk",
                 name: "tahun_masuk",
                 query: "tahunMasuk",
@@ -152,7 +190,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                 }),
             },
             {
-                id: 2,
+                id: 4,
                 display: "Rombel",
                 name: "rombel",
                 query: "rombel",
