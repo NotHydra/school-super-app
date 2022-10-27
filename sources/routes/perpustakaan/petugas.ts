@@ -52,7 +52,19 @@ perpustakaanPetugasRouter.use(express.static("sources/public"));
 perpustakaanPetugasRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanPetugasRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Petugas.find()
+    const tempatLahirValue: any = req.query.tempatLahir;
+    const jenisKelaminValue: any = req.query.jenisKelamin;
+    let filterValue = {};
+
+    if (tempatLahirValue != undefined && !isNaN(tempatLahirValue)) {
+        filterValue = { ...filterValue, id_tempat_lahir: tempatLahirValue };
+    }
+
+    if (jenisKelaminValue != undefined && !isNaN(jenisKelaminValue)) {
+        filterValue = { ...filterValue, id_jenis_kelamin: jenisKelaminValue };
+    }
+
+    const tableItemArray = await Petugas.find(filterValue)
         .populate({
             path: "id_tempat_lahir",
             select: "tempat_lahir",
@@ -98,7 +110,36 @@ perpustakaanPetugasRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Tempat Lahir",
+                name: "tempat_lahir",
+                query: "tempatLahir",
+                placeholder: "Pilih tempat lahir",
+                value: tempatLahirValue,
+                option: (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tempat_lahir,
+                    };
+                }),
+            },
+            {
+                id: 2,
+                display: "Jenis Kelamin",
+                name: "jenis_kelamin",
+                query: "jenisKelamin",
+                placeholder: "Pilih jenis kelamin",
+                value: jenisKelaminValue,
+                option: (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.jenis_kelamin,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
     });
