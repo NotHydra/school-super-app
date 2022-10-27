@@ -65,8 +65,23 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
     const rombelValue: any = req.query.rombel;
     const tahunMasukValue: any = req.query.tahunMasuk;
     const tahunLulusValue: any = req.query.tahunLulus;
+    const universitasValue: any = req.query.universitas;
+    const pendidikanValue: any = req.query.pendidikan;
+    let filterValue = {};
 
-    let tableItemArray: any = await Alumni.find(tahunLulusValue != undefined && !isNaN(tahunLulusValue) ? { id_tahun_lulus: tahunLulusValue } : {})
+    if (tahunLulusValue != undefined && !isNaN(tahunLulusValue)) {
+        filterValue = { ...filterValue, id_tahun_lulus: tahunLulusValue };
+    }
+
+    if (universitasValue != undefined && !isNaN(universitasValue)) {
+        filterValue = { ...filterValue, id_universitas: universitasValue };
+    }
+
+    if (pendidikanValue != undefined && !isNaN(pendidikanValue)) {
+        filterValue = { ...filterValue, id_pendidikan: pendidikanValue };
+    }
+
+    let tableItemArray: any = await Alumni.find(filterValue)
         .populate({
             path: "id_siswa",
             select: "nisn nama_lengkap id_rombel id_tahun_masuk",
@@ -213,6 +228,34 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                     return {
                         value: itemObject._id,
                         display: itemObject.tahun_lulus,
+                    };
+                }),
+            },
+            {
+                id: 4,
+                display: "Universitas",
+                name: "universitas",
+                query: "universitas",
+                placeholder: "Pilih universitas",
+                value: universitasValue,
+                option: (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.universitas,
+                    };
+                }),
+            },
+            {
+                id: 5,
+                display: "Pendidikan",
+                name: "pendidikan",
+                query: "pendidikan",
+                placeholder: "Pilih pendidikan",
+                value: pendidikanValue,
+                option: (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: `${itemObject.pendidikan} - ${itemObject.singkatan}`,
                     };
                 }),
             },
