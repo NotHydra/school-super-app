@@ -73,7 +73,38 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
     const typeValue: any = req.query.type;
     const guruValue: any = req.query.guru;
 
-    const tableItemArray = await Guru.find(guruValue != undefined && !isNaN(guruValue) ? { _id: guruValue } : {})
+    const tempatLahirValue: any = req.query.tempatLahir;
+    const jenisKelaminValue: any = req.query.jenisKelamin;
+    const jabatanValue: any = req.query.jabatan;
+    const universitasValue: any = req.query.universitas;
+    const pendidikanValue: any = req.query.pendidikan;
+    let filterValue = {};
+
+    if (guruValue != undefined && !isNaN(guruValue)) {
+        filterValue = { ...filterValue, _id: guruValue };
+    }
+
+    if (tempatLahirValue != undefined && !isNaN(tempatLahirValue)) {
+        filterValue = { ...filterValue, id_tempat_lahir: tempatLahirValue };
+    }
+
+    if (jenisKelaminValue != undefined && !isNaN(jenisKelaminValue)) {
+        filterValue = { ...filterValue, id_jenis_kelamin: jenisKelaminValue };
+    }
+
+    if (jabatanValue != undefined && !isNaN(jabatanValue)) {
+        filterValue = { ...filterValue, id_jabatan: jabatanValue };
+    }
+
+    if (universitasValue != undefined && !isNaN(universitasValue)) {
+        filterValue = { ...filterValue, id_universitas: universitasValue };
+    }
+
+    if (pendidikanValue != undefined && !isNaN(pendidikanValue)) {
+        filterValue = { ...filterValue, id_pendidikan: pendidikanValue };
+    }
+
+    const tableItemArray = await Guru.find(filterValue)
         .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
         .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
         .populate({ path: "id_jabatan", select: "jabatan", model: Jabatan })
@@ -124,7 +155,78 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Tempat Lahir",
+                name: "tempat_lahir",
+                query: "tempatLahir",
+                placeholder: "Pilih tempat lahir",
+                value: tempatLahirValue,
+                option: (await TempatLahir.find().select("tempat_lahir").sort({ tempat_lahir: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tempat_lahir,
+                    };
+                }),
+            },
+            {
+                id: 2,
+                display: "Jenis Kelamin",
+                name: "jenis_kelamin",
+                query: "jenisKelamin",
+                placeholder: "Pilih jenis kelamin",
+                value: jenisKelaminValue,
+                option: (await JenisKelamin.find().select("jenis_kelamin").sort({ jenis_kelamin: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.jenis_kelamin,
+                    };
+                }),
+            },
+            {
+                id: 3,
+                display: "Jabatan",
+                name: "jabatan",
+                query: "jabatan",
+                placeholder: "Pilih jabatan",
+                value: jabatanValue,
+                option: (await Jabatan.find().select("jabatan").sort({ jabatan: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.jabatan,
+                    };
+                }),
+            },
+            {
+                id: 4,
+                display: "Universitas",
+                name: "universitas",
+                query: "universitas",
+                placeholder: "Pilih universitas",
+                value: universitasValue,
+                option: (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.universitas,
+                    };
+                }),
+            },
+            {
+                id: 5,
+                display: "Pendidikan",
+                name: "pendidikan",
+                query: "pendidikan",
+                placeholder: "Pilih pendidikan",
+                value: pendidikanValue,
+                option: (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: `${itemObject.pendidikan} - ${itemObject.singkatan}`,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
         typeValue,
