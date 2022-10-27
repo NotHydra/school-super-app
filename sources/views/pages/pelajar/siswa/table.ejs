@@ -20,9 +20,11 @@
                     <div class="container-fluid">
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
                         
-                        <% if (siswaValue == undefined) { %>
+                        <% if (typeValue == undefined) { %>
                             <%- include("./../../../partials/card-item.ejs"); -%>
-                        
+                        <% } %>
+
+                         <% if (typeValue == undefined || typeValue == "rombel") { %>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -126,7 +128,7 @@
                                                                             tableItemValue = moment(tableItemValue).format("DD-MM-YYYY");
                                                                         };
                                                                 %>
-                                                                        <td class="td-custom"><%= tableItemValue %></td>
+                                                                        <td class="td-custom"><%= (tableAttributeObject.type != "date" && tableItemValue != null) || (tableAttributeObject.type == "date" && tableItemValue != "Invalid date") ? tableItemValue : "Tidak Ada" %></td>
                                                                 <%
                                                                     }); 
                                                                 %>
@@ -134,10 +136,14 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Ubah</a>
-
-                                                                    <% if (siswaValue == undefined) { %>
-                                                                        <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %><%= siswaValue != undefined ? `&siswa=${siswaValue}` : '' %><%= instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : '' %>">Hapus</a>
+                                                                    <% if (typeValue == undefined) { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
+                                                                        <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                    <% } else if (typeValue == "anggota" || typeValue == "alumni") { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>&type=<%= typeValue %>&siswa=<%= siswaValue %>">Ubah</a>
+                                                                    <% } else if (typeValue == "rombel") { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>&type=<%= typeValue %>&rombel=<%= rombelValue %>">Ubah</a>
+                                                                        <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>&type=<%= typeValue %>&rombel=<%= rombelValue %>">Hapus</a>
                                                                     <% } %>
                                                                 </td>
                                                             </tr>
@@ -166,28 +172,37 @@
                             </div>
                         </div>
 
-                        <% if (siswaValue == undefined) { %>
+                        <% if (typeValue == undefined) { %>
                             <div class="row">
                                 <div class="col-12">
-                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create?instansiRombel=<%= instansiRombelValue %>">Buat</a>
+                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                                </div>
+                            </div>
+                        <% } else if (typeValue == "rombel") { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create?type=<%= typeValue %>&rombel=<%= rombelValue%>">Buat</a>
                                 </div>
                             </div>
 
-                            <% if (instansiRombelValue != undefined) { %>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/instansi/rombel/')">Kembali</a>
-                                    </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/instansi/rombel/')">Kembali</a>
                                 </div>
-                            <% } %>
-
-                        <% } else if (siswaValue != undefined) { %>
+                            </div>
+                        <% } else if (typeValue == "alumni") { %>
                             <div class="row">
                                 <div class="col-12">
                                     <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/lulusan/alumni/')">Kembali</a>
                                 </div>
                             </div>
-                        <% }%>
+                        <% } else if (typeValue == "anggota") { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/perpustakaan/anggota/')">Kembali</a>
+                                </div>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -207,7 +222,7 @@
             const tahunMasukValue = document.getElementById("tahun_masuk_select").value;
             const rombelValue = document.getElementById("rombel_select").value;
 
-            window.location = `./?tahunMasuk=${tahunMasukValue}&rombel=${rombelValue}`;
+            window.location = `?tahunMasuk=${tahunMasukValue}&rombel=${rombelValue}`;
         };
     </script>
 </html>

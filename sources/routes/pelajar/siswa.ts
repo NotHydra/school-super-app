@@ -58,10 +58,11 @@ pelajarSiswaRouter.use(express.static("sources/public"));
 pelajarSiswaRouter.use(express.urlencoded({ extended: false }));
 
 pelajarSiswaRouter.route("/").get(async (req, res) => {
+    const typeValue: any = req.query.type;
     const siswaValue: any = req.query.siswa;
+
     const tahunMasukValue: any = req.query.tahunMasuk;
     const rombelValue: any = req.query.rombel;
-    const instansiRombelValue: any = req.query.instansiRombel;
     let filterValue = {};
 
     if (siswaValue != undefined && !isNaN(siswaValue)) {
@@ -137,19 +138,20 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
         siswaValue,
         tahunMasukValue,
         tahunMasukArray: await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean(),
         rombelValue,
         rombelArray,
-        instansiRombelValue,
     });
 });
 
 pelajarSiswaRouter
     .route("/create")
     .get(async (req, res) => {
-        const instansiRombelValue: any = req.query.instansiRombel;
+        const typeValue: any = req.query.type;
+        const rombelValue: any = req.query.rombel;
 
         res.render("pages/pelajar/siswa/create", {
             headTitle,
@@ -233,21 +235,33 @@ pelajarSiswaRouter
                     display: "Rombel",
                     type: "select",
                     value: [
-                        (await Rombel.find().select("rombel").sort({ rombel: 1 }).lean()).map((itemObject: any) => {
+                        (
+                            await Rombel.find(typeValue == "rombel" ? { _id: rombelValue } : {})
+                                .select("rombel")
+                                .sort({ rombel: 1 })
+                                .lean()
+                        ).map((itemObject: any) => {
                             return [itemObject._id, itemObject.rombel];
                         }),
-                        instansiRombelValue != undefined ? instansiRombelValue : null,
+                        typeValue == "rombel" ? rombelValue : null,
                     ],
                     placeholder: "Input rombel disini",
                     enable: true,
                 },
             ],
-            instansiRombelValue,
+            typeValue,
+            rombelValue,
         });
     })
     .post(async (req, res) => {
-        const instansiRombelValue: any = req.query.instansiRombel;
-        const instansiRombelString: any = instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : "";
+        const typeValue: any = req.query.type;
+        const rombelValue: any = req.query.rombel;
+
+        let queryString: any = null;
+
+        if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+        }
 
         const attributeArray: any = {};
         const inputArray = tableAttributeArray.map((tableAttributeObject) => {
@@ -270,18 +284,18 @@ pelajarSiswaRouter
 
             try {
                 await itemObject.save();
-                res.redirect(`create?response=success${instansiRombelString}`);
+                res.redirect(`create?response=success${queryString}`);
             } catch (error: any) {
                 if (error.code == 11000) {
                     if (error.keyPattern.nisn) {
-                        res.redirect(`create?response=error&text=NISN sudah digunakan${instansiRombelString}`);
+                        res.redirect(`create?response=error&text=NISN sudah digunakan${queryString}`);
                     }
                 } else {
-                    res.redirect(`create?response=error${instansiRombelString}`);
+                    res.redirect(`create?response=error${queryString}`);
                 }
             }
         } else if (inputArray.includes(undefined)) {
-            res.redirect(`create?response=error&text=Data tidak lengkap${instansiRombelString}`);
+            res.redirect(`create?response=error&text=Data tidak lengkap${queryString}`);
         }
     });
 
@@ -289,8 +303,18 @@ pelajarSiswaRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
-        const siswaValue = req.query.siswa;
-        const instansiRombelValue: any = req.query.instansiRombel;
+
+        const typeValue: any = req.query.type;
+        const siswaValue: any = req.query.siswa;
+        const rombelValue: any = req.query.rombel;
+
+        let queryString = null;
+
+        if (typeValue == "anggota" || typeValue == "alumni") {
+            queryString = `&type=${typeValue}&siswa=${siswaValue}`;
+        } else if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+        }
 
         const dataExist = await Siswa.exists({ _id: id }).lean();
 
@@ -306,8 +330,9 @@ pelajarSiswaRouter
                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
                 toastText: req.query.text,
                 id,
+                typeValue,
                 siswaValue,
-                instansiRombelValue,
+                rombelValue,
                 detailedInputArray: [
                     {
                         id: 1,
@@ -395,16 +420,24 @@ pelajarSiswaRouter
                 ],
             });
         } else if (dataExist == null) {
-            const instansiRombelString = instansiRombelValue != undefined ? `&rombel=${instansiRombelValue}&instansiRombel=${instansiRombelValue}` : "";
-            res.redirect(`./?response=error&text=Data tidak valid${instansiRombelString}`);
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
         const dataExist = await Siswa.exists({ _id: id }).lean();
 
-        const instansiRombelValue: any = req.query.instansiRombel;
-        let instansiRombelString: any = instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : "";
+        const typeValue: any = req.query.type;
+        const siswaValue: any = req.query.siswa;
+        const rombelValue: any = req.query.rombel;
+
+        let queryString: any = null;
+
+        if (typeValue == "anggota" || typeValue == "alumni") {
+            queryString = `&type=${typeValue}&siswa=${siswaValue}`;
+        } else if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+        }
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -427,22 +460,21 @@ pelajarSiswaRouter
                         }
                     ).lean();
 
-                    res.redirect(`update?id=${id}&response=success${instansiRombelString}`);
+                    res.redirect(`update?id=${id}&response=success${queryString}`);
                 } catch (error: any) {
                     if (error.code == 11000) {
                         if (error.keyPattern.nisn) {
-                            res.redirect(`update?id=${id}&response=error&text=NISN sudah digunakan${instansiRombelString}`);
+                            res.redirect(`update?id=${id}&response=error&text=NISN sudah digunakan${queryString}`);
                         }
                     } else {
-                        res.redirect(`update?id=${id}&response=error${instansiRombelString}`);
+                        res.redirect(`update?id=${id}&response=error${queryString}`);
                     }
                 }
             } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${instansiRombelString}`);
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${queryString}`);
             }
         } else if (dataExist == null) {
-            instansiRombelString = instansiRombelValue != undefined ? `&rombel=${instansiRombelValue}&instansiRombel=${instansiRombelValue}` : "";
-            res.redirect(`./?response=error&text=Data tidak valid${instansiRombelString}`);
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     });
 
@@ -450,8 +482,15 @@ pelajarSiswaRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
-        const siswaValue = req.query.siswa;
-        const instansiRombelValue: any = req.query.instansiRombel;
+
+        const typeValue: any = req.query.type;
+        const rombelValue: any = req.query.rombel;
+
+        let queryString = null;
+
+        if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+        }
 
         const dataExist = await Siswa.exists({ _id: id }).lean();
 
@@ -471,8 +510,8 @@ pelajarSiswaRouter
                 toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
                 toastText: req.query.text,
                 id,
-                siswaValue,
-                instansiRombelValue,
+                typeValue,
+                rombelValue,
                 detailedInputArray: [
                     {
                         id: 1,
@@ -540,16 +579,21 @@ pelajarSiswaRouter
                 ],
             });
         } else if (dataExist == null) {
-            const instansiRombelString: any = instansiRombelValue != undefined ? `&rombel=${instansiRombelValue}&instansiRombel=${instansiRombelValue}` : "";
-            res.redirect(`./?response=error&text=Data tidak valid${instansiRombelString}`);
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     })
     .post(async (req, res) => {
         const id: any = req.query.id;
         const dataExist = await Siswa.exists({ _id: id }).lean();
 
-        const instansiRombelValue: any = req.query.instansiRombel;
-        let instansiRombelString: any = instansiRombelValue != undefined ? `&instansiRombel=${instansiRombelValue}` : "";
+        const typeValue: any = req.query.type;
+        const rombelValue: any = req.query.rombel;
+
+        let queryString = null;
+
+        if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+        }
 
         if (dataExist != null) {
             const dataIsUsed = (await Alumni.exists({ id_siswa: id }).lean()) || (await Anggota.exists({ id_siswa: id }).lean());
@@ -557,16 +601,14 @@ pelajarSiswaRouter
                 try {
                     await Siswa.deleteOne({ _id: id }).lean();
 
-                    instansiRombelString = instansiRombelValue != undefined ? `&rombel=${instansiRombelValue}&instansiRombel=${instansiRombelValue}` : "";
-                    res.redirect(`./?response=success${instansiRombelString}`);
+                    res.redirect(`./?response=success${queryString}`);
                 } catch (error: any) {
-                    res.redirect(`delete?id=${id}&response=error${instansiRombelString}`);
+                    res.redirect(`delete?id=${id}&response=error${queryString}`);
                 }
             } else if (dataIsUsed != null) {
-                res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain${instansiRombelString}`);
+                res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain${queryString}`);
             }
         } else if (dataExist == null) {
-            instansiRombelString = instansiRombelValue != undefined ? `&rombel=${instansiRombelValue}&instansiRombel=${instansiRombelValue}` : "";
-            res.redirect(`./?response=error&text=Data tidak valid${instansiRombelString}`);
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     });

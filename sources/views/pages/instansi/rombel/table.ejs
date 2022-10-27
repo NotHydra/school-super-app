@@ -146,7 +146,7 @@
                                                                             tableItemValue = moment(tableItemValue).format("DD-MM-YYYY");
                                                                         };
                                                                 %>
-                                                                        <td class="td-custom"><%= tableItemValue %></td>
+                                                                        <td class="td-custom"><%= (tableAttributeObject.type != "date" && tableItemValue != null) || (tableAttributeObject.type == "date" && tableItemValue != "Invalid date") ? tableItemValue : "Tidak Ada" %></td>
                                                                 <%
                                                                     }); 
                                                                 %>
@@ -154,8 +154,8 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/pengajar/guru?guru=<%= tableItemObject.id_wali_kelas._id %>">Wali Kelas</a>
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?rombel=<%= tableItemObject._id %>&instansiRombel=<%= tableItemObject._id %>">Siswa</a>
+                                                                    <a type="button" class="btn btn-block btn-primary" href="/pengajar/guru?type=rombel&guru=<%= tableItemObject.id_wali_kelas._id %>">Wali Kelas</a>
+                                                                    <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?type=rombel&rombel=<%= tableItemObject._id %>">Siswa</a>
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>
@@ -211,7 +211,7 @@
             const tahunRombelValue = document.getElementById("tahun_rombel_select").value;
 
 
-            window.location = `./?tingkat=${tingkatValue}&jurusan=${jurusanValue}&tahunRombel=${tahunRombelValue}`;
+            window.location = `?tingkat=${tingkatValue}&jurusan=${jurusanValue}&tahunRombel=${tahunRombelValue}`;
         };
     </script>
 </html>

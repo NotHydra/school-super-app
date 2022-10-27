@@ -70,6 +70,7 @@ pengajarGuruRouter.use(express.static("sources/public"));
 pengajarGuruRouter.use(express.urlencoded({ extended: false }));
 
 pengajarGuruRouter.route("/").get(async (req, res) => {
+    const typeValue: any = req.query.type;
     const guruValue: any = req.query.guru;
 
     const tableItemArray = await Guru.find(guruValue != undefined && !isNaN(guruValue) ? { _id: guruValue } : {})
@@ -125,6 +126,7 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
         guruValue,
     });
 });
@@ -291,8 +293,15 @@ pengajarGuruRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
+
+        const typeValue: any = req.query.type;
         const guruValue: any = req.query.guru;
-        const guruString: any = guruValue != undefined ? `&guru=${guruValue}` : "";
+
+        let queryString: any = null;
+
+        if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&guru=${guruValue}`;
+        }
 
         const dataExist = await Guru.exists({ _id: id }).lean();
 
@@ -416,18 +425,25 @@ pengajarGuruRouter
                         enable: true,
                     },
                 ],
+                typeValue,
                 guruValue,
             });
         } else if (dataExist == null) {
-            res.redirect(`./?response=error&text=Data tidak valid${guruString}`);
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
         const dataExist = await Guru.exists({ _id: id }).lean();
 
+        const typeValue: any = req.query.type;
         const guruValue: any = req.query.guru;
-        const guruString: any = guruValue != undefined ? `&guru=${guruValue}` : "";
+
+        let queryString: any = null;
+
+        if (typeValue == "rombel") {
+            queryString = `&type=${typeValue}&guru=${guruValue}`;
+        }
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -450,23 +466,23 @@ pengajarGuruRouter
                         }
                     ).lean();
 
-                    res.redirect(`update?id=${id}&response=success${guruString}`);
+                    res.redirect(`update?id=${id}&response=success${queryString}`);
                 } catch (error: any) {
                     if (error.code == 11000) {
                         if (error.keyPattern.nip) {
-                            res.redirect(`update?id=${id}&response=error&text=NIP sudah digunakan${guruString}`);
+                            res.redirect(`update?id=${id}&response=error&text=NIP sudah digunakan${queryString}`);
                         } else if (error.keyPattern.nomor_telepon) {
-                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${guruString}`);
+                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${queryString}`);
                         }
                     } else {
-                        res.redirect(`update?id=${id}&response=error${guruString}`);
+                        res.redirect(`update?id=${id}&response=error${queryString}`);
                     }
                 }
             } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${guruString}`);
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${queryString}`);
             }
         } else if (dataExist == null) {
-            res.redirect(`./?response=error&text=Data tidak valid${guruString}`);
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     });
 

@@ -19,7 +19,7 @@
                     <div class="container-fluid">
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
                         
-                        <% if (guruValue == undefined) { %>
+                        <% if (typeValue == undefined) { %>
                             <%- include("./../../../partials/card-item.ejs"); -%>
                         <% } %>
 
@@ -77,10 +77,11 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %><%= guruValue != undefined ? `&guru=${guruValue}` : '' %>">Ubah</a>
-
-                                                                    <% if (guruValue == undefined) { %>
+                                                                    <% if (typeValue == undefined) { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                         <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                    <% } else if (typeValue == "rombel") { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>&type=<%= typeValue %>&guru=<%= guruValue %>">Ubah</a>
                                                                     <% } %>
                                                                 </td>
                                                             </tr>
@@ -109,13 +110,13 @@
                             </div>
                         </div>
 
-                        <% if (guruValue == undefined) { %>
+                        <% if (typeValue == undefined) { %>
                             <div class="row">
                                 <div class="col-12">
                                     <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
                                 </div>
                             </div>
-                        <% } else if (guruValue != undefined) { %>
+                        <% } else if (typeValue == "rombel") { %>
                             <div class="row">
                                 <div class="col-12">
                                     <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/instansi/rombel/')">Kembali</a>

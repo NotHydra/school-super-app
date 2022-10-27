@@ -58,7 +58,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
         .lean();
 
     const documentCount = await Anggota.countDocuments().lean();
-    res.render("pages/table", {
+    res.render("pages/perpustakaan/anggota/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,

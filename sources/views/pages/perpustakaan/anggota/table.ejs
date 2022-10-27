@@ -4,7 +4,6 @@
 <html lang="en">
     <head>
         <%- include("./../../../partials/head.ejs"); -%> 
-        <%- include("./../../../partials/select-head.ejs"); -%>
         <%- include("./../../../partials/data-table-head.ejs"); -%>
         <%- include("./../../../partials/sweet-alert-head.ejs"); %>
     </head>
@@ -20,86 +19,6 @@
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
                         <%- include("./../../../partials/card-item.ejs"); -%>
                         
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label for="rombel_select">Rombel</label>
-                                            <select name="rombel_select" class="form-control select2bs4 full-width" id="rombel_select" onchange="filterSelect();">
-                                                <option disabled>Pilih rombel</option>
-
-                                                <option value="semua" selected>Semua</option>
-                                                
-                                                <% 
-                                                    rombelArray.forEach(rombelObject => { 
-                                                        if (rombelObject._id == rombelValue) { 
-                                                %> 
-                                                            <option value="<%= rombelObject._id %>" selected><%= rombelObject.rombel %></option>
-                                                    <% 
-                                                        } else if (rombelObject._id != rombelValue) {
-                                                    %>
-                                                            <option value="<%= rombelObject._id %>"><%= rombelObject.rombel %></option>
-                                                <% 
-                                                        }
-                                                    });
-                                                %>
-                                                    
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="tahun_masuk_select">Tahun Masuk</label>
-                                            <select name="tahun_masuk_select" class="form-control select2bs4 full-width" id="tahun_masuk_select" onchange="filterSelect();">
-                                                <option disabled>Pilih tahun masuk</option>
-
-                                                <option value="semua" selected>Semua</option>
-                                                
-                                                <% 
-                                                    tahunMasukArray.forEach(tahunMasukObject => { 
-                                                        if (tahunMasukObject._id == tahunMasukValue) { 
-                                                %> 
-                                                            <option value="<%= tahunMasukObject._id %>" selected><%= tahunMasukObject.tahun_masuk %></option>
-                                                    <% 
-                                                        } else if (tahunMasukObject._id != tahunMasukValue) {
-                                                    %>
-                                                            <option value="<%= tahunMasukObject._id %>"><%= tahunMasukObject.tahun_masuk %></option>
-                                                <% 
-                                                        }
-                                                    });
-                                                %>
-                                                    
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="tahun_lulus_select">Tahun Lulus</label>
-                                            <select name="tahun_lulus_select" class="form-control select2bs4 full-width" id="tahun_lulus_select" onchange="filterSelect();">
-                                                <option disabled>Pilih tahun lulus</option>
-
-                                                <option value="semua" selected>Semua</option>
-                                                
-                                                <% 
-                                                    tahunLulusArray.forEach(tahunLulusObject => { 
-                                                        if (tahunLulusObject._id == tahunLulusValue) { 
-                                                %> 
-                                                            <option value="<%= tahunLulusObject._id %>" selected><%= tahunLulusObject.tahun_lulus %></option>
-                                                    <% 
-                                                        } else if (tahunLulusObject._id != tahunLulusValue) {
-                                                    %>
-                                                            <option value="<%= tahunLulusObject._id %>"><%= tahunLulusObject.tahun_lulus %></option>
-                                                <% 
-                                                        }
-                                                    });
-                                                %>
-                                                    
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -154,7 +73,7 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?type=alumni&siswa=<%= tableItemObject.id_siswa._id %>">Siswa</a>
+                                                                    <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?type=anggota&siswa=<%= tableItemObject.id_siswa._id %>">Siswa</a>
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>
@@ -199,17 +118,6 @@
         <%- include("./../../../partials/script.ejs"); -%>
     </body>
 
-    <%- include("./../../../partials/select-script.ejs"); -%>
     <%- include("./../../../partials/data-table-script.ejs"); -%>
     <%- include("./../../../partials/toast-script.ejs"); -%>
-
-    <script>
-        function filterSelect() {
-            const rombelValue = document.getElementById("rombel_select").value;
-            const tahunMasukValue = document.getElementById("tahun_masuk_select").value;
-            const tahunLulusValue = document.getElementById("tahun_lulus_select").value;
-
-            window.location = `?rombel=${rombelValue}&tahunMasuk=${tahunMasukValue}&tahunLulus=${tahunLulusValue}`;
-        };
-    </script>
 </html>
