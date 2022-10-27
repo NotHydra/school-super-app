@@ -52,7 +52,15 @@ perpustakaanPengembalianRouter.use(express.static("sources/public"));
 perpustakaanPengembalianRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanPengembalianRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Pengembalian.find()
+    const typeValue: any = req.query.type;
+    const pengembalianValue: any = req.query.pengembalian;
+    let filterValue = {};
+
+    if (pengembalianValue != undefined && !isNaN(pengembalianValue)) {
+        filterValue = { ...filterValue, _id: pengembalianValue };
+    }
+
+    const tableItemArray = await Pengembalian.find(filterValue)
         .populate({
             path: "id_peminjaman",
             select: "id_anggota tanggal_peminjaman durasi_peminjaman",
@@ -90,7 +98,7 @@ perpustakaanPengembalianRouter.route("/").get(async (req, res) => {
         .sort({ diubah: -1 })
         .lean();
 
-    res.render("pages/table", {
+    res.render("pages/perpustakaan/pengembalian/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -134,6 +142,8 @@ perpustakaanPengembalianRouter.route("/").get(async (req, res) => {
         filterArray: [],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
+        pengembalianValue,
     });
 });
 
@@ -262,6 +272,16 @@ perpustakaanPengembalianRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
+
+        const typeValue: any = req.query.type;
+        const pengembalianValue: any = req.query.pengembalian;
+
+        let queryString = null;
+
+        if (typeValue == "peminjaman") {
+            queryString = `&type=${typeValue}&pengembalian=${pengembalianValue}`;
+        }
+
         const dataExist = await Pengembalian.exists({ _id: id }).lean();
 
         if (dataExist != null) {
@@ -275,13 +295,15 @@ perpustakaanPengembalianRouter
                 })
                 .lean();
 
-            res.render("pages/update", {
+            res.render("pages/perpustakaan/pengembalian/update", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
                 toastText: req.query.text,
                 id,
+                typeValue,
+                pengembalianValue,
                 detailedInputArray: [
                     {
                         id: 1,
@@ -313,7 +335,7 @@ perpustakaanPengembalianRouter
                         name: "tanggal_pengembalian",
                         display: "Tanggal Pengembalian",
                         type: "date",
-                        value: itemObject.tanggal_pengembalian,
+                        value: localMoment(itemObject.tanggal_pengembalian).format("YYYY-MM-DD"),
                         placeholder: "Input tanggal pengembalian disini",
                         enable: true,
                     },
@@ -329,21 +351,32 @@ perpustakaanPengembalianRouter
                 ],
             });
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
         const dataExist = await Pengembalian.exists({ _id: id }).lean();
 
+        const typeValue: any = req.query.type;
+        const pengembalianValue: any = req.query.pengembalian;
+
+        let queryString = null;
+
+        if (typeValue == "peminjaman") {
+            queryString = `&type=${typeValue}&pengembalian=${pengembalianValue}`;
+        }
+
         if (dataExist != null) {
             const attributeArray: any = {};
-            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+            const inputArray = tableAttributeArray.filter((tableAttributeObject) => {
                 const attributeCurrent = tableAttributeObject.value[0];
 
-                attributeArray[attributeCurrent] = req.body[attributeCurrent];
+                if (attributeCurrent != "id_peminjaman") {
+                    attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-                return req.body[attributeCurrent];
+                    return req.body[attributeCurrent];
+                }
             });
 
             if (!inputArray.includes(undefined)) {
@@ -356,21 +389,21 @@ perpustakaanPengembalianRouter
                             diubah: new Date(),
                         }
                     ).lean();
-                    res.redirect(`update?id=${id}&response=success`);
+                    res.redirect(`update?id=${id}&response=success${queryString}`);
                 } catch (error: any) {
                     if (error.code == 11000) {
                         if (error.keyPattern.id_peminjaman) {
-                            res.redirect(`update?id=${id}&response=error&text=Peminjaman sudah digunakan`);
+                            res.redirect(`update?id=${id}&response=error&text=Peminjaman sudah digunakan${queryString}`);
                         }
                     } else {
-                        res.redirect(`update?id=${id}&response=error`);
+                        res.redirect(`update?id=${id}&response=error${queryString}`);
                     }
                 }
             } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${queryString}`);
             }
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     });
 

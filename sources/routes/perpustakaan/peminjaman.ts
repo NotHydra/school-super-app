@@ -74,9 +74,12 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
                 })
             );
 
+            const status = await Pengembalian.exists({ id_peminjaman: tableItemObject._id }).lean();
+
             return {
                 ...tableItemObject,
-                status: (await Pengembalian.exists({ id_peminjaman: tableItemObject._id }).lean()) == null ? "Belum Dikembalikan" : "Sudah Dikembalikan",
+                status: status == null ? "Belum Dikembalikan" : "Sudah Dikembalikan",
+                id_pengembalian: status == null ? 0 : status._id,
             };
         })
     );
@@ -84,7 +87,6 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
     if (statusValue != undefined && !isNaN(statusValue)) {
         tableItemArray = tableItemArray.filter((tableItemObject: any) => {
             if ((parseInt(statusValue) == 0 ? "Belum Dikembalikan" : "Sudah Dikembalikan") == tableItemObject.status) {
-                console.log(parseInt(statusValue) == 0 ? "Belum Dikembalikan" : "Sudah Dikembalikan", tableItemObject.status);
                 return tableItemObject;
             }
         });

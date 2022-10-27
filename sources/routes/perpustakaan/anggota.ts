@@ -44,19 +44,18 @@ perpustakaanAnggotaRouter.use(express.static("sources/public"));
 perpustakaanAnggotaRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
+    const typeValue: any = req.query.type;
+    const anggotaValue: any = req.query.anggota;
+
     const rombelValue: any = req.query.rombel;
     const tahunMasukValue: any = req.query.tahunMasuk;
     let filterValue = {};
 
-    if (rombelValue != undefined && !isNaN(rombelValue)) {
-        filterValue = { ...filterValue, id_rombel: rombelValue };
+    if (anggotaValue != undefined && !isNaN(anggotaValue)) {
+        filterValue = { ...filterValue, _id: anggotaValue };
     }
 
-    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
-        filterValue = { ...filterValue, id_tahun_masuk: tahunMasukValue };
-    }
-
-    let tableItemArray = await Anggota.find()
+    let tableItemArray = await Anggota.find(filterValue)
         .populate({
             path: "id_siswa",
             select: "nisn nama_lengkap id_rombel id_tahun_masuk",
@@ -169,6 +168,8 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
+        anggotaValue,
     });
 });
 
@@ -262,18 +263,30 @@ perpustakaanAnggotaRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
+
+        const typeValue: any = req.query.type;
+        const anggotaValue: any = req.query.anggota;
+
+        let queryString = null;
+
+        if (typeValue == "peminjaman") {
+            queryString = `&type=${typeValue}&anggota=${anggotaValue}`;
+        }
+
         const dataExist = await Anggota.exists({ _id: id }).lean();
 
         if (dataExist != null) {
             const itemObject = await Anggota.findOne({ _id: id }).select("nomor_anggota id_siswa").lean();
 
-            res.render("pages/update", {
+            res.render("pages/perpustakaan/anggota/update", {
                 headTitle,
                 navActive,
                 toastResponse: req.query.response,
                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
                 toastText: req.query.text,
                 id,
+                typeValue,
+                anggotaValue,
                 detailedInputArray: [
                     {
                         id: 1,
@@ -314,12 +327,21 @@ perpustakaanAnggotaRouter
                 ],
             });
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     })
     .post(async (req, res) => {
         const id = req.query.id;
         const dataExist = await Anggota.exists({ _id: id }).lean();
+
+        const typeValue: any = req.query.type;
+        const anggotaValue: any = req.query.anggota;
+
+        let queryString = null;
+
+        if (typeValue == "peminjaman") {
+            queryString = `&type=${typeValue}&anggota=${anggotaValue}`;
+        }
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -341,21 +363,21 @@ perpustakaanAnggotaRouter
                             diubah: new Date(),
                         }
                     ).lean();
-                    res.redirect(`update?id=${id}&response=success`);
+                    res.redirect(`update?id=${id}&response=success${queryString}`);
                 } catch (error: any) {
                     if (error.code == 11000) {
                         if (error.keyPattern.id_siswa) {
-                            res.redirect(`update?id=${id}&response=error&text=Siswa sudah digunakan`);
+                            res.redirect(`update?id=${id}&response=error&text=Siswa sudah digunakan${queryString}`);
                         }
                     } else {
-                        res.redirect(`update?id=${id}&response=error`);
+                        res.redirect(`update?id=${id}&response=error${queryString}`);
                     }
                 }
             } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${queryString}`);
             }
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     });
 
