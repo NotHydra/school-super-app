@@ -129,7 +129,11 @@
                                                                 <td class="td-custom">
                                                                     <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/anggota?type=peminjaman&anggota=<%= tableItemObject.id_anggota._id %>">Anggota</a>
                                                                     <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/petugas?type=peminjaman&petugas=<%= tableItemObject.id_petugas._id %>">Petugas</a>
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/pengembalian?type=peminjaman&pengembalian=<%= tableItemObject.id_pengembalian %>">Pengembalian</a>
+
+                                                                    <% if (tableItemObject.id_pengembalian != 0) { %>
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/pengembalian?type=peminjaman&pengembalian=<%= tableItemObject.id_pengembalian %>">Pengembalian</a>
+                                                                    <% } %>
+                                                                    
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>
