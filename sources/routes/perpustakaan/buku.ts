@@ -68,7 +68,29 @@ perpustakaanBukuRouter.use(express.static("sources/public"));
 perpustakaanBukuRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanBukuRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Buku.find()
+    const kategoriValue: any = req.query.kategori;
+    const penulisValue: any = req.query.penulis;
+    const penerbitValue: any = req.query.penerbit;
+    const tahunTerbitValue: any = req.query.tahunTerbit;
+    let filterValue = {};
+
+    if (kategoriValue != undefined && !isNaN(kategoriValue)) {
+        filterValue = { ...filterValue, id_kategori: kategoriValue };
+    }
+
+    if (penulisValue != undefined && !isNaN(penulisValue)) {
+        filterValue = { ...filterValue, id_penulis: penulisValue };
+    }
+
+    if (penerbitValue != undefined && !isNaN(penerbitValue)) {
+        filterValue = { ...filterValue, id_penerbit: penerbitValue };
+    }
+
+    if (tahunTerbitValue != undefined && !isNaN(tahunTerbitValue)) {
+        filterValue = { ...filterValue, tahun_terbit: tahunTerbitValue };
+    }
+
+    const tableItemArray = await Buku.find(filterValue)
         .populate({
             path: "id_kategori",
             select: "kategori",
@@ -119,7 +141,70 @@ perpustakaanBukuRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Kategori",
+                name: "kategori",
+                query: "kategori",
+                placeholder: "Pilih kategori",
+                value: kategoriValue,
+                option: (await Kategori.find().select("kategori").sort({ Kategori: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.kategori,
+                    };
+                }),
+            },
+            {
+                id: 2,
+                display: "Penulis",
+                name: "penulis",
+                query: "penulis",
+                placeholder: "Pilih penulis",
+                value: penulisValue,
+                option: (await Penulis.find().select("penulis").sort({ penulis: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.penulis,
+                    };
+                }),
+            },
+            {
+                id: 3,
+                display: "Penerbit",
+                name: "penerbit",
+                query: "penerbit",
+                placeholder: "Pilih penerbit",
+                value: penerbitValue,
+                option: (await Penerbit.find().select("penerbit").sort({ penerbit: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.penerbit,
+                    };
+                }),
+            },
+            {
+                id: 4,
+                display: "Tahun Terbit",
+                name: "tahun_terbit",
+                query: "tahunTerbit",
+                placeholder: "Pilih tahun terbit",
+                value: tahunTerbitValue,
+                option: [
+                    ...new Set(
+                        (await Buku.find().select("tahun_terbit").sort({ tahun_terbit: 1 }).lean()).map((itemObject) => {
+                            return itemObject.tahun_terbit;
+                        })
+                    ),
+                ].map((itemValue) => {
+                    return {
+                        value: itemValue,
+                        display: itemValue,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
     });
