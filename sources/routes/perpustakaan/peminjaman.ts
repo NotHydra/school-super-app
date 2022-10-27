@@ -46,6 +46,8 @@ perpustakaanPeminjamanRouter.use(express.static("sources/public"));
 perpustakaanPeminjamanRouter.use(express.urlencoded({ extended: true }));
 
 perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
+    const statusValue: any = req.query.status;
+
     let tableItemArray: any = await Peminjaman.find()
         .populate({
             path: "id_anggota",
@@ -78,6 +80,15 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
             };
         })
     );
+
+    if (statusValue != undefined && !isNaN(statusValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if ((parseInt(statusValue) == 0 ? "Belum Dikembalikan" : "Sudah Dikembalikan") == tableItemObject.status) {
+                console.log(parseInt(statusValue) == 0 ? "Belum Dikembalikan" : "Sudah Dikembalikan", tableItemObject.status);
+                return tableItemObject;
+            }
+        });
+    }
 
     const documentCount = await Peminjaman.countDocuments().lean();
     const latestDibuat: any = await Peminjaman.findOne()
@@ -133,7 +144,26 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Status",
+                name: "status",
+                query: "status",
+                placeholder: "Pilih status",
+                value: statusValue,
+                option: [
+                    {
+                        value: 0,
+                        display: "Belum Dikembalikan",
+                    },
+                    {
+                        value: 1,
+                        display: "Sudah Dikembalikan",
+                    },
+                ],
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
     });
