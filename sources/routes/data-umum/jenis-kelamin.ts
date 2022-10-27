@@ -43,19 +43,18 @@ dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
                         id: 2,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value:
-                            documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ dibuat: -1 }).lean()).jenis_kelamin : "Tidak Ada",
+                        value: documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ dibuat: -1 }).lean()).jenis_kelamin : "Tidak Ada",
                     },
                     {
                         id: 3,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value:
-                            documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ diubah: -1 }).lean()).jenis_kelamin : "Tidak Ada",
+                        value: documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ diubah: -1 }).lean()).jenis_kelamin : "Tidak Ada",
                     },
                 ],
             },
         ],
+        filterArray: [],
         tableAttributeArray,
         tableItemArray,
     });

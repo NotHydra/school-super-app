@@ -117,14 +117,52 @@ instansiRombelRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
+        filterArray: [
+            {
+                id: 1,
+                display: "Tingkat",
+                name: "tingkat",
+                query: "tingkat",
+                placeholder: "Pilih tingkat",
+                value: tingkatValue,
+                option: (await Tingkat.find().select("tingkat").sort({ tingkat: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tingkat,
+                    };
+                }),
+            },
+            {
+                id: 2,
+                display: "Jurusan",
+                name: "jurusan",
+                query: "jurusan",
+                placeholder: "Pilih jurusan",
+                value: jurusanValue,
+                option: (await Jurusan.find().select("jurusan").sort({ jurusan: 1 }).lean()).map((itemObject: any) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.jurusan,
+                    };
+                }),
+            },
+            {
+                id: 3,
+                display: "Tahun Rombel",
+                name: "tahun_rombel",
+                query: "tahunRombel",
+                placeholder: "Pilih tahun rombel",
+                value: tahunRombelValue,
+                option: (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_rombel,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
-        tingkatValue,
-        tingkatArray: await Tingkat.find().select("tingkat").lean(),
-        jurusanValue,
-        jurusanArray: await Jurusan.find().select("jurusan").lean(),
-        tahunRombelValue,
-        tahunRombelArray: await TahunRombel.find().select("tahun_rombel").lean(),
     });
 });
 

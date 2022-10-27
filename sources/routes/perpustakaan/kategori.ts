@@ -54,6 +54,7 @@ perpustakaanKategoriRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
+        filterArray: [],
         tableAttributeArray,
         tableItemArray,
     });

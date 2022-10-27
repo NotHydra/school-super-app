@@ -1,0 +1,61 @@
+<% if (filterArray.length >= 1) { %>    
+    <%- include("./select-head.ejs"); -%>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <% filterArray.forEach(filterObject => { %>
+                        <div class="form-group">
+                            <label for="<%= filterObject.name %>_select"><%= filterObject.display %></label>
+                            <select name="<%= filterObject.name %>_select" class="form-control select2bs4 full-width" id="<%= filterObject.name %>_select" onchange="filterSelect();">
+                                <option disabled><%= filterObject.placeholder %></option>
+
+                                <option value="semua" selected>Semua</option>
+                                
+                                <% 
+                                    filterObject.option.forEach(optionObject => { 
+                                        if (optionObject.value == filterObject.value) { 
+                                %> 
+                                            <option value="<%= optionObject.value %>" selected><%= optionObject.display %></option>
+                                    <% 
+                                        } else if (optionObject.value != filterObject.value) {
+                                    %>
+                                            <option value="<%= optionObject.value %>"><%= optionObject.display %></option>
+                                <% 
+                                        }
+                                    });
+                                %>
+                            </select>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <%- include("./select-script.ejs"); -%>
+
+    <script>
+        const filterArray = eval('<%- JSON.stringify(filterArray.map(filterObject => {return {name: filterObject.name, query: filterObject.query}})) %>');
+
+        function filterSelect() {
+            let redirectString = "?";
+
+            filterArray.forEach((filterObject, filterIndex) => {
+                if (filterIndex == 0) {
+                    value = document.getElementById(`${filterObject.name}_select`).value;
+                    redirectString += `${filterObject.query}=${value}`;
+                }
+
+                else if (filterIndex > 0) {
+                    value = document.getElementById(`${filterObject.name}_select`).value;
+                    redirectString += `&${filterObject.query}=${value}`;
+                };
+            });
+
+            window.location = redirectString;
+        };
+    </script>
+<% } %>

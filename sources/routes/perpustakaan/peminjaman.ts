@@ -133,6 +133,7 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
+        filterArray: [],
         tableAttributeArray,
         tableItemArray,
     });
@@ -299,9 +300,7 @@ perpustakaanPeminjamanRouter
         const dataExist = await Peminjaman.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject: any = await Peminjaman.findOne({ _id: id })
-                .select("id_anggota id_petugas buku tanggal_peminjaman durasi_peminjaman keterangan")
-                .lean();
+            const itemObject: any = await Peminjaman.findOne({ _id: id }).select("id_anggota id_petugas buku tanggal_peminjaman durasi_peminjaman keterangan").lean();
 
             itemObject.buku = await Promise.all(
                 itemObject.buku.map(async (bukuObject: any) => {

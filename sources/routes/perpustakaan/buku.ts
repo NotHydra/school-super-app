@@ -119,6 +119,7 @@ perpustakaanBukuRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
+        filterArray: [],
         tableAttributeArray,
         tableItemArray,
     });
@@ -271,9 +272,7 @@ perpustakaanBukuRouter
         const dataExist = await Buku.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Buku.findOne({ _id: id })
-                .select("kode judul id_kategori id_penulis id_penerbit tahun_terbit halaman stok sinopsis")
-                .lean();
+            const itemObject = await Buku.findOne({ _id: id }).select("kode judul id_kategori id_penulis id_penerbit tahun_terbit halaman stok sinopsis").lean();
 
             res.render("pages/update", {
                 headTitle,

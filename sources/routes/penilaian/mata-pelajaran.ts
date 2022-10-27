@@ -60,10 +60,7 @@ instansiMataPelajaranRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
-                        value:
-                            documentCount >= 1
-                                ? (await MataPelajaran.findOne().select("mata_pelajaran").sort({ dibuat: -1 }).lean()).mata_pelajaran
-                                : "Tidak Ada",
+                        value: documentCount >= 1 ? (await MataPelajaran.findOne().select("mata_pelajaran").sort({ dibuat: -1 }).lean()).mata_pelajaran : "Tidak Ada",
                     },
                 ],
             },
@@ -74,14 +71,12 @@ instansiMataPelajaranRouter.route("/").get(async (req, res) => {
                         id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
-                        value:
-                            documentCount >= 1
-                                ? (await MataPelajaran.findOne().select("mata_pelajaran").sort({ diubah: -1 }).lean()).mata_pelajaran
-                                : "Tidak Ada",
+                        value: documentCount >= 1 ? (await MataPelajaran.findOne().select("mata_pelajaran").sort({ diubah: -1 }).lean()).mata_pelajaran : "Tidak Ada",
                     },
                 ],
             },
         ],
+        filterArray: [],
         tableAttributeArray,
         tableItemArray,
     });

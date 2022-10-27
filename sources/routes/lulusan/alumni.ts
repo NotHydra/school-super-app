@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Alumni, Pendidikan, Rombel, Siswa, TahunLulus, TahunMasuk, Universitas } from "../../models";
+import { Alumni, Pendidikan, Rombel, Siswa, TahunLulus, TahunMasuk, TahunRombel, Universitas } from "../../models";
 
 export const lulusanAlumniRouter = Router();
 
@@ -163,14 +163,62 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
+        filterArray: [
+            {
+                id: 1,
+                display: "Rombel",
+                name: "rombel",
+                query: "rombel",
+                placeholder: "Pilih rombel",
+                value: rombelValue,
+                option: (
+                    await Rombel.find()
+                        .select("rombel id_tahun_rombel")
+                        .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
+                        .sort({ rombel: 1 })
+                        .lean()
+                )
+                    .sort((a: any, b: any) => {
+                        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+                    })
+                    .map((itemObject: any) => {
+                        return {
+                            value: itemObject._id,
+                            display: `${itemObject.rombel} - ${itemObject.id_tahun_rombel.tahun_rombel}`,
+                        };
+                    }),
+            },
+            {
+                id: 2,
+                display: "Tahun Masuk",
+                name: "tahun_masuk",
+                query: "tahunMasuk",
+                placeholder: "Pilih tahun masuk",
+                value: tahunMasukValue,
+                option: (await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_masuk,
+                    };
+                }),
+            },
+            {
+                id: 3,
+                display: "Tahun Lulus",
+                name: "tahun_lulus",
+                query: "tahunLulus",
+                placeholder: "Pilih tahun lulus",
+                value: tahunLulusValue,
+                option: (await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_lulus,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
-        rombelValue,
-        rombelArray: await Rombel.find().select("rombel").lean(),
-        tahunMasukValue,
-        tahunMasukArray: await TahunMasuk.find().select("tahun_masuk").lean(),
-        tahunLulusValue,
-        tahunLulusArray: await TahunLulus.find().select("tahun_lulus").lean(),
     });
 });
 
