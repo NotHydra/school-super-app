@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Anggota, Peminjaman, Rombel, Siswa, TahunMasuk } from "../../models";
+import { Anggota, Peminjaman, Rombel, Siswa, TahunMasuk, TahunRombel } from "../../models";
 
 export const perpustakaanAnggotaRouter = Router();
 
@@ -44,7 +44,19 @@ perpustakaanAnggotaRouter.use(express.static("sources/public"));
 perpustakaanAnggotaRouter.use(express.urlencoded({ extended: false }));
 
 perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Anggota.find()
+    const rombelValue: any = req.query.rombel;
+    const tahunMasukValue: any = req.query.tahunMasuk;
+    let filterValue = {};
+
+    if (rombelValue != undefined && !isNaN(rombelValue)) {
+        filterValue = { ...filterValue, id_rombel: rombelValue };
+    }
+
+    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
+        filterValue = { ...filterValue, id_tahun_masuk: tahunMasukValue };
+    }
+
+    let tableItemArray = await Anggota.find()
         .populate({
             path: "id_siswa",
             select: "nisn nama_lengkap id_rombel id_tahun_masuk",
@@ -56,6 +68,22 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
         })
         .sort({ nomor_anggota: 1 })
         .lean();
+
+    if (rombelValue != undefined && !isNaN(rombelValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_rombel._id == rombelValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_tahun_masuk._id == tahunMasukValue) {
+                return tableItemObject;
+            }
+        });
+    }
 
     const documentCount = await Anggota.countDocuments().lean();
     res.render("pages/perpustakaan/anggota/table", {
@@ -99,7 +127,46 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Rombel",
+                name: "rombel",
+                query: "rombel",
+                placeholder: "Pilih rombel",
+                value: rombelValue,
+                option: (
+                    await Rombel.find()
+                        .select("rombel id_tahun_rombel")
+                        .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
+                        .sort({ rombel: 1 })
+                        .lean()
+                )
+                    .sort((a: any, b: any) => {
+                        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+                    })
+                    .map((itemObject: any) => {
+                        return {
+                            value: itemObject._id,
+                            display: `${itemObject.rombel} - ${itemObject.id_tahun_rombel.tahun_rombel}`,
+                        };
+                    }),
+            },
+            {
+                id: 2,
+                display: "Tahun Masuk",
+                name: "tahun_masuk",
+                query: "tahunMasuk",
+                placeholder: "Pilih tahun masuk",
+                value: tahunMasukValue,
+                option: (await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_masuk,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
     });
