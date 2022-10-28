@@ -32,6 +32,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="th-custom export">No.</th>
+                                                    <th class="th-custom export">Kode</th>
 
                                                     <% tableAttributeArray.forEach(tableAttributeObject => { %>
                                                         <th class="th-custom export"><%= tableAttributeObject.label %></th>
@@ -52,6 +53,7 @@
                                                 %>
                                                             <tr>
                                                                 <td class="td-custom"><%= number %></td>
+                                                                <td class="td-custom">PER<%= zeroPad(tableItemObject.id_peminjaman._id, 4) %></td>
 
                                                                 <% tableAttributeArray.forEach(tableAttributeObject => {
                                                                         let tableItemValue = "tableItemObject";
@@ -97,6 +99,7 @@
                                             <tfoot>
                                                 <tr>
                                                     <th class="th-custom">No.</th>
+                                                    <th class="th-custom export">Kode</th>
 
                                                     <% tableAttributeArray.forEach(tableAttributeObject => { %>
                                                         <th class="th-custom"><%= tableAttributeObject.label %></th>

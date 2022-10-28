@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import mongoose from "mongoose";
 
 import { mongoDBURI, pageItemArray } from "./depedency";
-import { datasetYear, localMoment } from "./utility";
+import { datasetYear, localMoment, zeroPad } from "./utility";
 
 import {
     Alumni,
@@ -47,6 +47,7 @@ const headTitle = "Dashboard";
 const navActive = [0, 0];
 
 app.locals.moment = localMoment;
+app.locals.zeroPad = zeroPad;
 app.locals.pageItemArray = pageItemArray;
 
 app.set("view engine", "ejs");

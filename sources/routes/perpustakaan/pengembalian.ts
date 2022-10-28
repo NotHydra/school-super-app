@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { localMoment } from "../../utility";
+import { localMoment, zeroPad } from "../../utility";
 
 import { Anggota, Buku, Peminjaman, Pengembalian, Petugas } from "../../models";
 
@@ -72,7 +72,7 @@ perpustakaanPengembalianRouter.route("/").get(async (req, res) => {
             select: "nama",
             model: Petugas,
         })
-        .sort({ dibuat: -1 })
+        .sort({ dibuat: 1 })
         .lean();
 
     const documentCount = await Pengembalian.countDocuments().lean();
@@ -172,9 +172,9 @@ perpustakaanPengembalianRouter
                         ).map((itemObject: any) => {
                             return [
                                 itemObject._id,
-                                `${itemObject.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(itemObject.tanggal_peminjaman).format(
-                                    "YYYY-MM-DD"
-                                )} - Durasi Peminjaman ${localMoment(itemObject.durasi_peminjaman).format("YYYY-MM-DD")}`,
+                                `PER${zeroPad(itemObject.id_peminjaman._id, 4)} - ${itemObject.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
+                                    itemObject.tanggal_peminjaman
+                                ).format("YYYY-MM-DD")} - Durasi Peminjaman ${localMoment(itemObject.durasi_peminjaman).format("YYYY-MM-DD")}`,
                             ];
                         }),
                         null,
@@ -310,7 +310,7 @@ perpustakaanPengembalianRouter
                         name: "id_peminjaman",
                         display: "Peminjaman",
                         type: "text",
-                        value: `${itemObject.id_peminjaman.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
+                        value: `PER${zeroPad(itemObject.id_peminjaman._id, 4)} - ${itemObject.id_peminjaman.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
                             itemObject.id_peminjaman.tanggal_peminjaman
                         ).format("YYYY-MM-DD")} - Durasi Peminjaman ${localMoment(itemObject.id_peminjaman.durasi_peminjaman).format("YYYY-MM-DD")}`,
                         placeholder: "Input peminjaman disini",
@@ -442,7 +442,7 @@ perpustakaanPengembalianRouter
                         name: "id_peminjaman",
                         display: "Peminjaman",
                         type: "text",
-                        value: `${itemObject.id_peminjaman.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
+                        value: `PER${zeroPad(itemObject.id_peminjaman._id, 4)} - ${itemObject.id_peminjaman.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
                             itemObject.id_peminjaman.tanggal_peminjaman
                         ).format("YYYY-MM-DD")} - Durasi Peminjaman ${localMoment(itemObject.id_peminjaman.durasi_peminjaman).format("YYYY-MM-DD")}`,
                         placeholder: "Input peminjaman disini",
@@ -462,7 +462,7 @@ perpustakaanPengembalianRouter
                         name: "tanggal_pengembalian",
                         display: "Tanggal Pengembalian",
                         type: "date",
-                        value: itemObject.tanggal_pengembalian,
+                        value: localMoment(itemObject.tanggal_pengembalian).format("YYYY-MM-DD"),
                         placeholder: "Input tanggal pengembalian disini",
                         enable: false,
                     },

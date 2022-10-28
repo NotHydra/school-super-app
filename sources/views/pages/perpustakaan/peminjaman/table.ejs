@@ -32,6 +32,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="th-custom export" rowspan="2">No.</th>
+                                                    <th class="th-custom export" rowspan="2">Kode</th>
                                                     <th class="th-custom export" colspan="3">Buku</th>
                                                     <th class="th-custom export" rowspan="2">Status</th>
 
@@ -59,7 +60,8 @@
                                                             number += 1;
                                                 %>
                                                             <tr>
-                                                                <td class="td-custom"><%= number %></td>            
+                                                                <td class="td-custom"><%= number %></td>      
+                                                                <td class="td-custom">PER<%= zeroPad(tableItemObject._id, 4) %></td>            
                                                                                                                 
                                                                 <td class="p-0 m-0">
                                                                     <div>
@@ -154,6 +156,7 @@
                                             <tfoot>
                                                 <tr>
                                                     <th class="th-custom export" rowspan="2">No.</th>
+                                                    <th class="th-custom export" rowspan="2">Kode</th>
                                                     <th class="th-custom export">Kode</th>
                                                     <th class="th-custom export">Judul</th>
                                                     <th class="th-custom export">Kuantitas</td>

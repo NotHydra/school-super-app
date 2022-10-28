@@ -114,3 +114,7 @@ export async function datasetYear(model: any, currentYear: number): Promise<any>
 export function blueColorPattern(current: number, total: number): string {
     return `rgb(${(current / total) * 255 - 255}, ${(current / total) * 255}, 255)`;
 }
+
+export function zeroPad(number: number, zero: number): string {
+    return String(number).padStart(zero, "0");
+}
