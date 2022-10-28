@@ -6,6 +6,7 @@
         <%- include("./../../../partials/head.ejs"); -%>
         <%- include("./../../../partials/data-table-head.ejs"); -%>
         <%- include("./../../../partials/sweet-alert-head.ejs"); %>
+        <%- include("./../../../partials/confirm-modal.ejs"); -%>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
@@ -17,10 +18,12 @@
                 <div class="content">
                     <div class="container-fluid">
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
-                        <%- include("./../../../partials/card-item.ejs"); -%>
-                        <%- include("./../../../partials/filter.ejs"); -%>
-
                         
+                        <% if (typeValue == undefined) { %>
+                            <%- include("./../../../partials/card-item.ejs"); -%>
+                            <%- include("./../../../partials/filter.ejs"); -%>
+                        <% } %>
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -127,20 +130,24 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/anggota?type=peminjaman&anggota=<%= tableItemObject.id_anggota._id %>">Anggota</a>
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/petugas?type=peminjaman&petugas=<%= tableItemObject.id_petugas._id %>">Petugas</a>
+                                                                    <% if (typeValue == undefined) { %>
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/anggota?type=peminjaman&anggota=<%= tableItemObject.id_anggota._id %>">Anggota</a>
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/petugas?type=peminjaman&petugas=<%= tableItemObject.id_petugas._id %>">Petugas</a>
 
-                                                                    <% if (tableItemObject.id_pengembalian != 0) { %>
-                                                                        <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/pengembalian?type=peminjaman&pengembalian=<%= tableItemObject.id_pengembalian %>">Pengembalian</a>
+                                                                        <% if (tableItemObject.id_pengembalian != 0) { %>
+                                                                            <a type="button" class="btn btn-block btn-primary" href="/perpustakaan/pengembalian?type=peminjaman&pengembalian=<%= tableItemObject.id_pengembalian %>">Pengembalian</a>
+                                                                        <% } %>
+                                                                        
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
+                                                                        <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                    <% } else if (typeValue == "pengembalian") { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>&type=<%= typeValue %>&peminjaman=<%= peminjamanValue %>">Ubah</a>
                                                                     <% } %>
-                                                                    
-                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
-                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>
                                                             </tr>
                                                 <% 
                                                         });
-                                                    } 
+                                                    }
                                                 %>
                                             </tbody>
                                             
@@ -171,11 +178,19 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                        <% if (typeValue == undefined) { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                                </div>
                             </div>
-                        </div>
+                        <% } else if (typeValue == "pengembalian") { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/perpustakaan/pengembalian/')">Kembali</a>
+                                </div>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>

@@ -46,9 +46,16 @@ perpustakaanPeminjamanRouter.use(express.static("sources/public"));
 perpustakaanPeminjamanRouter.use(express.urlencoded({ extended: true }));
 
 perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
+    const typeValue: any = req.query.type;
+    const peminjamanValue: any = req.query.peminjaman;
     const statusValue: any = req.query.status;
+    let filterValue = {};
 
-    let tableItemArray: any = await Peminjaman.find()
+    if (peminjamanValue != undefined && !isNaN(peminjamanValue)) {
+        filterValue = { ...filterValue, _id: peminjamanValue };
+    }
+
+    let tableItemArray: any = await Peminjaman.find(filterValue)
         .populate({
             path: "id_anggota",
             select: "nomor_anggota",
@@ -168,6 +175,8 @@ perpustakaanPeminjamanRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
+        peminjamanValue,
     });
 });
 
@@ -329,6 +338,16 @@ perpustakaanPeminjamanRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.query.id;
+
+        const typeValue: any = req.query.type;
+        const peminjamanValue: any = req.query.peminjaman;
+
+        let queryString = null;
+
+        if (typeValue == "pengembalian") {
+            queryString = `&type=${typeValue}&peminjaman=${peminjamanValue}`;
+        }
+
         const dataExist = await Peminjaman.exists({ _id: id }).lean();
 
         if (dataExist != null) {
@@ -351,6 +370,8 @@ perpustakaanPeminjamanRouter
                 toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
                 toastText: req.query.text,
                 id,
+                typeValue,
+                peminjamanValue,
                 detailedInputArray: [
                     {
                         id: 1,
@@ -411,12 +432,21 @@ perpustakaanPeminjamanRouter
                 bukuArray: itemObject.buku,
             });
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     })
     .post(async (req, res) => {
         const id: any = req.query.id;
         const dataExist = await Peminjaman.exists({ _id: id }).lean();
+
+        const typeValue: any = req.query.type;
+        const peminjamanValue: any = req.query.peminjaman;
+
+        let queryString = null;
+
+        if (typeValue == "pengembalian") {
+            queryString = `&type=${typeValue}&peminjaman=${peminjamanValue}`;
+        }
 
         if (dataExist != null) {
             const attributeArray: any = {};
@@ -438,15 +468,15 @@ perpustakaanPeminjamanRouter
                             diubah: new Date(),
                         }
                     ).lean();
-                    res.redirect(`update?id=${id}&response=success`);
+                    res.redirect(`update?id=${id}&response=success${queryString}`);
                 } catch (error: any) {
-                    res.redirect(`update?id=${id}&response=error`);
+                    res.redirect(`update?id=${id}&response=error${queryString}`);
                 }
             } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${queryString}`);
             }
         } else if (dataExist == null) {
-            res.redirect("./?response=error&text=Data tidak valid");
+            res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
         }
     });
 

@@ -278,7 +278,7 @@ perpustakaanPetugasRouter
 
         let queryString = null;
 
-        if (typeValue == "peminjaman") {
+        if (typeValue == "peminjaman" || typeValue == "pengembalian") {
             queryString = `&type=${typeValue}&petugas=${petugasValue}`;
         }
 
@@ -376,7 +376,7 @@ perpustakaanPetugasRouter
 
         let queryString = null;
 
-        if (typeValue == "peminjaman") {
+        if (typeValue == "peminjaman" || typeValue == "pengembalian") {
             queryString = `&type=${typeValue}&petugas=${petugasValue}`;
         }
 

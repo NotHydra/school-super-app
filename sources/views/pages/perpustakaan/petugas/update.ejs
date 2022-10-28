@@ -23,14 +23,14 @@
                                     <div class="card-body pt-0 pb-3">
                                         <%- include("./../../../partials/form-head.ejs", {extraTitle: "Ubah"}); -%>
 
-                                        <form action="/<%= pageItemCurrent.link %>/update?id=<%= id %><%= typeValue == 'peminjaman' ? `&type=${typeValue}&petugas=${petugasValue}` : '' %>" method="POST" onsubmit="return confirmModal('form', this);">
+                                        <form action="/<%= pageItemCurrent.link %>/update?id=<%= id %><%= typeValue == 'peminjaman' || typeValue == 'pengembalian' ? `&type=${typeValue}&petugas=${petugasValue}` : '' %>" method="POST" onsubmit="return confirmModal('form', this);">
                                             <%- include("./../../../partials/input-detailed.ejs", {detailedInputArray}); -%>
 
                                             <button type="submit" class="btn btn-block btn-warning">Ubah</button>
                                             
                                             <% if (typeValue == undefined) { %>
                                                 <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '.')">Kembali</a>
-                                            <% } else if (typeValue == "peminjaman") { %>
+                                            <% } else if (typeValue == "peminjaman" || typeValue == "pengembalian") { %>
                                                 <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '<%= `/perpustakaan/petugas/?type=${typeValue}&petugas=${petugasValue}` %>')">Kembali</a>
                                             <% } %>
                                         </form>
