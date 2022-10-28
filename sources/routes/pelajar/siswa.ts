@@ -218,6 +218,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         tableItemArray,
         typeValue,
         siswaValue,
+        rombelValue,
     });
 });
 
