@@ -137,6 +137,20 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
                 cardItemChild: [
                     {
                         id: 1,
+                        title: "Laki-Laki & Perempuan",
+                        icon: "restroom",
+                        value: `${await Guru.find({ id_jenis_kelamin: 1 }).select("_id").countDocuments().lean()} - ${await Guru.find({ id_jenis_kelamin: 2 })
+                            .select("_id")
+                            .countDocuments()
+                            .lean()}`,
+                    },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
+                    {
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await Guru.findOne().select("nip").sort({ dibuat: -1 }).lean()).nip : "Tidak Ada",
@@ -144,7 +158,7 @@ pengajarGuruRouter.route("/").get(async (req, res) => {
                 ],
             },
             {
-                id: 3,
+                id: 4,
                 cardItemChild: [
                     {
                         id: 1,
