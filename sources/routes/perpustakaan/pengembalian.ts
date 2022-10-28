@@ -172,7 +172,7 @@ perpustakaanPengembalianRouter
                         ).map((itemObject: any) => {
                             return [
                                 itemObject._id,
-                                `PER${zeroPad(itemObject.id_peminjaman._id, 4)} - ${itemObject.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
+                                `PER${zeroPad(itemObject._id, 4)} - ${itemObject.id_anggota.nomor_anggota} - Tanggal Peminjaman ${localMoment(
                                     itemObject.tanggal_peminjaman
                                 ).format("YYYY-MM-DD")} - Durasi Peminjaman ${localMoment(itemObject.durasi_peminjaman).format("YYYY-MM-DD")}`,
                             ];
