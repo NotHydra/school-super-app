@@ -18,7 +18,7 @@ authenticationLoginSiswaRouter
         res.render("pages/login-siswa", {
             headTitle,
             toastResponse: req.query.response,
-            toastTitle: req.query.title,
+            toastTitle: req.query.response == "success" ? "Login Berhasil" : "Login Gagal",
             toastText: req.query.text,
         });
     })
