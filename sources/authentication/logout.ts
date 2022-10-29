@@ -12,7 +12,15 @@ authenticationLogoutRouter.route("/").get(async (req, res) => {
 
     req.session.save(() => {
         req.session.regenerate(() => {
-            res.redirect("/login?type=logout&response=success");
+            const typeValue = req.query.type;
+
+            if (typeValue == undefined) {
+                res.redirect("/login?type=logout&response=success");
+            } else if (typeValue == "exist") {
+                res.redirect("/login?type=exist&response=error");
+            } else if (typeValue == "active") {
+                res.redirect("/login?type=active&response=error");
+            }
         });
     });
 });

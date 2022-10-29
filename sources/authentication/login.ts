@@ -16,17 +16,24 @@ authenticationLoginRouter.use(isNotAuthenticated);
 authenticationLoginRouter
     .route("/")
     .get(async (req, res) => {
+        const typeValue = req.query.type;
+
+        let toastTitle;
+
+        if (typeValue == "login") {
+            toastTitle = "Login gagal";
+        } else if (typeValue == "logout") {
+            toastTitle = "Logout berhasil";
+        } else if (typeValue == "exist") {
+            toastTitle = "Akun tidak valid";
+        } else if (typeValue == "active") {
+            toastTitle = "Akun tidak aktif";
+        }
+
         res.render("pages/login", {
             headTitle,
             toastResponse: req.query.response,
-            toastTitle:
-                req.query.type == "login"
-                    ? req.query.response == "success"
-                        ? "Login Berhasil"
-                        : "Login Gagal"
-                    : req.query.response == "success"
-                    ? "Logout Berhasil"
-                    : "Logout Gagal",
+            toastTitle,
             toastText: req.query.text,
         });
     })

@@ -5,13 +5,13 @@ import { app } from "../..";
 import { User } from "../../models";
 
 export async function sessionData(req: Request, res: Response, next: NextFunction) {
-    const userObject = (await User.find().lean()).find((itemObject) => {
-        if (itemObject._id == req.session.userId) {
-            return itemObject;
-        }
-    });
+    const userObject = await User.findOne({ _id: req.session.userId }).lean();
 
-    app.locals.userObject = userObject;
+    if (userObject != null) {
+        app.locals.userObject = userObject;
 
-    next();
+        next();
+    } else if (userObject == null) {
+        res.redirect("/logout?type=exist");
+    }
 }
