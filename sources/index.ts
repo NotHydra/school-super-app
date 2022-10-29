@@ -6,6 +6,7 @@ import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
 import { datasetYear, localMoment, zeroPad } from "./utility";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { sessionData } from "./common/middleware/sessionData";
+import { isActive } from "./common/middleware/isActive";
 
 import { Alumni, Guru, Rombel, Siswa } from "./models";
 
@@ -50,6 +51,7 @@ app.use(
 app.use(authenticationRouter);
 
 app.use(isAuthenticated);
+app.use(isActive);
 app.use(sessionData);
 
 app.get("/", async (req, res) => {
