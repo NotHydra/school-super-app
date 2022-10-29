@@ -1,5 +1,9 @@
 <script>
-    function confirmModal(type, value) {
+    function confirmModal(type, value, elementId=null) {
+        if (elementId != null) {
+            document.getElementById(elementId).style.display = "none";
+        }
+        
         Swal.fire({
             title: "Apakah anda yakin?",
             icon: "question",
@@ -19,6 +23,10 @@
                 else if (type == "form") {
                     value.submit();
                 };
+            } else {
+                if (elementId != null) {
+                    setTimeout(function() { document.getElementById(elementId).style.display = "block"; }, 150);
+                }
             };
         });
 
