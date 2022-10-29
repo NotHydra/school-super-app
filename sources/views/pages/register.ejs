@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+    <head>
+        <%- include("./../partials/head.ejs"); -%>
+        <%- include("./../partials/sweet-alert-head.ejs"); -%>
+        <%- include("./../partials/confirm-modal.ejs"); -%>
+
+        <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css"/>
+    </head>
+
+    <body class="hold-transition dark-mode" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div class="login-box" id="register-form">
+            <div class="card">
+                <div class="card-header text-center white-border-bottom" style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="mb-3" style="width: 70% !important;">
+                        <img class="img-fluid" src="dist/img/rpl-logo.png" alt="RPL Logo">
+                    </div>
+
+                    <div>
+                        <a href="/" class="h2"><b>School Super App</b></a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form action="/register" method="post" class="mb-2" onsubmit="return confirmModal('form', this, 'register-form');">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="username" placeholder="Username" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="nama_lengkap" placeholder="Nama Lengkap" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-address-card"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" name="password" placeholder="Password" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" name="nomor_telepon" placeholder="Nomor Telepon" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-phone"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" name="email" placeholder="Email" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <select name="role" class="form-control">
+                                <option disabled selected>Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="operator">Operator</option>
+                            </select>
+
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-shield"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm">
+                                <button type="submit" class="btn btn-primary btn-block">Register</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <p class="m-0 p-0">
+                        <a href="/login">Sudah punya akun?</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="title is-6 mt-1 p-0">© 2022 Rizky Irswanda Ramadhana</div>
+
+        <%- include("./../partials/script.ejs"); -%>
+    </body>
+
+    <%- include("./../partials/toast-script.ejs"); -%>
+</html>
