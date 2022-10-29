@@ -31,20 +31,24 @@ authenticationLoginRouter
         });
     })
     .post(async (req, res) => {
-        const userObject = await User.findOne({ username: req.body.username }).select("username password").lean();
+        const userObject = await User.findOne({ username: req.body.username }).select("username password aktif").lean();
 
         if (userObject != null) {
             const passwordIsValid = await bcrypt.compare(req.body.password, userObject.password);
 
             if (passwordIsValid) {
-                req.session.regenerate(() => {
-                    req.session.userId = userObject._id;
-                    req.session.userType = "user";
+                if (userObject.aktif) {
+                    req.session.regenerate(() => {
+                        req.session.userId = userObject._id;
+                        req.session.userType = "user";
 
-                    req.session.save(() => {
-                        res.redirect("/?response=success");
+                        req.session.save(() => {
+                            res.redirect("/?response=success");
+                        });
                     });
-                });
+                } else if (!userObject.aktif) {
+                    res.redirect("/login?type=login&response=error&text=Akun belum aktif");
+                }
             } else if (!passwordIsValid) {
                 res.redirect("/login?type=login&response=error&text=Username atau password salah");
             }
