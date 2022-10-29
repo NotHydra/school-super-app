@@ -40,10 +40,17 @@
                         <ul class="nav nav-treeview">
                             <% pageItemObject.child.forEach((pageItemChildObject, pageItemChildIndex) => { %>
                                 <li class="nav-item">
-                                    <a href="/<%= pageItemChildObject.link %>" class="nav-link <%= pageItemIndex == navActive[0] && pageItemChildIndex == navActive[1] ? "active" : "" %>">
-                                        <i class="<%= pageItemChildObject.icon == "circle" ? "far" : "fas" %> fa-<%= pageItemChildObject.icon %> nav-icon"></i>
-                                        <p><%= pageItemChildObject.title %></p>
-                                    </a>
+                                    <% if (!pageItemChildObject.confirm) { %>
+                                        <a href="/<%= pageItemChildObject.link %>" class="nav-link <%= pageItemIndex == navActive[0] && pageItemChildIndex == navActive[1] ? "active" : "" %>">
+                                            <i class="<%= pageItemChildObject.icon == "circle" ? "far" : "fas" %> fa-<%= pageItemChildObject.icon %> nav-icon"></i>
+                                            <p><%= pageItemChildObject.title %></p>
+                                        </a>
+                                    <% } else if (pageItemChildObject.confirm) { %>
+                                        <a class="nav-link <%= pageItemIndex == navActive[0] && pageItemChildIndex == navActive[1] ? "active" : "" %>" onclick="confirmModal('location', '/<%= pageItemChildObject.link %>')">
+                                            <i class="<%= pageItemChildObject.icon == "circle" ? "far" : "fas" %> fa-<%= pageItemChildObject.icon %> nav-icon"></i>
+                                            <p><%= pageItemChildObject.title %></p>
+                                        </a>
+                                    <% } %>
                                 </li>
                             <% }); %>
                         </ul>

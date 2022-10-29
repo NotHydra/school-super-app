@@ -3,6 +3,7 @@ type pageItemChildType = {
     title: string;
     link: string;
     icon: string;
+    confirm: boolean;
 };
 
 export type pageItemType = {

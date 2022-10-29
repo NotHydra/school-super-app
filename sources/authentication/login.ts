@@ -29,7 +29,14 @@ authenticationLoginRouter
         res.render("pages/login", {
             headTitle,
             toastResponse: req.query.response,
-            toastTitle: req.query.response == "success" ? "Login Berhasil" : "Login Gagal",
+            toastTitle:
+                req.query.type == "login"
+                    ? req.query.response == "success"
+                        ? "Login Berhasil"
+                        : "Login Gagal"
+                    : req.query.response == "success"
+                    ? "Logout Berhasil"
+                    : "Logout Gagal",
             toastText: req.query.text,
         });
     })
@@ -50,6 +57,6 @@ authenticationLoginRouter
                 });
             });
         } else if (userObject == undefined) {
-            res.redirect("?response=error&text=Username atau password salah");
+            res.redirect("/login?type=login&response=error&text=Username atau password salah");
         }
     });
