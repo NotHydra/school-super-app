@@ -1,6 +1,9 @@
 import express, { Router } from "express";
+import bcrypt from "bcrypt";
 
 import { isNotAuthenticated } from "../common/middleware/isNotAuthenticated";
+
+import { User } from "../models";
 
 export const authenticationLoginRouter = Router();
 const headTitle = "Login";
@@ -9,19 +12,6 @@ authenticationLoginRouter.use(express.static("sources/public"));
 authenticationLoginRouter.use(express.urlencoded({ extended: false }));
 
 authenticationLoginRouter.use(isNotAuthenticated);
-
-export const userArray = [
-    {
-        _id: 1,
-        username: "Username123",
-        password: "Password123",
-    },
-    {
-        _id: 2,
-        username: "Username456",
-        password: "Password456",
-    },
-];
 
 authenticationLoginRouter
     .route("/")
@@ -41,22 +31,24 @@ authenticationLoginRouter
         });
     })
     .post(async (req, res) => {
-        const userObject = userArray.find((userObject) => {
-            if (userObject.username == req.body.username && userObject.password == req.body.password) {
-                return userObject;
-            }
-        });
+        const userObject = await User.findOne({ username: req.body.username }).select("username password").lean();
 
-        if (userObject != undefined) {
-            req.session.regenerate(() => {
-                req.session.userId = userObject._id;
-                req.session.userType = "user";
+        if (userObject != null) {
+            const passwordIsValid = await bcrypt.compare(req.body.password, userObject.password);
 
-                req.session.save(() => {
-                    res.redirect("/?response=success");
+            if (passwordIsValid) {
+                req.session.regenerate(() => {
+                    req.session.userId = userObject._id;
+                    req.session.userType = "user";
+
+                    req.session.save(() => {
+                        res.redirect("/?response=success");
+                    });
                 });
-            });
-        } else if (userObject == undefined) {
+            } else if (!passwordIsValid) {
+                res.redirect("/login?type=login&response=error&text=Username atau password salah");
+            }
+        } else if (userObject == null) {
             res.redirect("/login?type=login&response=error&text=Username atau password salah");
         }
     });

@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from "express";
 
 import { app } from "../..";
 
-import { userArray } from "../../authentication/login";
+import { User } from "../../models";
 
-export function sessionData(req: Request, res: Response, next: NextFunction) {
-    const userObject = userArray.find((userObject) => {
-        if (userObject._id == req.session.userId) {
-            return userObject;
+export async function sessionData(req: Request, res: Response, next: NextFunction) {
+    const userObject = (await User.find().lean()).find((itemObject) => {
+        if (itemObject._id == req.session.userId) {
+            return itemObject;
         }
     });
 
