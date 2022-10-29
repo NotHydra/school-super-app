@@ -342,7 +342,7 @@ perpustakaanPeminjamanRouter
         const typeValue: any = req.query.type;
         const peminjamanValue: any = req.query.peminjaman;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "pengembalian") {
             queryString = `&type=${typeValue}&peminjaman=${peminjamanValue}`;
@@ -442,7 +442,7 @@ perpustakaanPeminjamanRouter
         const typeValue: any = req.query.type;
         const peminjamanValue: any = req.query.peminjaman;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "pengembalian") {
             queryString = `&type=${typeValue}&peminjaman=${peminjamanValue}`;

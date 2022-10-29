@@ -414,7 +414,7 @@ pengajarGuruRouter
         const typeValue: any = req.query.type;
         const guruValue: any = req.query.guru;
 
-        let queryString: any = null;
+        let queryString: any = "";
 
         if (typeValue == "rombel") {
             queryString = `&type=${typeValue}&guru=${guruValue}`;
@@ -556,7 +556,7 @@ pengajarGuruRouter
         const typeValue: any = req.query.type;
         const guruValue: any = req.query.guru;
 
-        let queryString: any = null;
+        let queryString: any = "";
 
         if (typeValue == "rombel") {
             queryString = `&type=${typeValue}&guru=${guruValue}`;

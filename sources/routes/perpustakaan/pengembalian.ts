@@ -276,7 +276,7 @@ perpustakaanPengembalianRouter
         const typeValue: any = req.query.type;
         const pengembalianValue: any = req.query.pengembalian;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "peminjaman") {
             queryString = `&type=${typeValue}&pengembalian=${pengembalianValue}`;
@@ -361,7 +361,7 @@ perpustakaanPengembalianRouter
         const typeValue: any = req.query.type;
         const pengembalianValue: any = req.query.pengembalian;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "peminjaman") {
             queryString = `&type=${typeValue}&pengembalian=${pengembalianValue}`;

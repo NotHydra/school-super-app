@@ -267,7 +267,7 @@ perpustakaanAnggotaRouter
         const typeValue: any = req.query.type;
         const anggotaValue: any = req.query.anggota;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "peminjaman") {
             queryString = `&type=${typeValue}&anggota=${anggotaValue}`;
@@ -337,7 +337,7 @@ perpustakaanAnggotaRouter
         const typeValue: any = req.query.type;
         const anggotaValue: any = req.query.anggota;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "peminjaman") {
             queryString = `&type=${typeValue}&anggota=${anggotaValue}`;

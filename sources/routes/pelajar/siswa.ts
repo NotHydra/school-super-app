@@ -332,7 +332,7 @@ pelajarSiswaRouter
         const typeValue: any = req.query.type;
         const rombelValue: any = req.query.rombel;
 
-        let queryString: any = null;
+        let queryString: any = "";
 
         if (typeValue == "rombel") {
             queryString = `&type=${typeValue}&rombel=${rombelValue}`;
@@ -383,7 +383,7 @@ pelajarSiswaRouter
         const siswaValue: any = req.query.siswa;
         const rombelValue: any = req.query.rombel;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "anggota" || typeValue == "alumni") {
             queryString = `&type=${typeValue}&siswa=${siswaValue}`;
@@ -506,7 +506,7 @@ pelajarSiswaRouter
         const siswaValue: any = req.query.siswa;
         const rombelValue: any = req.query.rombel;
 
-        let queryString: any = null;
+        let queryString: any = "";
 
         if (typeValue == "anggota" || typeValue == "alumni") {
             queryString = `&type=${typeValue}&siswa=${siswaValue}`;
@@ -561,7 +561,7 @@ pelajarSiswaRouter
         const typeValue: any = req.query.type;
         const rombelValue: any = req.query.rombel;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "rombel") {
             queryString = `&type=${typeValue}&rombel=${rombelValue}`;
@@ -664,7 +664,7 @@ pelajarSiswaRouter
         const typeValue: any = req.query.type;
         const rombelValue: any = req.query.rombel;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "rombel") {
             queryString = `&type=${typeValue}&rombel=${rombelValue}`;

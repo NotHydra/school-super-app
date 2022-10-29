@@ -276,7 +276,7 @@ perpustakaanPetugasRouter
         const typeValue: any = req.query.type;
         const petugasValue: any = req.query.petugas;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "peminjaman" || typeValue == "pengembalian") {
             queryString = `&type=${typeValue}&petugas=${petugasValue}`;
@@ -374,7 +374,7 @@ perpustakaanPetugasRouter
         const typeValue: any = req.query.type;
         const petugasValue: any = req.query.petugas;
 
-        let queryString = null;
+        let queryString = "";
 
         if (typeValue == "peminjaman" || typeValue == "pengembalian") {
             queryString = `&type=${typeValue}&petugas=${petugasValue}`;
