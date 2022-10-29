@@ -10,7 +10,7 @@ authenticationLoginRouter.use(express.urlencoded({ extended: false }));
 
 authenticationLoginRouter.use(isNotAuthenticated);
 
-const userArray = [
+export const userArray = [
     {
         _id: 1,
         username: "Username123",

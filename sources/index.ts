@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
 import { datasetYear, localMoment, zeroPad } from "./utility";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
+import { sessionData } from "./common/middleware/sessionData";
 
 import { Alumni, Guru, Rombel, Siswa } from "./models";
 
@@ -24,7 +25,7 @@ declare module "express-session" {
     }
 }
 
-const app: Express = express();
+export const app: Express = express();
 const port: number = 3000;
 
 const headTitle = "Dashboard";
@@ -49,6 +50,7 @@ app.use(
 app.use(authenticationRouter);
 
 app.use(isAuthenticated);
+app.use(sessionData);
 
 app.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();
