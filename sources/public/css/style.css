@@ -1,3 +1,9 @@
+.copyright {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
 .th-custom {
   text-align: center;
   vertical-align: middle !important;

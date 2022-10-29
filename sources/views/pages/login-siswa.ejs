@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;">
     <head>
         <%- include("./../partials/head.ejs"); -%>
         <%- include("./../partials/sweet-alert-head.ejs"); -%>
@@ -8,11 +8,17 @@
         <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css"/>
     </head>
 
-    <body class="hold-transition login-page dark-mode">
+    <body class="hold-transition dark-mode" style="height: 100%; display: flex; justify-content: center; align-items: center;">
         <div class="login-box" id="login-form">
             <div class="card">
                 <div class="card-header text-center white-border-bottom">
-                    <a href="." class="h1"><b>School Super App</b></a>
+                    <div class="mb-3">
+                        <img class="img-fluid" src="dist/img/rpl-logo.png" alt="RPL Logo">
+                    </div>
+
+                    <div>
+                        <a href="/" class="h2"><b>School Super App</b></a>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -48,6 +54,8 @@
                 </div>
             </div>
         </div>
+
+        <div class="title is-6 copyright m-1 p-0">© 2022 Rizky Irswanda Ramadhana</div>
 
         <%- include("./../partials/script.ejs"); -%>
     </body>
