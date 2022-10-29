@@ -37,4 +37,12 @@ export const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
+    dibuat: {
+        type: Date,
+        required: true,
+    },
+    diubah: {
+        type: Date,
+        required: true,
+    },
 });
