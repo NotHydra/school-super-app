@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include("./../partials/head.ejs"); -%>
+        <%- include("./../partials/sweet-alert-head.ejs"); -%>
+        <%- include("./../partials/confirm-modal.ejs"); -%>
+
+        <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css"/>
+    </head>
+
+    <body class="hold-transition login-page dark-mode">
+        <div class="login-box" id="login-form">
+            <div class="card">
+                <div class="card-header text-center white-border-bottom">
+                    <a href="." class="h1"><b>School Super App</b></a>
+                </div>
+
+                <div class="card-body">
+                    <form action="/login" method="post" class="mb-2" onsubmit="return confirmModal('form', this, 'login-form');">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="username" placeholder="Username" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" name="password" placeholder="Password" required/>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm">
+                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <p class="m-0 p-0 mb-1">
+                        <a href="/login-siswa">Login sebagai siswa?</a>
+                    </p>
+                    <p class="m-0 p-0">
+                        <a href="/register">Belum punya akun?</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <%- include("./../partials/script.ejs"); -%>
+    </body>
+
+    <%- include("./../partials/toast-script.ejs"); -%>
+</html>

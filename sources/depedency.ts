@@ -2,6 +2,7 @@ import "dotenv/config";
 import { pageItemType } from "./typings/types/nav-item";
 
 export const mongoDBURI: string = process.env.MONGO_DB_URI as string;
+export const sessionSecret: string = process.env.SESSION_SECRET as string;
 
 export const pageItemArray: pageItemType[] = [
     {
