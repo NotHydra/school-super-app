@@ -11,6 +11,10 @@
 
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">
+            <a class="nav-link"><%= userType == "user" ? userObject.username : userObject.nama_lengkap %> (<%= userType == "user" ? upperCaseFirst(userObject.role) : "Siswa" %>)</a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>
             </a>

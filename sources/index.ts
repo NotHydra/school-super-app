@@ -3,10 +3,10 @@ import session from "express-session";
 import mongoose from "mongoose";
 
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
-import { datasetYear, localMoment, zeroPad } from "./utility";
+import { datasetYear, localMoment, upperCaseFirst, zeroPad } from "./utility";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
-import { sessionData } from "./common/middleware/sessionData";
 import { isActive } from "./common/middleware/isActive";
+import { sessionData } from "./common/middleware/sessionData";
 
 import { Alumni, Guru, Rombel, Siswa } from "./models";
 
@@ -34,6 +34,7 @@ const navActive = [0, 0];
 
 app.locals.moment = localMoment;
 app.locals.zeroPad = zeroPad;
+app.locals.upperCaseFirst = upperCaseFirst;
 app.locals.pageItemArray = pageItemArray;
 
 app.set("view engine", "ejs");
