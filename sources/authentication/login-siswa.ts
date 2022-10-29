@@ -1,9 +1,8 @@
 import express, { Router } from "express";
-import bcrypt from "bcrypt";
 
 import { isNotAuthenticated } from "../common/middleware/isNotAuthenticated";
 
-import { Siswa, User } from "../models";
+import { Siswa } from "../models";
 
 export const authenticationLoginSiswaRouter = Router();
 const headTitle = "Login Siswa";
