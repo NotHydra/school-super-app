@@ -118,3 +118,7 @@ export function blueColorPattern(current: number, total: number): string {
 export function zeroPad(number: number, zero: number): string {
     return String(number).padStart(zero, "0");
 }
+
+export function upperCaseFirst(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
