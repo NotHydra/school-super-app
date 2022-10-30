@@ -30,7 +30,7 @@ authenticationLoginRouter
             toastTitle = "Akun tidak aktif";
         }
 
-        res.render("pages/login", {
+        res.render("pages/authentication/login", {
             headTitle,
             toastResponse: req.query.response,
             toastTitle,

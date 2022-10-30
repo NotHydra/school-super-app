@@ -15,7 +15,7 @@ authenticationLoginSiswaRouter.use(isNotAuthenticated);
 authenticationLoginSiswaRouter
     .route("/")
     .get(async (req, res) => {
-        res.render("pages/login-siswa", {
+        res.render("pages/authentication/login-siswa", {
             headTitle,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Login Berhasil" : "Login Gagal",

@@ -16,7 +16,7 @@ authenticationRegisterRouter.use(isNotAuthenticated);
 authenticationRegisterRouter
     .route("/")
     .get(async (req, res) => {
-        res.render("pages/register", {
+        res.render("pages/authentication/register", {
             headTitle,
             toastResponse: req.query.response,
             toastTitle: req.query.response == "success" ? "Register Berhasil" : "Register Gagal",
