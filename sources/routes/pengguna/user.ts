@@ -74,7 +74,7 @@ penggunaUserRouter.route("/").get(async (req, res) => {
     });
 
     const documentCount = await User.countDocuments().lean();
-    res.render("pages/table", {
+    res.render("pages/pengguna/user/table", {
         headTitle,
         navActive,
         toastResponse: req.query.response,
@@ -285,6 +285,30 @@ penggunaUserRouter
             res.redirect("create?response=error&text=Data tidak lengkap");
         }
     });
+
+penggunaUserRouter.route("/active").get(async (req, res) => {
+    const id = req.query.id;
+    const dataExist = await User.exists({ _id: id }).lean();
+
+    if (dataExist != null) {
+        try {
+            await User.updateOne(
+                { _id: id },
+                {
+                    aktif: (await User.findOne({ _id: id }).select("aktif").lean()).aktif == true ? false : true,
+
+                    diubah: new Date(),
+                }
+            ).lean();
+
+            res.redirect("./?response=success");
+        } catch (error: any) {
+            res.redirect("./?response=error");
+        }
+    } else if (dataExist == null) {
+        res.redirect("./?response=error&text=Data tidak valid");
+    }
+});
 
 penggunaUserRouter
     .route("/update")
