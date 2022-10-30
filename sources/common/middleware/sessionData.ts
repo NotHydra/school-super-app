@@ -5,12 +5,13 @@ import { app } from "../..";
 import { Siswa, User } from "../../models";
 
 export async function sessionData(req: Request, res: Response, next: NextFunction) {
-    let userObject = null;
+    let userObject: any = null;
 
     if (req.session.userType == "user") {
         userObject = await User.findOne({ _id: req.session.userId }).lean();
     } else if (req.session.userType == "siswa") {
         userObject = await Siswa.findOne({ _id: req.session.userId }).lean();
+        userObject.role = "user";
     }
 
     if (userObject != null) {
