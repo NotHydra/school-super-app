@@ -8,7 +8,7 @@ import { Anggota, Buku, Peminjaman, Pengembalian, Petugas } from "../../models";
 
 export const perpustakaanPengembalianRouter = Router();
 
-const navActive = [6, 8];
+const navActive = [7, 8];
 const tableAttributeArray = [
     {
         id: 1,

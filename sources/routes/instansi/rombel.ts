@@ -6,7 +6,7 @@ import { Guru, Jurusan, Rombel, Siswa, TahunRombel, Tingkat } from "../../models
 
 export const instansiRombelRouter = Router();
 
-const navActive = [5, 1];
+const navActive = [6, 1];
 const tableAttributeArray = [
     {
         id: 1,

@@ -28,6 +28,34 @@ export const pageItemArray: pageItemType[] = [
     },
     {
         id: 2,
+        title: "Pengguna",
+        icon: "users",
+        child: [
+            {
+                id: 1,
+                title: "Utama",
+                link: "pengguna",
+                icon: "circle",
+                confirm: false,
+            },
+            {
+                id: 2,
+                title: "User",
+                link: "pengguna/user",
+                icon: "user",
+                confirm: false,
+            },
+            {
+                id: 3,
+                title: "Aktivitas",
+                link: "pengguna/aktivitas",
+                icon: "eye",
+                confirm: false,
+            },
+        ],
+    },
+    {
+        id: 3,
         title: "Pengajar",
         icon: "chalkboard-user",
         child: [
@@ -55,7 +83,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 3,
+        id: 4,
         title: "Pelajar",
         icon: "address-card",
         child: [
@@ -83,7 +111,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 4,
+        id: 5,
         title: "Lulusan",
         icon: "graduation-cap",
         child: [
@@ -111,7 +139,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 5,
+        id: 6,
         title: "Penilaian",
         icon: "pen-nib",
         child: [
@@ -153,7 +181,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 6,
+        id: 7,
         title: "Instansi",
         icon: "building",
         child: [
@@ -195,7 +223,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 7,
+        id: 8,
         title: "Perpustakaan",
         icon: "book-open",
         child: [
@@ -265,7 +293,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 8,
+        id: 9,
         title: "Data Umum",
         icon: "globe",
         child: [
@@ -307,7 +335,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 9,
+        id: 10,
         title: "Pengaturan",
         icon: "gear",
         child: [

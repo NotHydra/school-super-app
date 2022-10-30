@@ -6,7 +6,7 @@ import { Jurusan, Rombel } from "../../models";
 
 export const instansiJurusanRouter = Router();
 
-const navActive = [5, 3];
+const navActive = [6, 3];
 const tableAttributeArray = [
     {
         id: 1,

@@ -9,7 +9,7 @@ import { lulusanTahunLulusRouter } from "./tahun-lulus";
 
 export const lulusanRouter = Router();
 export const headTitle = "Lulusan";
-const navActive = [3, 0];
+const navActive = [4, 0];
 
 lulusanRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

@@ -6,7 +6,7 @@ import { MataPelajaran, Rombel } from "../../models";
 
 export const instansiMataPelajaranRouter = Router();
 
-const navActive = [4, 2];
+const navActive = [5, 2];
 const tableAttributeArray = [
     {
         id: 1,

@@ -6,7 +6,7 @@ import { Guru, Jabatan } from "../../models";
 
 export const pengajarJabatanRouter = Router();
 
-const navActive = [1, 2];
+const navActive = [2, 2];
 const tableAttributeArray = [
     {
         id: 1,

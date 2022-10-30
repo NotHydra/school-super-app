@@ -9,7 +9,7 @@ import { pengajarJabatanRouter } from "./jabatan";
 
 export const pengajarRouter = Router();
 export const headTitle = "Pengajar";
-const navActive = [1, 0];
+const navActive = [2, 0];
 
 pengajarRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

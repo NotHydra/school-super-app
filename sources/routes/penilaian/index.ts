@@ -8,7 +8,7 @@ import { instansiMataPelajaranRouter } from "./mata-pelajaran";
 
 export const penilaianRouter = Router();
 export const headTitle = "Penilaian";
-const navActive = [4, 0];
+const navActive = [5, 0];
 
 penilaianRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

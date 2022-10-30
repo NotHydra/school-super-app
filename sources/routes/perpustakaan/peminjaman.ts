@@ -8,7 +8,7 @@ import { Anggota, Buku, Kategori, Peminjaman, Penerbit, Pengembalian, Penulis, P
 
 export const perpustakaanPeminjamanRouter = Router();
 
-const navActive = [6, 7];
+const navActive = [7, 7];
 const tableAttributeArray = [
     {
         id: 1,

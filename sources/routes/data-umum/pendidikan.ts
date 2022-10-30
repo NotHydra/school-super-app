@@ -6,7 +6,7 @@ import { Alumni, Guru, Pendidikan } from "../../models";
 
 export const dataUmumPendidikanRouter = Router();
 
-const navActive = [7, 4];
+const navActive = [8, 4];
 const tableAttributeArray = [
     {
         id: 1,
