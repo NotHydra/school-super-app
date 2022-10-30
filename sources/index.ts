@@ -7,6 +7,7 @@ import { localMoment, upperCaseFirst, zeroPad } from "./utility";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
 import { sessionData } from "./common/middleware/sessionData";
+import { roleGuard } from "./authentication/guard/role.guard";
 
 import { authenticationRouter } from "./authentication";
 import { dashboardRouter } from "./routes/dashboard";
@@ -52,8 +53,12 @@ app.use(isAuthenticated);
 app.use(isActive);
 app.use(sessionData);
 
+app.use(roleGuard(1));
+
 app.use("/", dashboardRouter);
-app.use("/pengguna", penggunaRouter);
+
+app.use(roleGuard(2));
+
 app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
@@ -61,6 +66,10 @@ app.use("/penilaian", penilaianRouter);
 app.use("/instansi", instansiRouter);
 app.use("/perpustakaan", perpustakaanRouter);
 app.use("/data-umum", dataUmumRouter);
+
+app.use(roleGuard(3));
+
+app.use("/pengguna", penggunaRouter);
 
 mongoose.connect(mongoDBURI, () => {
     console.log("Connected to database");
