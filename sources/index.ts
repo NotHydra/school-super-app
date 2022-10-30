@@ -10,6 +10,7 @@ import { sessionData } from "./common/middleware/sessionData";
 
 import { authenticationRouter } from "./authentication";
 import { dashboardRouter } from "./routes/dashboard";
+import { penggunaRouter } from "./routes/pengguna";
 import { pengajarRouter } from "./routes/pengajar";
 import { pelajarRouter } from "./routes/pelajar";
 import { lulusanRouter } from "./routes/lulusan";
@@ -52,6 +53,7 @@ app.use(isActive);
 app.use(sessionData);
 
 app.use("/", dashboardRouter);
+app.use("/pengguna", penggunaRouter);
 app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
