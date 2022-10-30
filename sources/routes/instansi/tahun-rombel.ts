@@ -6,7 +6,7 @@ import { Rombel, TahunRombel } from "../../models";
 
 export const instansiTahunRombelRouter = Router();
 
-const navActive = [6, 4];
+const navActive = [7, 5];
 const tableAttributeArray = [
     {
         id: 1,

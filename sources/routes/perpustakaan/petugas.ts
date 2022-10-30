@@ -8,7 +8,7 @@ import { JenisKelamin, Peminjaman, Pengembalian, Petugas, TempatLahir } from "..
 
 export const perpustakaanPetugasRouter = Router();
 
-const navActive = [7, 2];
+const navActive = [8, 3];
 const tableAttributeArray = [
     {
         id: 1,

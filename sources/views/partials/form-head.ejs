@@ -1,6 +1,6 @@
-<%
-    const pageItemObject = pageItemArray[navActive[0]];
-    const pageItemChildObject = pageItemObject.child[navActive[1]]
+<% 
+    const pageItemObject = findPageItem(navActive[0]);
+    const pageItemChildObject = findPageItemChild(navActive[0], navActive[1]);
 %>
 
 <div class="row">

@@ -8,7 +8,7 @@ import { dashboardDataPribadiRouter } from "./data-pribadi";
 
 export const dashboardRouter = Router();
 export const headTitle = "Dashboard";
-const navActive = [0, 0];
+const navActive = [1, 1];
 
 dashboardRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

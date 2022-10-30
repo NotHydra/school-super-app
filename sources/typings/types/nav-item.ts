@@ -1,4 +1,4 @@
-type pageItemChildType = {
+export type pageItemChildType = {
     id: number;
     title: string;
     link: string;

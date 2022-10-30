@@ -15,7 +15,7 @@ import { perpustakaanPengembalianRouter } from "./pengembalian";
 
 export const perpustakaanRouter = Router();
 export const headTitle = "Perpustakaan";
-const navActive = [7, 0];
+const navActive = [8, 1];
 
 perpustakaanRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

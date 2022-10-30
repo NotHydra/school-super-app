@@ -1,6 +1,10 @@
 import moment from "moment";
 import fs from "fs";
 
+import { pageItemArray } from "./depedency";
+
+import { pageItemType, pageItemChildType } from "./typings/types/nav-item";
+
 export const localMoment = moment;
 localMoment.locale("id");
 
@@ -121,4 +125,30 @@ export function zeroPad(number: number, zero: number): string {
 
 export function upperCaseFirst(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function findPageItem(parentId: number, childId: number): pageItemType {
+    const pageItemObject: pageItemType = pageItemArray.find((pageItemObject: pageItemType) => {
+        if (pageItemObject.id == parentId) {
+            return pageItemObject;
+        }
+    });
+
+    return pageItemObject;
+}
+
+export function findPageItemChild(parentId: number, childId: number): pageItemChildType {
+    const pageItemObject: pageItemType = pageItemArray.find((pageItemObject: pageItemType) => {
+        if (pageItemObject.id == parentId) {
+            return pageItemObject;
+        }
+    });
+
+    const pageItemChildObject: pageItemChildType = pageItemObject.child.find((pageItemChildObject: pageItemChildType) => {
+        if (pageItemChildObject.id == childId) {
+            return pageItemChildObject;
+        }
+    });
+
+    return pageItemChildObject;
 }

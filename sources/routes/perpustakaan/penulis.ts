@@ -6,7 +6,7 @@ import { Buku, Penulis } from "../../models";
 
 export const perpustakaanPenulisRouter = Router();
 
-const navActive = [7, 5];
+const navActive = [8, 6];
 const tableAttributeArray = [
     {
         id: 1,

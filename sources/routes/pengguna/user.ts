@@ -8,7 +8,7 @@ import { upperCaseFirst } from "../../utility";
 
 export const penggunaUserRouter = Router();
 
-const navActive = [1, 1];
+const navActive = [2, 2];
 const tableAttributeArray = [
     {
         id: 1,

@@ -10,7 +10,7 @@ import { User } from "../../models";
 
 export const dashboardDataPribadiRouter = Router();
 
-const navActive = [0, 1];
+const navActive = [1, 2];
 
 dashboardDataPribadiRouter.use(express.static("sources/public"));
 dashboardDataPribadiRouter.use(express.urlencoded({ extended: false }));

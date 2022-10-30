@@ -21,8 +21,6 @@ export function roleGuard(minimumLevel: any) {
     return function (req: Request, res: Response, next: NextFunction) {
         const isValid: boolean = roleCheck(app.locals.userObject.role, minimumLevel);
 
-        console.log(app.locals.userObject.role, minimumLevel, isValid);
-
         if (isValid) {
             next();
         } else if (!isValid) {
