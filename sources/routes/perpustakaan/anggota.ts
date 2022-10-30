@@ -89,7 +89,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
         headTitle,
         navActive,
         toastResponse: req.query.response,
-        toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
+        toastTitle: req.query.response == "success" ? "Berhasil" : "Gagal",
         toastText: req.query.text,
         cardItemArray: [
             {
