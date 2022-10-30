@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { datasetYear } from "../../utility";
+import { roleGuard } from "../../authentication/guard/role.guard";
 
 import { Guru, Siswa, Alumni, Rombel } from "../../models";
 
@@ -10,7 +11,7 @@ export const dashboardRouter = Router();
 export const headTitle = "Dashboard";
 const navActive = [1, 1];
 
-dashboardRouter.get("/", async (req, res) => {
+dashboardRouter.get("/", roleGuard(3), async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const guruChartData: any = await datasetYear(Guru, currentYear);

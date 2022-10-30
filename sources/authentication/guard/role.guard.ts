@@ -24,7 +24,11 @@ export function roleGuard(minimumLevel: any) {
         if (isValid) {
             next();
         } else if (!isValid) {
-            res.redirect("/");
+            if (roleCheck(app.locals.userObject.role, 3)) {
+                res.redirect("/");
+            } else if (roleCheck(app.locals.userObject.role, 2)) {
+                res.redirect("/data-pribadi");
+            }
         }
     };
 }

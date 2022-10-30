@@ -7,7 +7,7 @@ import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, zeroPad }
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
 import { sessionData } from "./common/middleware/sessionData";
-import { roleGuard } from "./authentication/guard/role.guard";
+import { roleCheck, roleGuard } from "./authentication/guard/role.guard";
 
 import { authenticationRouter } from "./authentication";
 import { dashboardRouter } from "./routes/dashboard";
@@ -30,12 +30,13 @@ declare module "express-session" {
 export const app: Express = express();
 const port: number = 3000;
 
+app.locals.roleCheck = roleCheck;
 app.locals.moment = localMoment;
-app.locals.zeroPad = zeroPad;
-app.locals.upperCaseFirst = upperCaseFirst;
+app.locals.pageItemArray = pageItemArray;
 app.locals.findPageItem = findPageItem;
 app.locals.findPageItemChild = findPageItemChild;
-app.locals.pageItemArray = pageItemArray;
+app.locals.zeroPad = zeroPad;
+app.locals.upperCaseFirst = upperCaseFirst;
 
 app.set("view engine", "ejs");
 app.set("views", "sources/views");
