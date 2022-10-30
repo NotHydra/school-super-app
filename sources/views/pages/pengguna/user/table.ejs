@@ -79,6 +79,7 @@
                                                                 <td class="td-custom">
                                                                     <a type="button" class="btn btn-block btn-<%= tableItemObject.aktif == 'Aktif' ? 'danger' : 'success' %>" href="/<%= pageItemCurrent.link %>/active?id=<%= tableItemObject._id %>"><%= tableItemObject.aktif == 'Aktif' ? 'Matikan' : 'Aktifkan' %></a>
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
+                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/update-password?id=<%= tableItemObject._id %>">Ubah Password</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                 </td>
                                                             </tr>

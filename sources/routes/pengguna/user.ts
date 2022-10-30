@@ -431,6 +431,79 @@ penggunaUserRouter
     });
 
 penggunaUserRouter
+    .route("/update-password")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await User.exists({ _id: id }).lean();
+
+        if (dataExist != null) {
+            res.render("pages/pengguna/user/update-password", {
+                headTitle,
+                navActive,
+                toastResponse: req.query.response,
+                toastTitle: req.query.response == "success" ? "Password Berhasil Diubah" : "Password Gagal Diubah",
+                toastText: req.query.text,
+                id,
+                detailedInputArray: [
+                    {
+                        id: 1,
+                        name: "new_password",
+                        display: "Password Baru",
+                        type: "password",
+                        value: null,
+                        placeholder: "Input password baru disini",
+                        enable: true,
+                    },
+                    {
+                        id: 2,
+                        name: "confirmation_password",
+                        display: "Password Konfirmasi",
+                        type: "password",
+                        value: null,
+                        placeholder: "Input password konfirmasi disini",
+                        enable: true,
+                    },
+                ],
+            });
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await User.exists({ _id: id }).lean();
+
+        if (dataExist != null) {
+            const inputArray: any = [req.body.new_password, req.body.confirmation_password];
+
+            if (!inputArray.includes(undefined)) {
+                if (req.body.new_password == req.body.confirmation_password) {
+                    try {
+                        await User.updateOne(
+                            { _id: id },
+                            {
+                                password: await bcrypt.hash(req.body.new_password, 12),
+
+                                diubah: new Date(),
+                            }
+                        ).lean();
+
+                        res.redirect(`update-password?id=${id}&response=success`);
+                    } catch (error: any) {
+                        res.redirect(`update-password?id=${id}&response=error`);
+                    }
+                } else if (req.body.new_password != req.body.confirmation_password) {
+                    res.redirect(`update-password?id=${id}&response=error&text=Password konfirmasi salah`);
+                }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect(`update-password?id=${id}&response=error&text=Data tidak lengkap`);
+            }
+        } else if (dataExist == null) {
+            res.redirect(`./?response=error&text=Data tidak valid`);
+        }
+    });
+
+penggunaUserRouter
     .route("/delete")
     .get(async (req, res) => {
         const id = req.query.id;
