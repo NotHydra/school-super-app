@@ -389,6 +389,14 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
+                title: "Sekolah (WIP)",
+                link: "pengaturan/sekolah",
+                icon: "school",
+                level: 3,
+                confirm: false,
+            },
+            {
+                id: 2,
                 title: "Logout",
                 link: "logout",
                 icon: "right-from-bracket",
