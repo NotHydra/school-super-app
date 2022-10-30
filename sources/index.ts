@@ -3,14 +3,13 @@ import session from "express-session";
 import mongoose from "mongoose";
 
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
-import { datasetYear, localMoment, upperCaseFirst, zeroPad } from "./utility";
+import { localMoment, upperCaseFirst, zeroPad } from "./utility";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
 import { sessionData } from "./common/middleware/sessionData";
 
-import { Alumni, Guru, Rombel, Siswa } from "./models";
-
 import { authenticationRouter } from "./authentication";
+import { dashboardRouter } from "./routes/dashboard";
 import { pengajarRouter } from "./routes/pengajar";
 import { pelajarRouter } from "./routes/pelajar";
 import { lulusanRouter } from "./routes/lulusan";
@@ -28,9 +27,6 @@ declare module "express-session" {
 
 export const app: Express = express();
 const port: number = 3000;
-
-const headTitle = "Dashboard";
-const navActive = [0, 0];
 
 app.locals.moment = localMoment;
 app.locals.zeroPad = zeroPad;
@@ -55,88 +51,7 @@ app.use(isAuthenticated);
 app.use(isActive);
 app.use(sessionData);
 
-app.get("/", async (req, res) => {
-    const currentYear = new Date().getFullYear();
-
-    const guruChartData: any = await datasetYear(Guru, currentYear);
-    const siswaChartData: any = await datasetYear(Siswa, currentYear);
-
-    res.render("pages/index", {
-        headTitle,
-        navActive,
-        toastResponse: req.query.response,
-        toastTitle: req.query.response == "success" ? "Login Berhasil" : "Login Gagal",
-        toastText: req.query.text,
-        cardItemArray: [
-            {
-                id: 1,
-                cardItemChild: [
-                    {
-                        id: 1,
-                        title: "Guru",
-                        icon: "user-tie",
-                        value: await Guru.countDocuments().lean(),
-                        link: "pengajar/guru",
-                    },
-                    {
-                        id: 2,
-                        title: "Siswa",
-                        icon: "user",
-                        value: await Siswa.countDocuments().lean(),
-                        link: "pelajar/siswa",
-                    },
-                    {
-                        id: 3,
-                        title: "Alumni",
-                        icon: "user-graduate",
-                        value: await Alumni.countDocuments().lean(),
-                        link: "lulusan/alumni",
-                    },
-                    {
-                        id: 4,
-                        title: "Rombel",
-                        icon: "archway",
-                        value: await Rombel.countDocuments().lean(),
-                        link: "instansi/rombel",
-                    },
-                ],
-            },
-        ],
-        lineChartArray: [
-            {
-                id: 1,
-                lineChartChild: [
-                    {
-                        id: 1,
-                        title: "Statistik Guru Baru",
-                        link: { link: "pengajar/guru", title: "Guru", subTitle: "Pengajar" },
-                        value: guruChartData.currentYearValue,
-                        text: "Guru Baru",
-                        percentage: guruChartData.percentageIncrease,
-                        timeRange: "Sejak Tahun Lalu",
-                        dataset: guruChartData.dataset,
-                        firstLegend: "Tahun Ini",
-                        secondLegend: "Tahun Lalu",
-                    },
-                    {
-                        id: 2,
-                        title: "Statistik Siswa Baru",
-                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
-                        value: siswaChartData.currentYearValue,
-                        text: "Siswa Baru",
-                        percentage: siswaChartData.percentageIncrease,
-                        timeRange: "Sejak Tahun Lalu",
-                        dataset: siswaChartData.dataset,
-                        firstLegend: "Tahun Ini",
-                        secondLegend: "Tahun Lalu",
-                    },
-                ],
-            },
-        ],
-        donutChartArray: [],
-    });
-});
-
+app.use("/", dashboardRouter);
 app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);

@@ -17,6 +17,13 @@ export const pageItemArray: pageItemType[] = [
                 icon: "circle",
                 confirm: false,
             },
+            {
+                id: 2,
+                title: "Data Pribadi",
+                link: "data-pribadi",
+                icon: "circle-user",
+                confirm: false,
+            },
         ],
     },
     {
