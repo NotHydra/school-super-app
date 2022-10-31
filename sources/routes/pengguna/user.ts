@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 
 import { headTitle } from ".";
 

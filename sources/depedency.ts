@@ -53,7 +53,7 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 3,
-                title: "Aktivitas (WIP)",
+                title: "Aktivitas",
                 link: "pengguna/aktivitas",
                 icon: "eye",
                 level: 4,

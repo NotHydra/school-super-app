@@ -6,12 +6,13 @@ import { roleGuard } from "../../authentication/guard/role.guard";
 import { User } from "../../models";
 
 import { penggunaUserRouter } from "./user";
+import { penggunaAktivitasRouter } from "./aktivitas";
 
 export const penggunaRouter = Router();
 export const headTitle = "Pengguna";
 const navActive = [2, 1];
 
-penggunaRouter.get("/", roleGuard(3), async (req, res) => {
+penggunaRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const userChartData: any = await datasetYear(User, currentYear);
@@ -107,3 +108,4 @@ penggunaRouter.get("/", roleGuard(3), async (req, res) => {
 });
 
 penggunaRouter.use("/user", penggunaUserRouter);
+penggunaRouter.use("/aktivitas", roleGuard(4), penggunaAktivitasRouter);
