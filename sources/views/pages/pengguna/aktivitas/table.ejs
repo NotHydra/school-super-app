@@ -5,6 +5,8 @@
     <head>
         <%- include("./../../../partials/head.ejs"); -%>
         <%- include("./../../../partials/data-table-head.ejs"); -%>
+        <%- include("./../../../partials/sweet-alert-head.ejs"); %>
+        <%- include("./../../../partials/confirm-modal.ejs"); -%>
     </head>
 
     <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
@@ -18,8 +20,11 @@
                         <br>
                         
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
-                        <%- include("./../../../partials/card-item.ejs"); -%>
-                        <%- include("./../../../partials/filter.ejs"); -%>
+
+                        <% if (typeValue == undefined) { %>
+                            <%- include("./../../../partials/card-item.ejs"); -%>
+                            <%- include("./../../../partials/filter.ejs"); -%>
+                        <% } %>
 
                         <div class="row">
                             <div class="col-12">
@@ -101,6 +106,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <% if (typeValue == "user") { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/pengguna/user/')">Kembali</a>
+                                </div>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>

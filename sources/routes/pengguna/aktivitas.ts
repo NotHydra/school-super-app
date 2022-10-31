@@ -33,7 +33,9 @@ penggunaAktivitasRouter.use(express.static("sources/public"));
 penggunaAktivitasRouter.use(express.urlencoded({ extended: false }));
 
 penggunaAktivitasRouter.route("/").get(async (req, res) => {
+    const typeValue: any = req.query.type;
     const userValue: any = req.query.user;
+
     const methodValue: any = req.query.method;
     let filterValue = {};
 
@@ -123,5 +125,7 @@ penggunaAktivitasRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
+        userValue,
     });
 });

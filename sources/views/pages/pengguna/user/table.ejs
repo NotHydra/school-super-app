@@ -77,6 +77,7 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
+                                                                    <a type="button" class="btn btn-block btn-primary" href="/pengguna/aktivitas?type=user&user=<%= tableItemObject._id %>">Aktivitas</a>
                                                                     <a type="button" class="btn btn-block btn-<%= tableItemObject.aktif == 'Aktif' ? 'danger' : 'success' %>" href="/<%= pageItemCurrent.link %>/active?id=<%= tableItemObject._id %>"><%= tableItemObject.aktif == 'Aktif' ? 'Matikan' : 'Aktifkan' %></a>
                                                                     <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                     <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/update-password?id=<%= tableItemObject._id %>">Ubah Password</a>
