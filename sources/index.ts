@@ -4,10 +4,11 @@ import mongoose from "mongoose";
 
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
 import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, zeroPad } from "./utility";
+
+import { roleCheck, roleGuard } from "./authentication/guard/role.guard";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
 import { sessionData } from "./common/middleware/sessionData";
-import { roleCheck, roleGuard } from "./authentication/guard/role.guard";
 
 import { authenticationRouter } from "./authentication";
 import { dashboardRouter } from "./routes/dashboard";
@@ -30,9 +31,10 @@ declare module "express-session" {
 export const app: Express = express();
 const port: number = 3000;
 
-app.locals.roleCheck = roleCheck;
 app.locals.moment = localMoment;
 app.locals.pageItemArray = pageItemArray;
+
+app.locals.roleCheck = roleCheck;
 app.locals.findPageItem = findPageItem;
 app.locals.findPageItemChild = findPageItemChild;
 app.locals.zeroPad = zeroPad;
@@ -56,17 +58,24 @@ app.use(isAuthenticated);
 app.use(isActive);
 app.use(sessionData);
 
-app.use("/", roleGuard(1), dashboardRouter);
+app.use(roleGuard(1));
+app.use("/", dashboardRouter);
 
-app.use("/pengajar", roleGuard(2), pengajarRouter);
-app.use("/pelajar", roleGuard(2), pelajarRouter);
-app.use("/lulusan", roleGuard(2), lulusanRouter);
-app.use("/penilaian", roleGuard(2), penilaianRouter);
-app.use("/instansi", roleGuard(2), instansiRouter);
-app.use("/perpustakaan", roleGuard(2), perpustakaanRouter);
-app.use("/data-umum", roleGuard(2), dataUmumRouter);
+app.use(roleGuard(2));
+app.use("/pengajar", pengajarRouter);
+app.use("/pelajar", pelajarRouter);
+app.use("/lulusan", lulusanRouter);
+app.use("/penilaian", penilaianRouter);
+app.use("/instansi", instansiRouter);
+app.use("/perpustakaan", perpustakaanRouter);
+app.use("/data-umum", dataUmumRouter);
 
-app.use("/pengguna", roleGuard(3), penggunaRouter);
+app.use(roleGuard(3));
+app.use("/pengguna", penggunaRouter);
+
+app.use((req, res) => {
+    res.redirect("/");
+});
 
 mongoose.connect(mongoDBURI, () => {
     console.log("Connected to database");
