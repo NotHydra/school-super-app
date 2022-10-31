@@ -9,6 +9,7 @@ import { roleCheck, roleGuard } from "./authentication/guard/role.guard";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
 import { sessionData } from "./common/middleware/sessionData";
+import { requestCounter } from "./common/middleware/requestCounter";
 
 import { authenticationRouter } from "./authentication";
 import { dashboardRouter } from "./routes/dashboard";
@@ -57,6 +58,7 @@ app.use(authenticationRouter);
 app.use(isAuthenticated);
 app.use(isActive);
 app.use(sessionData);
+app.use(requestCounter);
 
 app.use(roleGuard(1));
 app.use("/", dashboardRouter);
