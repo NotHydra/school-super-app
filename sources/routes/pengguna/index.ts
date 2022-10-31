@@ -11,7 +11,7 @@ export const penggunaRouter = Router();
 export const headTitle = "Pengguna";
 const navActive = [2, 1];
 
-penggunaRouter.get("/", roleGuard(4), async (req, res) => {
+penggunaRouter.get("/", roleGuard(3), async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const userChartData: any = await datasetYear(User, currentYear);
