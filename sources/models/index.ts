@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+import { userSchema } from "./pengguna/user";
+import { aktivitasSchema } from "./pengguna/aktivitas";
+
 import { guruSchema } from "./pengajar/guru";
 import { jabatanSchema } from "./pengajar/jabatan";
 
@@ -30,7 +33,9 @@ import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
 import { pendidikanSchema } from "./data-umum/pendidikan";
 
-import { userSchema } from "./pengguna/user";
+const penggunaDatabase = mongoose.connection.useDb("pengguna");
+export const User = penggunaDatabase.model("user", userSchema, "user");
+export const Aktivitas = penggunaDatabase.model("aktivitas", aktivitasSchema, "aktivitas");
 
 const pengajarDatabase = mongoose.connection.useDb("pengajar");
 export const Guru = pengajarDatabase.model("guru", guruSchema, "guru");
@@ -71,6 +76,3 @@ export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSch
 export const JenisKelamin = dataUmumDatabase.model("jenis_kelamin", jenisKelaminSchema, "jenis_kelamin");
 export const Universitas = dataUmumDatabase.model("universitas", universitasSchema, "universitas");
 export const Pendidikan = dataUmumDatabase.model("pendidikan", pendidikanSchema, "pendidikan");
-
-const penggunaDatabase = mongoose.connection.useDb("pengguna");
-export const User = penggunaDatabase.model("user", userSchema, "user");
