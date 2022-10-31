@@ -56,23 +56,17 @@ app.use(isAuthenticated);
 app.use(isActive);
 app.use(sessionData);
 
-app.use(roleGuard(1));
+app.use("/", roleGuard(1), dashboardRouter);
 
-app.use("/", dashboardRouter);
+app.use("/pengajar", roleGuard(2), pengajarRouter);
+app.use("/pelajar", roleGuard(2), pelajarRouter);
+app.use("/lulusan", roleGuard(2), lulusanRouter);
+app.use("/penilaian", roleGuard(2), penilaianRouter);
+app.use("/instansi", roleGuard(2), instansiRouter);
+app.use("/perpustakaan", roleGuard(2), perpustakaanRouter);
+app.use("/data-umum", roleGuard(2), dataUmumRouter);
 
-app.use(roleGuard(2));
-
-app.use("/pengajar", pengajarRouter);
-app.use("/pelajar", pelajarRouter);
-app.use("/lulusan", lulusanRouter);
-app.use("/penilaian", penilaianRouter);
-app.use("/instansi", instansiRouter);
-app.use("/perpustakaan", perpustakaanRouter);
-app.use("/data-umum", dataUmumRouter);
-
-app.use(roleGuard(3));
-
-app.use("/pengguna", penggunaRouter);
+app.use("/pengguna", roleGuard(3), penggunaRouter);
 
 mongoose.connect(mongoDBURI, () => {
     console.log("Connected to database");
