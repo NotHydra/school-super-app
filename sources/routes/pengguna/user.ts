@@ -1,10 +1,12 @@
 import express, { Router } from "express";
 import bcrypt from "bcrypt";
 
+import { app } from "../..";
 import { headTitle } from ".";
 
 import { User } from "../../models";
 import { upperCaseFirst } from "../../utility";
+import { roleCheck, roleConvert } from "../../authentication/guard/role.guard";
 
 export const penggunaUserRouter = Router();
 
@@ -291,19 +293,25 @@ penggunaUserRouter.route("/active").get(async (req, res) => {
     const dataExist = await User.exists({ _id: id }).lean();
 
     if (dataExist != null) {
-        try {
-            await User.updateOne(
-                { _id: id },
-                {
-                    aktif: (await User.findOne({ _id: id }).select("aktif").lean()).aktif == true ? false : true,
+        const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert((await User.findOne({ _id: id }).select("role").lean()).role) + 1);
 
-                    diubah: new Date(),
-                }
-            ).lean();
+        if (roleIsValid) {
+            try {
+                await User.updateOne(
+                    { _id: id },
+                    {
+                        aktif: (await User.findOne({ _id: id }).select("aktif").lean()).aktif == true ? false : true,
 
-            res.redirect("./?response=success");
-        } catch (error: any) {
-            res.redirect("./?response=error");
+                        diubah: new Date(),
+                    }
+                ).lean();
+
+                res.redirect("./?response=success");
+            } catch (error: any) {
+                res.redirect("./?response=error");
+            }
+        } else if (!roleIsValid) {
+            res.redirect("./?response=error&text=Data tidak valid");
         }
     } else if (dataExist == null) {
         res.redirect("./?response=error&text=Data tidak valid");
@@ -318,68 +326,73 @@ penggunaUserRouter
 
         if (dataExist != null) {
             const itemObject = await User.findOne({ _id: id }).select("username nama_lengkap nomor_telepon email role").lean();
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert(itemObject.role) + 1);
 
-            res.render("pages/update", {
-                headTitle,
-                navActive,
-                toastResponse: req.query.response,
-                toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
-                toastText: req.query.text,
-                id,
-                detailedInputArray: [
-                    {
-                        id: 1,
-                        name: "username",
-                        display: "Username",
-                        type: "text",
-                        value: itemObject.username,
-                        placeholder: "Input username disini",
-                        enable: true,
-                    },
-                    {
-                        id: 2,
-                        name: "nama_lengkap",
-                        display: "Nama Lengkap",
-                        type: "text",
-                        value: itemObject.nama_lengkap,
-                        placeholder: "Input nama lengkap disini",
-                        enable: true,
-                    },
-                    {
-                        id: 3,
-                        name: "nomor_telepon",
-                        display: "Nomor Telepon",
-                        type: "number",
-                        value: itemObject.nomor_telepon,
-                        placeholder: "Input nomor telepon disini",
-                        enable: true,
-                    },
-                    {
-                        id: 4,
-                        name: "email",
-                        display: "Email",
-                        type: "email",
-                        value: itemObject.email,
-                        placeholder: "Input email disini",
-                        enable: true,
-                    },
-                    {
-                        id: 5,
-                        name: "role",
-                        display: "Role",
-                        type: "select",
-                        value: [
-                            [
-                                ["admin", "Admin"],
-                                ["operator", "Operator"],
+            if (roleIsValid) {
+                res.render("pages/update", {
+                    headTitle,
+                    navActive,
+                    toastResponse: req.query.response,
+                    toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
+                    toastText: req.query.text,
+                    id,
+                    detailedInputArray: [
+                        {
+                            id: 1,
+                            name: "username",
+                            display: "Username",
+                            type: "text",
+                            value: itemObject.username,
+                            placeholder: "Input username disini",
+                            enable: true,
+                        },
+                        {
+                            id: 2,
+                            name: "nama_lengkap",
+                            display: "Nama Lengkap",
+                            type: "text",
+                            value: itemObject.nama_lengkap,
+                            placeholder: "Input nama lengkap disini",
+                            enable: true,
+                        },
+                        {
+                            id: 3,
+                            name: "nomor_telepon",
+                            display: "Nomor Telepon",
+                            type: "number",
+                            value: itemObject.nomor_telepon,
+                            placeholder: "Input nomor telepon disini",
+                            enable: true,
+                        },
+                        {
+                            id: 4,
+                            name: "email",
+                            display: "Email",
+                            type: "email",
+                            value: itemObject.email,
+                            placeholder: "Input email disini",
+                            enable: true,
+                        },
+                        {
+                            id: 5,
+                            name: "role",
+                            display: "Role",
+                            type: "select",
+                            value: [
+                                [
+                                    ["admin", "Admin"],
+                                    ["operator", "Operator"],
+                                ],
+                                itemObject.role,
                             ],
-                            itemObject.role,
-                        ],
-                        placeholder: "Input role disini",
-                        enable: true,
-                    },
-                ],
-            });
+                            placeholder: "Input role disini",
+                            enable: true,
+                        },
+                    ],
+                });
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
+            }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
@@ -389,41 +402,47 @@ penggunaUserRouter
         const dataExist = await User.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const attributeArray: any = {};
-            const inputArray = tableAttributeArray.slice(0, -1).map((tableAttributeObject) => {
-                const attributeCurrent = tableAttributeObject.value[0];
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert((await User.findOne({ _id: id }).select("role").lean()).role) + 1);
 
-                attributeArray[attributeCurrent] = req.body[attributeCurrent];
+            if (roleIsValid) {
+                const attributeArray: any = {};
+                const inputArray = tableAttributeArray.slice(0, -1).map((tableAttributeObject) => {
+                    const attributeCurrent = tableAttributeObject.value[0];
 
-                return req.body[attributeCurrent];
-            });
+                    attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-            if (!inputArray.includes(undefined)) {
-                try {
-                    await User.updateOne(
-                        { _id: id },
-                        {
-                            ...attributeArray,
+                    return req.body[attributeCurrent];
+                });
 
-                            diubah: new Date(),
+                if (!inputArray.includes(undefined)) {
+                    try {
+                        await User.updateOne(
+                            { _id: id },
+                            {
+                                ...attributeArray,
+
+                                diubah: new Date(),
+                            }
+                        ).lean();
+                        res.redirect(`update?id=${id}&response=success`);
+                    } catch (error: any) {
+                        if (error.code == 11000) {
+                            if (error.keyPattern.username) {
+                                res.redirect(`update?id=${id}&response=error&text=Username sudah digunakan`);
+                            } else if (error.keyPattern.nomor_telepon) {
+                                res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan`);
+                            } else if (error.keyPattern.email) {
+                                res.redirect(`update?id=${id}&response=error&text=Email sudah digunakan`);
+                            }
+                        } else {
+                            res.redirect(`update?id=${id}&response=error`);
                         }
-                    ).lean();
-                    res.redirect(`update?id=${id}&response=success`);
-                } catch (error: any) {
-                    if (error.code == 11000) {
-                        if (error.keyPattern.username) {
-                            res.redirect(`update?id=${id}&response=error&text=Username sudah digunakan`);
-                        } else if (error.keyPattern.nomor_telepon) {
-                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan`);
-                        } else if (error.keyPattern.email) {
-                            res.redirect(`update?id=${id}&response=error&text=Email sudah digunakan`);
-                        }
-                    } else {
-                        res.redirect(`update?id=${id}&response=error`);
                     }
+                } else if (inputArray.includes(undefined)) {
+                    res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
                 }
-            } else if (inputArray.includes(undefined)) {
-                res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap`);
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
             }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
@@ -437,34 +456,40 @@ penggunaUserRouter
         const dataExist = await User.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            res.render("pages/pengguna/user/update-password", {
-                headTitle,
-                navActive,
-                toastResponse: req.query.response,
-                toastTitle: req.query.response == "success" ? "Password Berhasil Diubah" : "Password Gagal Diubah",
-                toastText: req.query.text,
-                id,
-                detailedInputArray: [
-                    {
-                        id: 1,
-                        name: "new_password",
-                        display: "Password Baru",
-                        type: "password",
-                        value: null,
-                        placeholder: "Input password baru disini",
-                        enable: true,
-                    },
-                    {
-                        id: 2,
-                        name: "confirmation_password",
-                        display: "Password Konfirmasi",
-                        type: "password",
-                        value: null,
-                        placeholder: "Input password konfirmasi disini",
-                        enable: true,
-                    },
-                ],
-            });
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert((await User.findOne({ _id: id }).select("role").lean()).role) + 1);
+
+            if (roleIsValid) {
+                res.render("pages/pengguna/user/update-password", {
+                    headTitle,
+                    navActive,
+                    toastResponse: req.query.response,
+                    toastTitle: req.query.response == "success" ? "Password Berhasil Diubah" : "Password Gagal Diubah",
+                    toastText: req.query.text,
+                    id,
+                    detailedInputArray: [
+                        {
+                            id: 1,
+                            name: "new_password",
+                            display: "Password Baru",
+                            type: "password",
+                            value: null,
+                            placeholder: "Input password baru disini",
+                            enable: true,
+                        },
+                        {
+                            id: 2,
+                            name: "confirmation_password",
+                            display: "Password Konfirmasi",
+                            type: "password",
+                            value: null,
+                            placeholder: "Input password konfirmasi disini",
+                            enable: true,
+                        },
+                    ],
+                });
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
+            }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
@@ -474,29 +499,35 @@ penggunaUserRouter
         const dataExist = await User.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const inputArray: any = [req.body.new_password, req.body.confirmation_password];
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert((await User.findOne({ _id: id }).select("role").lean()).role) + 1);
 
-            if (!inputArray.includes(undefined)) {
-                if (req.body.new_password == req.body.confirmation_password) {
-                    try {
-                        await User.updateOne(
-                            { _id: id },
-                            {
-                                password: await bcrypt.hash(req.body.new_password, 12),
+            if (roleIsValid) {
+                const inputArray: any = [req.body.new_password, req.body.confirmation_password];
 
-                                diubah: new Date(),
-                            }
-                        ).lean();
+                if (!inputArray.includes(undefined)) {
+                    if (req.body.new_password == req.body.confirmation_password) {
+                        try {
+                            await User.updateOne(
+                                { _id: id },
+                                {
+                                    password: await bcrypt.hash(req.body.new_password, 12),
 
-                        res.redirect(`update-password?id=${id}&response=success`);
-                    } catch (error: any) {
-                        res.redirect(`update-password?id=${id}&response=error`);
+                                    diubah: new Date(),
+                                }
+                            ).lean();
+
+                            res.redirect(`update-password?id=${id}&response=success`);
+                        } catch (error: any) {
+                            res.redirect(`update-password?id=${id}&response=error`);
+                        }
+                    } else if (req.body.new_password != req.body.confirmation_password) {
+                        res.redirect(`update-password?id=${id}&response=error&text=Password konfirmasi salah`);
                     }
-                } else if (req.body.new_password != req.body.confirmation_password) {
-                    res.redirect(`update-password?id=${id}&response=error&text=Password konfirmasi salah`);
+                } else if (inputArray.includes(undefined)) {
+                    res.redirect(`update-password?id=${id}&response=error&text=Data tidak lengkap`);
                 }
-            } else if (inputArray.includes(undefined)) {
-                res.redirect(`update-password?id=${id}&response=error&text=Data tidak lengkap`);
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
             }
         } else if (dataExist == null) {
             res.redirect(`./?response=error&text=Data tidak valid`);
@@ -511,71 +542,76 @@ penggunaUserRouter
 
         if (dataExist != null) {
             const itemObject = await User.findOne({ _id: id }).select("username nama_lengkap nomor_telepon email role aktif").lean();
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert(itemObject.role) + 1);
 
-            res.render("pages/delete", {
-                headTitle,
-                navActive,
-                toastResponse: req.query.response,
-                toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
-                toastText: req.query.text,
-                id,
-                detailedInputArray: [
-                    {
-                        id: 1,
-                        name: "username",
-                        display: "Username",
-                        type: "text",
-                        value: itemObject.username,
-                        placeholder: "Input username disini",
-                        enable: false,
-                    },
-                    {
-                        id: 2,
-                        name: "nama_lengkap",
-                        display: "Nama Lengkap",
-                        type: "text",
-                        value: itemObject.nama_lengkap,
-                        placeholder: "Input nama lengkap disini",
-                        enable: false,
-                    },
-                    {
-                        id: 3,
-                        name: "nomor_telepon",
-                        display: "Nomor Telepon",
-                        type: "number",
-                        value: itemObject.nomor_telepon,
-                        placeholder: "Input nomor telepon disini",
-                        enable: false,
-                    },
-                    {
-                        id: 4,
-                        name: "email",
-                        display: "Email",
-                        type: "email",
-                        value: itemObject.email,
-                        placeholder: "Input email disini",
-                        enable: false,
-                    },
-                    {
-                        id: 5,
-                        name: "role",
-                        display: "Role",
-                        type: "text",
-                        value: upperCaseFirst(itemObject.role),
-                        placeholder: "Input role disini",
-                        enable: false,
-                    },
-                    {
-                        id: 6,
-                        name: "aktif",
-                        display: "Status",
-                        type: "text",
-                        value: itemObject.aktif == true ? "Aktif" : "Tidak Aktif",
-                        placeholder: "Input status disini",
-                        enable: false,
-                    },
-                ],
-            });
+            if (roleIsValid) {
+                res.render("pages/delete", {
+                    headTitle,
+                    navActive,
+                    toastResponse: req.query.response,
+                    toastTitle: req.query.response == "success" ? "Data Berhasil Dihapus" : "Data Gagal Dihapus",
+                    toastText: req.query.text,
+                    id,
+                    detailedInputArray: [
+                        {
+                            id: 1,
+                            name: "username",
+                            display: "Username",
+                            type: "text",
+                            value: itemObject.username,
+                            placeholder: "Input username disini",
+                            enable: false,
+                        },
+                        {
+                            id: 2,
+                            name: "nama_lengkap",
+                            display: "Nama Lengkap",
+                            type: "text",
+                            value: itemObject.nama_lengkap,
+                            placeholder: "Input nama lengkap disini",
+                            enable: false,
+                        },
+                        {
+                            id: 3,
+                            name: "nomor_telepon",
+                            display: "Nomor Telepon",
+                            type: "number",
+                            value: itemObject.nomor_telepon,
+                            placeholder: "Input nomor telepon disini",
+                            enable: false,
+                        },
+                        {
+                            id: 4,
+                            name: "email",
+                            display: "Email",
+                            type: "email",
+                            value: itemObject.email,
+                            placeholder: "Input email disini",
+                            enable: false,
+                        },
+                        {
+                            id: 5,
+                            name: "role",
+                            display: "Role",
+                            type: "text",
+                            value: upperCaseFirst(itemObject.role),
+                            placeholder: "Input role disini",
+                            enable: false,
+                        },
+                        {
+                            id: 6,
+                            name: "aktif",
+                            display: "Status",
+                            type: "text",
+                            value: itemObject.aktif == true ? "Aktif" : "Tidak Aktif",
+                            placeholder: "Input status disini",
+                            enable: false,
+                        },
+                    ],
+                });
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
+            }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");
         }
@@ -585,11 +621,17 @@ penggunaUserRouter
         const dataExist = await User.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            try {
-                await User.deleteOne({ _id: id }).lean();
-                res.redirect("./?response=success");
-            } catch (error: any) {
-                res.redirect(`delete?id=${id}&response=error`);
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert((await User.findOne({ _id: id }).select("role").lean()).role) + 1);
+
+            if (roleIsValid) {
+                try {
+                    await User.deleteOne({ _id: id }).lean();
+                    res.redirect("./?response=success");
+                } catch (error: any) {
+                    res.redirect(`delete?id=${id}&response=error`);
+                }
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
             }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");

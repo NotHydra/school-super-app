@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
 import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, zeroPad } from "./utility";
 
-import { roleCheck, roleGuard } from "./authentication/guard/role.guard";
+import { roleCheck, roleConvert, roleGuard } from "./authentication/guard/role.guard";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
 import { sessionData } from "./common/middleware/sessionData";
@@ -35,6 +35,7 @@ const port: number = 3000;
 app.locals.moment = localMoment;
 app.locals.pageItemArray = pageItemArray;
 
+app.locals.roleConvert = roleConvert;
 app.locals.roleCheck = roleCheck;
 app.locals.findPageItem = findPageItem;
 app.locals.findPageItemChild = findPageItemChild;
