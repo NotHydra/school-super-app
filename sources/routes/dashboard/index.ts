@@ -5,13 +5,13 @@ import { roleGuard } from "../../authentication/guard/role.guard";
 
 import { Guru, Siswa, Alumni, User } from "../../models";
 
-import { dashboardDataPribadiRouter } from "./data-pribadi";
+import { utamaDataPribadiRouter } from "./data-pribadi";
 
-export const dashboardRouter = Router();
-export const headTitle = "Dashboard";
+export const utamaRouter = Router();
+export const headTitle = "Utama";
 const navActive = [1, 1];
 
-dashboardRouter.get("/", roleGuard(3), async (req, res) => {
+utamaRouter.get("/", roleGuard(3), async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const userChartData: any = await datasetYear(User, currentYear);
@@ -143,4 +143,4 @@ dashboardRouter.get("/", roleGuard(3), async (req, res) => {
     });
 });
 
-dashboardRouter.use("/data-pribadi", dashboardDataPribadiRouter);
+utamaRouter.use("/data-pribadi", utamaDataPribadiRouter);

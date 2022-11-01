@@ -8,14 +8,14 @@ import { headTitle } from ".";
 
 import { JenisKelamin, Rombel, Siswa, TahunMasuk, TempatLahir, User } from "../../models";
 
-export const dashboardDataPribadiRouter = Router();
+export const utamaDataPribadiRouter = Router();
 
 const navActive = [1, 2];
 
-dashboardDataPribadiRouter.use(express.static("sources/public"));
-dashboardDataPribadiRouter.use(express.urlencoded({ extended: false }));
+utamaDataPribadiRouter.use(express.static("sources/public"));
+utamaDataPribadiRouter.use(express.urlencoded({ extended: false }));
 
-dashboardDataPribadiRouter.get("/", async (req, res) => {
+utamaDataPribadiRouter.get("/", async (req, res) => {
     const id = req.session.userId;
     const type = req.session.userType;
 
@@ -167,7 +167,7 @@ dashboardDataPribadiRouter.get("/", async (req, res) => {
     }
 });
 
-dashboardDataPribadiRouter
+utamaDataPribadiRouter
     .route("/update")
     .get(async (req, res) => {
         const id = req.session.userId;
@@ -413,7 +413,7 @@ dashboardDataPribadiRouter
         }
     });
 
-dashboardDataPribadiRouter
+utamaDataPribadiRouter
     .route("/update-password")
     .get(async (req, res) => {
         const type = req.session.userType;

@@ -7,15 +7,15 @@ export const sessionSecret: string = process.env.SESSION_SECRET as string;
 export const pageItemArray: pageItemType[] = [
     {
         id: 1,
-        title: "Dashboard",
-        icon: "gauge",
+        title: "Utama",
+        icon: "house",
         level: 1,
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "",
-                icon: "circle",
+                icon: "gauge",
                 level: 3,
                 confirm: false,
             },
@@ -37,9 +37,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "pengguna",
-                icon: "circle",
+                icon: "gauge",
                 level: 3,
                 confirm: false,
             },
@@ -69,9 +69,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "pengajar",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },
@@ -101,9 +101,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "pelajar",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },
@@ -133,9 +133,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "lulusan",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },
@@ -165,9 +165,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "penilaian",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },
@@ -213,9 +213,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "instansi",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },
@@ -261,9 +261,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "perpustakaan",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },
@@ -341,9 +341,9 @@ export const pageItemArray: pageItemType[] = [
         child: [
             {
                 id: 1,
-                title: "Utama",
+                title: "Dashboard",
                 link: "data-umum",
-                icon: "circle",
+                icon: "gauge",
                 level: 2,
                 confirm: false,
             },

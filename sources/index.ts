@@ -12,7 +12,7 @@ import { sessionData } from "./common/middleware/sessionData";
 import { requestCounter } from "./common/middleware/requestCounter";
 
 import { authenticationRouter } from "./authentication";
-import { dashboardRouter } from "./routes/dashboard";
+import { utamaRouter } from "./routes/dashboard";
 import { penggunaRouter } from "./routes/pengguna";
 import { pengajarRouter } from "./routes/pengajar";
 import { pelajarRouter } from "./routes/pelajar";
@@ -62,7 +62,7 @@ app.use(sessionData);
 app.use(requestCounter);
 
 app.use(roleGuard(1));
-app.use("/", dashboardRouter);
+app.use("/", utamaRouter);
 
 app.use(roleGuard(2));
 app.use("/pengajar", pengajarRouter);
