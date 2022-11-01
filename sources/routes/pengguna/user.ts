@@ -4,8 +4,8 @@ import bcrypt from "bcrypt";
 import { app } from "../..";
 import { headTitle } from ".";
 
-import { User } from "../../models";
-import { upperCaseFirst } from "../../utility";
+import { Aktivitas, User } from "../../models";
+import { localMoment, upperCaseFirst } from "../../utility";
 import { roleCheck, roleConvert } from "../../authentication/guard/role.guard";
 
 export const penggunaUserRouter = Router();
@@ -67,13 +67,23 @@ penggunaUserRouter.route("/").get(async (req, res) => {
     }
 
     let tableItemArray: any = await User.find(filterValue).sort({ username: 1 }).lean();
+    const aktivitasArray = await Aktivitas.find().select("id_user dibuat").sort({ dibuat: -1 }).lean();
 
-    tableItemArray = tableItemArray.map((tableItemObject: any) => {
-        tableItemObject.role = upperCaseFirst(tableItemObject.role);
-        tableItemObject.aktif = tableItemObject.aktif == 1 ? "Aktif" : "Tidak Aktif";
+    tableItemArray = await Promise.all(
+        tableItemArray.map(async (tableItemObject: any) => {
+            const aktivitasObject = aktivitasArray.find((aktivitasObject) => {
+                if (aktivitasObject.id_user == tableItemObject._id) {
+                    return aktivitasObject;
+                }
+            });
 
-        return tableItemObject;
-    });
+            tableItemObject.role = upperCaseFirst(tableItemObject.role);
+            tableItemObject.aktif = tableItemObject.aktif == 1 ? "Aktif" : "Tidak Aktif";
+            tableItemObject.aktivitas = aktivitasObject == undefined ? "Tidak Ada" : upperCaseFirst(localMoment(aktivitasObject.dibuat).fromNow());
+
+            return tableItemObject;
+        })
+    );
 
     const documentCount = await User.countDocuments().lean();
     res.render("pages/pengguna/user/table", {

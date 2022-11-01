@@ -36,6 +36,7 @@
                                                         <th class="th-custom export"><%= tableAttributeObject.label %></th>
                                                     <% }); %>
 
+                                                    <th class="th-custom export">Aktivitas</th>
                                                     <th class="th-custom export">Dibuat</th>
                                                     <th class="th-custom export">Diubah</th>
                                                     <th class="th-custom">Aksi</th>
@@ -74,6 +75,7 @@
                                                                     }); 
                                                                 %>
 
+                                                                <td class="td-custom"><%= tableItemObject.aktivitas %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
@@ -101,6 +103,7 @@
                                                         <th class="th-custom"><%= tableAttributeObject.label %></th>
                                                     <% }); %>
 
+                                                    <th class="th-custom export">Aktivitas</th>
                                                     <th class="th-custom">Dibuat</th>
                                                     <th class="th-custom">Diubah</th>
                                                     <th class="th-custom">Aksi</th>
