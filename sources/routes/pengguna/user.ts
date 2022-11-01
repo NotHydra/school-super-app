@@ -184,15 +184,6 @@ penggunaUserRouter
                 },
                 {
                     id: 3,
-                    name: "password",
-                    display: "Password",
-                    type: "password",
-                    value: null,
-                    placeholder: "Input password disini",
-                    enable: true,
-                },
-                {
-                    id: 4,
                     name: "nomor_telepon",
                     display: "Nomor Telepon",
                     type: "number",
@@ -201,7 +192,7 @@ penggunaUserRouter
                     enable: true,
                 },
                 {
-                    id: 5,
+                    id: 4,
                     name: "email",
                     display: "Email",
                     type: "email",
@@ -210,7 +201,7 @@ penggunaUserRouter
                     enable: true,
                 },
                 {
-                    id: 6,
+                    id: 5,
                     name: "role",
                     display: "Role",
                     type: "select",
@@ -225,7 +216,7 @@ penggunaUserRouter
                     enable: true,
                 },
                 {
-                    id: 7,
+                    id: 6,
                     name: "aktif",
                     display: "Status",
                     type: "select",
@@ -239,52 +230,74 @@ penggunaUserRouter
                     placeholder: "Input status disini",
                     enable: true,
                 },
+                {
+                    id: 7,
+                    name: "password",
+                    display: "Password",
+                    type: "password",
+                    value: null,
+                    placeholder: "Input password disini",
+                    enable: true,
+                },
+                {
+                    id: 8,
+                    name: "confirmation_password",
+                    display: "Password Konfirmasi",
+                    type: "password",
+                    value: null,
+                    placeholder: "Input password konfirmasi disini",
+                    enable: true,
+                },
             ],
         });
     })
     .post(async (req, res) => {
-        const attributeArray: any = {};
-        const inputArray = tableAttributeArray.map((tableAttributeObject) => {
-            const attributeCurrent = tableAttributeObject.value[0];
+        if (req.body.password == req.body.confirmation_password) {
+            const attributeArray: any = {};
+            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+                const attributeCurrent = tableAttributeObject.value[0];
 
-            attributeArray[attributeCurrent] = req.body[attributeCurrent];
+                attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-            return req.body[attributeCurrent];
-        });
-
-        attributeArray.password = req.body.password;
-        inputArray.push(req.body.password);
-
-        if (!inputArray.includes(undefined)) {
-            attributeArray.password = await bcrypt.hash(attributeArray.password, 12);
-
-            const itemObject = new User({
-                _id: (await User.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
-
-                ...attributeArray,
-
-                dibuat: new Date(),
-                diubah: new Date(),
+                return req.body[attributeCurrent];
             });
 
-            try {
-                await itemObject.save();
-                res.redirect("create?response=success");
-            } catch (error: any) {
-                if (error.code == 11000) {
-                    if (error.keyPattern.username) {
-                        res.redirect("create?response=error&text=Username sudah digunakan");
-                    } else if (error.keyPattern.nomor_telepon) {
-                        res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
-                    } else if (error.keyPattern.email) {
-                        res.redirect("create?response=error&text=Email sudah digunakan");
+            attributeArray.password = req.body.password;
+            inputArray.push(req.body.password);
+
+            if (!inputArray.includes(undefined)) {
+                attributeArray.password = await bcrypt.hash(attributeArray.password, 12);
+
+                const itemObject = new User({
+                    _id: (await User.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
+
+                    ...attributeArray,
+
+                    dibuat: new Date(),
+                    diubah: new Date(),
+                });
+
+                try {
+                    await itemObject.save();
+                    res.redirect("create?response=success");
+                } catch (error: any) {
+                    if (error.code == 11000) {
+                        if (error.keyPattern.username) {
+                            res.redirect("create?response=error&text=Username sudah digunakan");
+                        } else if (error.keyPattern.nomor_telepon) {
+                            res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
+                        } else if (error.keyPattern.email) {
+                            res.redirect("create?response=error&text=Email sudah digunakan");
+                        }
+                    } else {
+                        res.redirect("create?response=error");
                     }
-                } else {
-                    res.redirect("create?response=error");
                 }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect("create?response=error&text=Data tidak lengkap");
             }
-        } else if (inputArray.includes(undefined)) {
-            res.redirect("create?response=error&text=Data tidak lengkap");
+        } else if (req.body.password != req.body.confirmation_password) {
+            res.redirect("create?response=error&text=Password konfirmasi salah");
         }
     });
 
