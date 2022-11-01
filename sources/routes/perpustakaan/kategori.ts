@@ -6,7 +6,7 @@ import { Buku, Kategori } from "../../models";
 
 export const perpustakaanKategoriRouter = Router();
 
-const navActive = [8, 5];
+const navActive = [9, 5];
 const tableAttributeArray = [
     {
         id: 1,

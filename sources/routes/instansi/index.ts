@@ -11,7 +11,7 @@ import { instansiTahunRombelRouter } from "./tahun-rombel";
 
 export const instansiRouter = Router();
 export const headTitle = "Instansi";
-const navActive = [7, 1];
+const navActive = [8, 1];
 
 instansiRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

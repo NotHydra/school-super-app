@@ -6,7 +6,7 @@ import { Alumni, Guru, Universitas } from "../../models";
 
 export const dataUmumUniversitasRouter = Router();
 
-const navActive = [9, 4];
+const navActive = [10, 4];
 const tableAttributeArray = [
     {
         id: 1,

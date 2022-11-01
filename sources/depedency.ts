@@ -63,6 +63,38 @@ export const pageItemArray: pageItemType[] = [
     },
     {
         id: 3,
+        title: "Sekolah (WIP)",
+        icon: "school",
+        level: 3,
+        child: [
+            {
+                id: 1,
+                title: "Dashboard (WIP)",
+                link: "sekolah",
+                icon: "gauge",
+                level: 3,
+                confirm: false,
+            },
+            {
+                id: 2,
+                title: "Indentitas (WIP)",
+                link: "sekolah/indentitas",
+                icon: "clipboard",
+                level: 3,
+                confirm: false,
+            },
+            {
+                id: 3,
+                title: "Tahun Ajaran (WIP)",
+                link: "sekolah/tahun-ajaran",
+                icon: "calendar-days",
+                level: 3,
+                confirm: false,
+            },
+        ],
+    },
+    {
+        id: 4,
         title: "Pengajar",
         icon: "chalkboard-user",
         level: 2,
@@ -94,7 +126,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 4,
+        id: 5,
         title: "Pelajar",
         icon: "address-card",
         level: 2,
@@ -126,7 +158,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 5,
+        id: 6,
         title: "Lulusan",
         icon: "graduation-cap",
         level: 2,
@@ -158,7 +190,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 6,
+        id: 7,
         title: "Penilaian",
         icon: "pen-nib",
         level: 2,
@@ -206,7 +238,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 7,
+        id: 8,
         title: "Instansi",
         icon: "building",
         level: 2,
@@ -254,7 +286,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 8,
+        id: 9,
         title: "Perpustakaan",
         icon: "book-open",
         level: 2,
@@ -334,7 +366,7 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 9,
+        id: 10,
         title: "Data Umum",
         icon: "globe",
         level: 2,
@@ -382,21 +414,13 @@ export const pageItemArray: pageItemType[] = [
         ],
     },
     {
-        id: 10,
+        id: 11,
         title: "Pengaturan",
         icon: "gear",
         level: 1,
         child: [
             {
                 id: 1,
-                title: "Sekolah (WIP)",
-                link: "pengaturan/sekolah",
-                icon: "school",
-                level: 3,
-                confirm: false,
-            },
-            {
-                id: 2,
                 title: "Logout",
                 link: "logout",
                 icon: "right-from-bracket",

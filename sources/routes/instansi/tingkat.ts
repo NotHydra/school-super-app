@@ -6,7 +6,7 @@ import { Rombel, Tingkat } from "../../models";
 
 export const instansiTingkatRouter = Router();
 
-const navActive = [7, 3];
+const navActive = [8, 3];
 const tableAttributeArray = [
     {
         id: 1,

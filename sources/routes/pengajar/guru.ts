@@ -8,7 +8,7 @@ import { Guru, Jabatan, JenisKelamin, Pendidikan, Rombel, TempatLahir, Universit
 
 export const pengajarGuruRouter = Router();
 
-const navActive = [3, 2];
+const navActive = [4, 2];
 const tableAttributeArray = [
     {
         id: 1,

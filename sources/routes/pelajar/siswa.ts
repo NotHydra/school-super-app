@@ -8,7 +8,7 @@ import { Alumni, Anggota, JenisKelamin, Rombel, Siswa, TahunMasuk, TahunRombel, 
 
 export const pelajarSiswaRouter = Router();
 
-const navActive = [4, 2];
+const navActive = [5, 2];
 const tableAttributeArray = [
     {
         id: 1,

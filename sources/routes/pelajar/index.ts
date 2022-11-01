@@ -9,7 +9,7 @@ import { pelajarTahunMasukRouter } from "./tahun-masuk";
 
 export const pelajarRouter = Router();
 export const headTitle = "Pelajar";
-const navActive = [4, 1];
+const navActive = [5, 1];
 
 pelajarRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();

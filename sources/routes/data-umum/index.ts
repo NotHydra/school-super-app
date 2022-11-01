@@ -11,7 +11,7 @@ import { dataUmumPendidikanRouter } from "./pendidikan";
 
 export const dataUmumRouter = Router();
 export const headTitle = "Data Umum";
-const navActive = [9, 1];
+const navActive = [10, 1];
 
 dataUmumRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();
