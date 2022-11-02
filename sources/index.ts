@@ -76,6 +76,9 @@ app.use("/data-umum", dataUmumRouter);
 app.use(roleGuard(3));
 app.use("/pengguna", penggunaRouter);
 
+app.use(roleGuard(4));
+app.use(require("express-status-monitor")());
+
 app.use((req, res) => {
     res.redirect("/");
 });
