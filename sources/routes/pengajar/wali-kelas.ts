@@ -38,7 +38,9 @@ pengajarWaliKelasRouter.use(express.static("sources/public"));
 pengajarWaliKelasRouter.use(express.urlencoded({ extended: false }));
 
 pengajarWaliKelasRouter.route("/").get(async (req, res) => {
+    const typeValue: any = req.query.type;
     const waliKelasValue: any = req.query.waliKelas;
+
     const tahunRombelValue: any = req.query.tahunRombel;
     let filterValue = {};
 
@@ -129,5 +131,7 @@ pengajarWaliKelasRouter.route("/").get(async (req, res) => {
         ],
         tableAttributeArray,
         tableItemArray,
+        typeValue,
+        waliKelasValue,
     });
 });

@@ -20,8 +20,11 @@
                         <br>
                         
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
-                        <%- include("./../../../partials/card-item.ejs"); -%>
-                        <%- include("./../../../partials/filter.ejs"); -%>
+                        
+                        <% if (typeValue == undefined) { %>
+                            <%- include("./../../../partials/card-item.ejs"); -%>
+                            <%- include("./../../../partials/filter.ejs"); -%>
+                        <% } %>
 
                         <div class="row">
                             <div class="col-12">
@@ -36,7 +39,9 @@
                                                         <th class="th-custom export"><%= tableAttributeObject.label %></th>
                                                     <% }); %>
 
-                                                    <th class="th-custom">Aksi</th>
+                                                    <% if (typeValue == undefined) { %>
+                                                        <th class="th-custom">Aksi</th>
+                                                    <% } %>
                                                 </tr>
                                             </thead>
 
@@ -72,10 +77,12 @@
                                                                     }); 
                                                                 %>
 
-                                                                <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/pengajar/guru?type=wali-kelas&guru=<%= tableItemObject.id_wali_kelas._id %>">Guru</a>
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/instansi/rombel?type=wali-kelas&rombel=<%= tableItemObject._id %>">Rombel</a>
-                                                                </td>
+                                                                <% if (typeValue == undefined) { %>
+                                                                    <td class="td-custom">
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/pengajar/guru?type=wali-kelas&guru=<%= tableItemObject.id_wali_kelas._id %>">Guru</a>
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/instansi/rombel?type=wali-kelas&rombel=<%= tableItemObject._id %>">Rombel</a>
+                                                                    </td>
+                                                                <% } %>
                                                             </tr>
                                                 <% 
                                                         });
@@ -91,7 +98,9 @@
                                                         <th class="th-custom"><%= tableAttributeObject.label %></th>
                                                     <% }); %>
 
-                                                    <th class="th-custom">Aksi</th>
+                                                    <% if (typeValue == undefined) { %>
+                                                        <th class="th-custom">Aksi</th>
+                                                    <% } %>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -99,6 +108,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <% if (typeValue == "rombel") { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/instansi/rombel/')">Kembali</a>
+                                </div>
+                            </div>
+                        <% }%>
                     </div>
                 </div>
             </div>
