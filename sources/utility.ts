@@ -127,7 +127,7 @@ export function upperCaseFirst(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function findPageItem(parentId: number, childId: number): pageItemType {
+export function findPageItem(parentId: number): pageItemType {
     const pageItemObject: pageItemType = pageItemArray.find((pageItemObject: pageItemType) => {
         if (pageItemObject.id == parentId) {
             return pageItemObject;
