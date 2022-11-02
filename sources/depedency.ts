@@ -117,6 +117,14 @@ export const pageItemArray: pageItemType[] = [
             },
             {
                 id: 3,
+                title: "Wali Kelas",
+                link: "pengajar/wali-kelas",
+                icon: "user-tie",
+                level: 2,
+                confirm: false,
+            },
+            {
+                id: 4,
                 title: "Jabatan",
                 link: "pengajar/jabatan",
                 icon: "tag",
