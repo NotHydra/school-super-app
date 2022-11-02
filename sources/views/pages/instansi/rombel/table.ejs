@@ -20,8 +20,11 @@
                         <br>
                         
                         <%- include("./../../../partials/content-head.ejs", {extraTitle: "Utama"}); -%>
-                        <%- include("./../../../partials/card-item.ejs"); -%>
-                        <%- include("./../../../partials/filter.ejs"); -%>
+                        
+                        <% if (typeValue == undefined) { %>
+                            <%- include("./../../../partials/card-item.ejs"); -%>
+                            <%- include("./../../../partials/filter.ejs"); -%>
+                        <% } %>
 
                         <div class="row">
                             <div class="col-12">
@@ -77,10 +80,14 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/pengajar/wali-Kelas?type=rombel&waliKelas=<%= tableItemObject.id_wali_kelas._id %>">Wali Kelas</a>
-                                                                    <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?type=rombel&rombel=<%= tableItemObject._id %>">Siswa</a>
-                                                                    <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
-                                                                    <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                    <% if (typeValue == undefined) { %>
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/pengajar/wali-Kelas?type=rombel&waliKelas=<%= tableItemObject.id_wali_kelas._id %>">Wali Kelas</a>
+                                                                        <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?type=rombel&rombel=<%= tableItemObject._id %>">Siswa</a>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
+                                                                        <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
+                                                                    <% } else if (typeValue == "wali-kelas") { %>
+                                                                        <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>&type=<%= typeValue %>&rombel=<%= rombelValue %>">Ubah</a>
+                                                                    <% } %>
                                                                 </td>
                                                             </tr>
                                                 <% 
@@ -108,11 +115,19 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                        <% if (typeValue == undefined) { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-primary" href="/<%= pageItemCurrent.link %>/create">Buat</a>
+                                </div>
                             </div>
-                        </div>
+                        <% } else if (typeValue == "wali-kelas") { %>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/pengajar/wali-kelas/')">Kembali</a>
+                                </div>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>

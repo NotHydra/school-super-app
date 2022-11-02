@@ -416,7 +416,7 @@ pengajarGuruRouter
 
         let queryString: any = "";
 
-        if (typeValue == "rombel") {
+        if (typeValue == "wali-kelas") {
             queryString = `&type=${typeValue}&guru=${guruValue}`;
         }
 
@@ -558,7 +558,7 @@ pengajarGuruRouter
 
         let queryString: any = "";
 
-        if (typeValue == "rombel") {
+        if (typeValue == "wali-kelas") {
             queryString = `&type=${typeValue}&guru=${guruValue}`;
         }
 
