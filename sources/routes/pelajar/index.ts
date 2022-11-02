@@ -126,7 +126,7 @@ pelajarRouter.get("/", async (req, res) => {
                         link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
                             (
-                                await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()
+                                await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: -1 }).lean()
                             ).map(async (itemObject, itemIndex) => {
                                 return {
                                     id: itemIndex + 1,
@@ -148,14 +148,18 @@ pelajarRouter.get("/", async (req, res) => {
                                     .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
                                     .sort({ rombel: 1 })
                                     .lean()
-                            ).map(async (itemObject: any, itemIndex) => {
-                                return {
-                                    id: itemIndex + 1,
-                                    label: `${itemObject.rombel} - ${itemObject.id_tahun_rombel.tahun_rombel}`,
-                                    value: await Siswa.countDocuments({ id_rombel: itemObject._id }).lean(),
-                                    color: blueColorPattern(itemIndex + 1, rombelTotal),
-                                };
-                            })
+                            )
+                                .sort((a: any, b: any) => {
+                                    return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+                                })
+                                .map(async (itemObject: any, itemIndex) => {
+                                    return {
+                                        id: itemIndex + 1,
+                                        label: `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`,
+                                        value: await Siswa.countDocuments({ id_rombel: itemObject._id }).lean(),
+                                        color: blueColorPattern(itemIndex + 1, rombelTotal),
+                                    };
+                                })
                         ),
                     },
                 ],

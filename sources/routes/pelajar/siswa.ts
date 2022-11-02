@@ -98,16 +98,20 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                 populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
                 model: Rombel,
             })
-            .sort({ nisn: -1 })
+            .sort({ nisn: 1 })
             .lean()
-    ).map((tableItemObject: any) => {
-        tableItemObject.id_rombel = {
-            ...tableItemObject.id_rombel,
-            rombel: `${tableItemObject.id_rombel.rombel} - Tahun Rombel ${tableItemObject.id_rombel.id_tahun_rombel.tahun_rombel}`,
-        };
+    )
+        .sort((a: any, b: any) => {
+            return b.id_rombel.id_tahun_rombel.tahun_rombel - a.id_rombel.id_tahun_rombel.tahun_rombel;
+        })
+        .map((tableItemObject: any) => {
+            tableItemObject.id_rombel = {
+                ...tableItemObject.id_rombel,
+                rombel: `${tableItemObject.id_rombel.rombel} - Tahun Rombel ${tableItemObject.id_rombel.id_tahun_rombel.tahun_rombel}`,
+            };
 
-        return tableItemObject;
-    });
+            return tableItemObject;
+        });
 
     const rombelArray = await Rombel.find()
         .select("rombel id_tahun_rombel")
@@ -196,7 +200,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                 query: "tahunMasuk",
                 placeholder: "Pilih tahun masuk",
                 value: tahunMasukValue,
-                option: (await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: 1 }).lean()).map((itemObject) => {
+                option: (await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: -1 }).lean()).map((itemObject) => {
                     return {
                         value: itemObject._id,
                         display: itemObject.tahun_masuk,
@@ -330,9 +334,13 @@ pelajarSiswaRouter
                                 .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
                                 .sort({ rombel: 1 })
                                 .lean()
-                        ).map((itemObject: any) => {
-                            return [itemObject._id, `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`];
-                        }),
+                        )
+                            .sort((a: any, b: any) => {
+                                return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+                            })
+                            .map((itemObject: any) => {
+                                return [itemObject._id, `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`];
+                            }),
                         typeValue == "rombel" ? rombelValue : null,
                     ],
                     placeholder: "Input rombel disini",
@@ -505,9 +513,13 @@ pelajarSiswaRouter
                                     .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
                                     .sort({ rombel: 1 })
                                     .lean()
-                            ).map((itemObject: any) => {
-                                return [itemObject._id, `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`];
-                            }),
+                            )
+                                .sort((a: any, b: any) => {
+                                    return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+                                })
+                                .map((itemObject: any) => {
+                                    return [itemObject._id, `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`];
+                                }),
                             itemObject.id_rombel,
                         ],
                         placeholder: "Input rombel disini",

@@ -20,7 +20,7 @@ instansiJurusanRouter.use(express.static("sources/public"));
 instansiJurusanRouter.use(express.urlencoded({ extended: false }));
 
 instansiJurusanRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Jurusan.find().sort({ tahun_rombel: 1 }).lean();
+    const tableItemArray = await Jurusan.find().sort({ jurusan: 1 }).lean();
 
     const documentCount = await Jurusan.countDocuments().lean();
     res.render("pages/table", {

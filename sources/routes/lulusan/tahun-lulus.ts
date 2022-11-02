@@ -20,7 +20,7 @@ lulusanTahunLulusRouter.use(express.static("sources/public"));
 lulusanTahunLulusRouter.use(express.urlencoded({ extended: false }));
 
 lulusanTahunLulusRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TahunLulus.find().sort({ tahun_lulus: 1 }).lean();
+    const tableItemArray = await TahunLulus.find().sort({ tahun_lulus: -1 }).lean();
 
     const documentCount = await TahunLulus.countDocuments().lean();
     res.render("pages/table", {

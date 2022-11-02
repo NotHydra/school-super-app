@@ -61,29 +61,33 @@ instansiRombelRouter.route("/").get(async (req, res) => {
         filterValue = { ...filterValue, id_tahun_rombel: tahunRombelValue };
     }
 
-    const tableItemArray = await Rombel.find(filterValue)
-        .populate({
-            path: "id_wali_kelas",
-            select: "nama_lengkap",
-            model: Guru,
-        })
-        .populate({
-            path: "id_tingkat",
-            select: "tingkat",
-            model: Tingkat,
-        })
-        .populate({
-            path: "id_jurusan",
-            select: "jurusan",
-            model: Jurusan,
-        })
-        .populate({
-            path: "id_tahun_rombel",
-            select: "tahun_rombel",
-            model: TahunRombel,
-        })
-        .sort({ rombel: 1 })
-        .lean();
+    const tableItemArray = (
+        await Rombel.find(filterValue)
+            .populate({
+                path: "id_wali_kelas",
+                select: "nama_lengkap",
+                model: Guru,
+            })
+            .populate({
+                path: "id_tingkat",
+                select: "tingkat",
+                model: Tingkat,
+            })
+            .populate({
+                path: "id_jurusan",
+                select: "jurusan",
+                model: Jurusan,
+            })
+            .populate({
+                path: "id_tahun_rombel",
+                select: "tahun_rombel",
+                model: TahunRombel,
+            })
+            .sort({ rombel: 1 })
+            .lean()
+    ).sort((a: any, b: any) => {
+        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+    });
 
     const documentCount = await Rombel.countDocuments().lean();
     res.render("pages/instansi/rombel/table", {
@@ -153,7 +157,7 @@ instansiRombelRouter.route("/").get(async (req, res) => {
                 query: "tahunRombel",
                 placeholder: "Pilih tahun rombel",
                 value: tahunRombelValue,
-                option: (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()).map((itemObject) => {
+                option: (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
                     return {
                         value: itemObject._id,
                         display: itemObject.tahun_rombel,
@@ -233,7 +237,7 @@ instansiRombelRouter
                     display: "Tahun Rombel",
                     type: "select",
                     value: [
-                        (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()).map((itemObject) => {
+                        (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
                             return [itemObject._id, itemObject.tahun_rombel];
                         }),
                         null,
@@ -350,7 +354,7 @@ instansiRombelRouter
                         display: "Tahun Rombel",
                         type: "select",
                         value: [
-                            (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()).map((itemObject) => {
+                            (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
                                 return [itemObject._id, itemObject.tahun_rombel];
                             }),
                             itemObject.id_tahun_rombel,

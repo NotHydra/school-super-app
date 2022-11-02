@@ -20,7 +20,7 @@ instansiTahunRombelRouter.use(express.static("sources/public"));
 instansiTahunRombelRouter.use(express.urlencoded({ extended: false }));
 
 instansiTahunRombelRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await TahunRombel.find().sort({ tahun_rombel: 1 }).lean();
+    const tableItemArray = await TahunRombel.find().sort({ tahun_rombel: -1 }).lean();
 
     const documentCount = await TahunRombel.countDocuments().lean();
     res.render("pages/table", {

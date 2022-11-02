@@ -172,7 +172,7 @@ instansiRouter.get("/", async (req, res) => {
                         link: { link: "instansi/rombel", title: "Rombel", subTitle: "Instansi" },
                         dataset: await Promise.all(
                             (
-                                await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: 1 }).lean()
+                                await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()
                             ).map(async (itemObject, itemIndex) => {
                                 return {
                                     id: itemIndex + 1,

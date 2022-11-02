@@ -5,6 +5,7 @@ import { blueColorPattern, datasetYear } from "../../utility";
 import { Guru, Jabatan, JenisKelamin, TempatLahir } from "../../models";
 
 import { pengajarGuruRouter } from "./guru";
+import { pengajarWaliKelasRouter } from "./wali-kelas";
 import { pengajarJabatanRouter } from "./jabatan";
 
 export const pengajarRouter = Router();
@@ -120,4 +121,5 @@ pengajarRouter.get("/", async (req, res) => {
 });
 
 pengajarRouter.use("/guru", pengajarGuruRouter);
+pengajarRouter.use("/wali-kelas", pengajarWaliKelasRouter);
 pengajarRouter.use("/jabatan", pengajarJabatanRouter);

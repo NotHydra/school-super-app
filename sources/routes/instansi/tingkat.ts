@@ -20,7 +20,7 @@ instansiTingkatRouter.use(express.static("sources/public"));
 instansiTingkatRouter.use(express.urlencoded({ extended: false }));
 
 instansiTingkatRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Tingkat.find().sort({ tahun_rombel: 1 }).lean();
+    const tableItemArray = await Tingkat.find().sort({ tingkat: 1 }).lean();
 
     const documentCount = await Tingkat.countDocuments().lean();
     res.render("pages/table", {
