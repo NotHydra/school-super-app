@@ -6,6 +6,7 @@ import { JenisKelamin, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } fro
 
 import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
+import { pelajarKeteranganRouter } from "./keterangan";
 
 export const pelajarRouter = Router();
 export const headTitle = "Pelajar";
@@ -170,3 +171,4 @@ pelajarRouter.get("/", async (req, res) => {
 
 pelajarRouter.use("/siswa", pelajarSiswaRouter);
 pelajarRouter.use("/tahun-masuk", pelajarTahunMasukRouter);
+pelajarRouter.use("/keterangan", pelajarKeteranganRouter);
