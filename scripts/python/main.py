@@ -200,7 +200,7 @@ class Pengajar:
 class Pelajar:
     def main():
         Pelajar.siswa()
-        Pelajar.tahunMasuk()
+        # Pelajar.tahunMasuk()
 
     def siswa():
         siswaArray = []
@@ -235,6 +235,8 @@ class Pelajar:
                     "id_jenis_kelamin": Random.jenisKelamin(),
                     "id_tahun_masuk": Utility.tingkatToTahunMasuk[rombel["id_tingkat"]],
                     "id_rombel": rombel["_id"],
+                    "aktif": True,
+                    "id_keterangan": 1,
                     "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
                     "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
                 }
@@ -505,12 +507,12 @@ class DataUmum:
 
 class Main:
     def main():
-        Pengajar.main()
+        # Pengajar.main()
         Pelajar.main()
-        Lulusan.main()
-        Penilaian.main()
-        Instansi.main()
-        DataUmum.main()
+        # Lulusan.main()
+        # Penilaian.main()
+        # Instansi.main()
+        # DataUmum.main()
 
 
 Main.main()

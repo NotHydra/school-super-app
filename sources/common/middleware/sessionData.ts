@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { app } from "../..";
 
-import { JenisKelamin, Rombel, Siswa, TahunMasuk, TempatLahir, User } from "../../models";
+import { JenisKelamin, Keterangan, Rombel, Siswa, TahunMasuk, TempatLahir, User } from "../../models";
 
 export async function sessionData(req: Request, res: Response, next: NextFunction) {
     let userObject: any = null;
@@ -15,6 +15,7 @@ export async function sessionData(req: Request, res: Response, next: NextFunctio
             .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
             .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
             .populate({ path: "id_rombel", select: "rombel", model: Rombel })
+            .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
             .lean();
 
         userObject.role = "user";

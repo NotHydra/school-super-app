@@ -154,6 +154,24 @@ utamaDataPribadiRouter.get("/", async (req, res) => {
                     placeholder: "Input rombel disini",
                     enable: false,
                 },
+                {
+                    id: 8,
+                    name: "aktif",
+                    display: "Status",
+                    type: "text",
+                    value: itemObject.aktif == true ? "Aktif" : "Tidak Aktif",
+                    placeholder: "Input status disini",
+                    enable: false,
+                },
+                {
+                    id: 9,
+                    name: "id_keterangan",
+                    display: "Keterangan",
+                    type: "text",
+                    value: itemObject.id_keterangan.keterangan,
+                    placeholder: "Input keterangan disini",
+                    enable: false,
+                },
             ];
         }
 
