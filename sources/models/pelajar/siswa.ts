@@ -38,6 +38,15 @@ export const siswaSchema = new mongoose.Schema({
         required: true,
         ref: "rombel",
     },
+    aktif: {
+        type: Boolean,
+        required: true,
+    },
+    id_keterangan: {
+        type: Number,
+        required: true,
+        ref: "keterangan",
+    },
     dibuat: {
         type: Date,
         required: true,
