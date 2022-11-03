@@ -23,7 +23,9 @@ authenticationLoginSiswaRouter
         });
     })
     .post(async (req, res) => {
-        const siswaObject = await Siswa.findOne({ nisn: req.body.nisn, tanggal_lahir: req.body.tanggal_lahir }).select("_id").lean();
+        const siswaObject = await Siswa.findOne({ nisn: req.body.nisn, tanggal_lahir: new Date(`${req.body.tanggal_lahir} 24:00:00`) })
+            .select("_id")
+            .lean();
 
         if (siswaObject != null) {
             req.session.regenerate(() => {
