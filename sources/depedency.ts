@@ -65,14 +65,14 @@ export const pageItemArray: pageItemType[] = [
         id: 3,
         title: "Sekolah (WIP)",
         icon: "school",
-        level: 3,
+        level: 2,
         child: [
             {
                 id: 1,
                 title: "Dashboard (WIP)",
                 link: "sekolah",
                 icon: "gauge",
-                level: 3,
+                level: 2,
                 confirm: false,
             },
             {
@@ -80,7 +80,7 @@ export const pageItemArray: pageItemType[] = [
                 title: "Indentitas (WIP)",
                 link: "sekolah/indentitas",
                 icon: "clipboard",
-                level: 3,
+                level: 4,
                 confirm: false,
             },
             {
@@ -88,7 +88,7 @@ export const pageItemArray: pageItemType[] = [
                 title: "Tahun Ajaran (WIP)",
                 link: "sekolah/tahun-ajaran",
                 icon: "calendar-days",
-                level: 3,
+                level: 2,
                 confirm: false,
             },
         ],
