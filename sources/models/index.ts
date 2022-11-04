@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { userSchema } from "./pengguna/user";
 import { aktivitasSchema } from "./pengguna/aktivitas";
 
+import { indentitasSchema } from "./sekolah/indentitas";
+
 import { guruSchema } from "./pengajar/guru";
 import { jabatanSchema } from "./pengajar/jabatan";
 
@@ -37,6 +39,9 @@ import { pendidikanSchema } from "./data-umum/pendidikan";
 const penggunaDatabase = mongoose.connection.useDb("pengguna");
 export const User = penggunaDatabase.model("user", userSchema, "user");
 export const Aktivitas = penggunaDatabase.model("aktivitas", aktivitasSchema, "aktivitas");
+
+const sekolahDatabase = mongoose.connection.useDb("sekolah");
+export const Indentitas = sekolahDatabase.model("indentitas", indentitasSchema, "indentitas");
 
 const pengajarDatabase = mongoose.connection.useDb("pengajar");
 export const Guru = pengajarDatabase.model("guru", guruSchema, "guru");
