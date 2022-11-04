@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { blueColorPattern, datasetYear } from "../../utility";
 
-import { Guru, Jabatan, JenisKelamin, TempatLahir } from "../../models";
+import { Guru, Jabatan, JenisKelamin, Rombel, TempatLahir } from "../../models";
 
 import { pengajarGuruRouter } from "./guru";
 import { pengajarWaliKelasRouter } from "./wali-kelas";
@@ -16,6 +16,7 @@ pengajarRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const guruChartData: any = await datasetYear(Guru, currentYear);
+    const waliKelasChartData: any = await datasetYear(Rombel, currentYear);
     const jabatanChartData: any = await datasetYear(Jabatan, currentYear);
 
     const jenisKelaminTotal = await JenisKelamin.countDocuments().lean();
@@ -37,6 +38,13 @@ pengajarRouter.get("/", async (req, res) => {
                     },
                     {
                         id: 2,
+                        title: "Wali Kelas",
+                        icon: "user-tie",
+                        value: await Rombel.countDocuments().lean(),
+                        link: "pengajar/wali-kelas",
+                    },
+                    {
+                        id: 3,
                         title: "Jabatan",
                         icon: "tag",
                         value: await Jabatan.countDocuments().lean(),
@@ -63,6 +71,18 @@ pengajarRouter.get("/", async (req, res) => {
                     },
                     {
                         id: 2,
+                        title: "Statistik Wali Kelas Baru",
+                        link: { link: "pengajar/wali-kelas", title: "Wali Kelas", subTitle: "Pengajar" },
+                        value: waliKelasChartData.currentYearValue,
+                        text: "Wali Kelas Baru",
+                        percentage: waliKelasChartData.percentageIncrease,
+                        timeRange: "Sejak Tahun Lalu",
+                        dataset: waliKelasChartData.dataset,
+                        firstLegend: "Tahun Ini",
+                        secondLegend: "Tahun Lalu",
+                    },
+                    {
+                        id: 3,
                         title: "Statistik Jabatan Baru",
                         link: { link: "pengajar/jabatan", title: "Jabatan", subTitle: "Pengajar" },
                         value: jabatanChartData.currentYearValue,
