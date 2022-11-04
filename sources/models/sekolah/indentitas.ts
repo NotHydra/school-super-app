@@ -37,4 +37,12 @@ export const indentitasSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    dibuat: {
+        type: Date,
+        required: true,
+    },
+    diubah: {
+        type: Date,
+        required: true,
+    },
 });
