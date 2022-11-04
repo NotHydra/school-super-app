@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { blueColorPattern, datasetYear } from "../../utility";
 
-import { JenisKelamin, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
+import { JenisKelamin, Keterangan, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
 
 import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
@@ -17,11 +17,13 @@ pelajarRouter.get("/", async (req, res) => {
 
     const siswaChartData: any = await datasetYear(Siswa, currentYear);
     const tahunMasukChartData: any = await datasetYear(TahunMasuk, currentYear);
+    const keteranganChartData: any = await datasetYear(Keterangan, currentYear);
 
     const jenisKelaminTotal = await JenisKelamin.countDocuments().lean();
     const tempatLahirTotal = await TempatLahir.countDocuments().lean();
     const tahunMasukTotal = await TahunMasuk.countDocuments().lean();
     const rombelTotal = await Rombel.countDocuments().lean();
+    const keteranganTotal = await Keterangan.countDocuments().lean();
 
     res.render("pages/index", {
         headTitle,
@@ -43,6 +45,13 @@ pelajarRouter.get("/", async (req, res) => {
                         icon: "calendar-days",
                         value: await TahunMasuk.countDocuments().lean(),
                         link: "pelajar/tahun-masuk",
+                    },
+                    {
+                        id: 3,
+                        title: "Keterangan",
+                        icon: "clipboard",
+                        value: await Keterangan.countDocuments().lean(),
+                        link: "pelajar/keterangan",
                     },
                 ],
             },
@@ -72,6 +81,18 @@ pelajarRouter.get("/", async (req, res) => {
                         percentage: tahunMasukChartData.percentageIncrease,
                         timeRange: "Sejak Tahun Lalu",
                         dataset: tahunMasukChartData.dataset,
+                        firstLegend: "Tahun Ini",
+                        secondLegend: "Tahun Lalu",
+                    },
+                    {
+                        id: 3,
+                        title: "Statistik Keterangan Baru",
+                        link: { link: "pelajar/keterangan", title: "Keterangan", subTitle: "Pelajar" },
+                        value: keteranganChartData.currentYearValue,
+                        text: "Keterangan Baru",
+                        percentage: keteranganChartData.percentageIncrease,
+                        timeRange: "Sejak Tahun Lalu",
+                        dataset: keteranganChartData.dataset,
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
                     },
@@ -161,6 +182,47 @@ pelajarRouter.get("/", async (req, res) => {
                                         color: blueColorPattern(itemIndex + 1, rombelTotal),
                                     };
                                 })
+                        ),
+                    },
+                ],
+            },
+            {
+                id: 3,
+                donutChartChild: [
+                    {
+                        id: 1,
+                        title: "Statistik Siswa Berdasarkan Status",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
+                        dataset: [
+                            {
+                                id: 1,
+                                label: "Aktif",
+                                value: await Siswa.countDocuments({ aktif: true }).lean(),
+                                color: blueColorPattern(1, 2),
+                            },
+                            {
+                                id: 2,
+                                label: "Tidak Aktif",
+                                value: await Siswa.countDocuments({ aktif: false }).lean(),
+                                color: blueColorPattern(2, 2),
+                            },
+                        ],
+                    },
+                    {
+                        id: 2,
+                        title: "Statistik Siswa Berdasarkan Keterangan",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
+                        dataset: await Promise.all(
+                            (
+                                await Keterangan.find().select("keterangan").sort({ keterangan: 1 }).lean()
+                            ).map(async (itemObject: any, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.keterangan,
+                                    value: await Siswa.countDocuments({ id_keterangan: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, keteranganTotal),
+                                };
+                            })
                         ),
                     },
                 ],
