@@ -4,7 +4,7 @@ import { headTitle } from ".";
 
 import { localMoment } from "../../utility";
 
-import { Alumni, Anggota, JenisKelamin, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
+import { Alumni, Anggota, JenisKelamin, Keterangan, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
 
 export const pelajarSiswaRouter = Router();
 
@@ -52,6 +52,18 @@ const tableAttributeArray = [
         value: ["id_rombel", "rombel"],
         type: "text",
     },
+    {
+        id: 8,
+        label: "Status",
+        value: ["aktif"],
+        type: "text",
+    },
+    {
+        id: 9,
+        label: "Keterangan",
+        value: ["id_keterangan", "keterangan"],
+        type: "text",
+    },
 ];
 
 pelajarSiswaRouter.use(express.static("sources/public"));
@@ -65,6 +77,8 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
     const jenisKelaminValue: any = req.query.jenisKelamin;
     const tahunMasukValue: any = req.query.tahunMasuk;
     const rombelValue: any = req.query.rombel;
+    const aktifValue: any = req.query.aktif;
+    const keteranganValue: any = req.query.keterangan;
     let filterValue = {};
 
     if (siswaValue != undefined && !isNaN(siswaValue)) {
@@ -87,6 +101,14 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         filterValue = { ...filterValue, id_rombel: rombelValue };
     }
 
+    if (aktifValue != undefined) {
+        filterValue = { ...filterValue, aktif: aktifValue };
+    }
+
+    if (keteranganValue != undefined) {
+        filterValue = { ...filterValue, id_keterangan: keteranganValue };
+    }
+
     const tableItemArray = (
         await Siswa.find(filterValue)
             .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
@@ -98,6 +120,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                 populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
                 model: Rombel,
             })
+            .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
             .sort({ nisn: 1 })
             .lean()
     )
@@ -110,18 +133,10 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                 rombel: `${tableItemObject.id_rombel.rombel} - Tahun Rombel ${tableItemObject.id_rombel.id_tahun_rombel.tahun_rombel}`,
             };
 
+            tableItemObject.aktif = tableItemObject.aktif == true ? "Aktif" : "Tidak Aktif";
+
             return tableItemObject;
         });
-
-    const rombelArray = await Rombel.find()
-        .select("rombel id_tahun_rombel")
-        .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
-        .sort({ rombel: 1 })
-        .lean();
-
-    rombelArray.sort((a: any, b: any) => {
-        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
-    });
 
     const documentCount = await Siswa.countDocuments().lean();
     res.render("pages/pelajar/siswa/table", {
@@ -230,6 +245,38 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                             display: `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`,
                         };
                     }),
+            },
+            {
+                id: 5,
+                display: "Status",
+                name: "aktif",
+                query: "aktif",
+                placeholder: "Pilih status",
+                value: aktifValue,
+                option: [
+                    {
+                        value: true,
+                        display: "Aktif",
+                    },
+                    {
+                        value: false,
+                        display: "Tidak Aktif",
+                    },
+                ],
+            },
+            {
+                id: 6,
+                display: "Keterangan",
+                name: "keterangan",
+                query: "keterangan",
+                placeholder: "Pilih keterangan",
+                value: keteranganValue,
+                option: (await Keterangan.find().select("keterangan").sort({ keterangan: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.keterangan,
+                    };
+                }),
             },
         ],
         tableAttributeArray,
@@ -346,6 +393,35 @@ pelajarSiswaRouter
                     placeholder: "Input rombel disini",
                     enable: true,
                 },
+                {
+                    id: 8,
+                    name: "aktif",
+                    display: "Status",
+                    type: "select",
+                    value: [
+                        [
+                            [true, "Aktif"],
+                            [false, "Tidak Aktif"],
+                        ],
+                        null,
+                    ],
+                    placeholder: "Input status disini",
+                    enable: true,
+                },
+                {
+                    id: 9,
+                    name: "id_keterangan",
+                    display: "Keterangan",
+                    type: "select",
+                    value: [
+                        (await Keterangan.find().select("keterangan").sort({ keterangan: 1 }).lean()).map((itemObject: any) => {
+                            return [itemObject._id, itemObject.keterangan];
+                        }),
+                        null,
+                    ],
+                    placeholder: "Input keterangan disini",
+                    enable: true,
+                },
             ],
             typeValue,
             rombelValue,
@@ -418,7 +494,7 @@ pelajarSiswaRouter
 
         if (dataExist != null) {
             const itemObject = await Siswa.findOne({ _id: id })
-                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_masuk id_rombel")
+                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_masuk id_rombel aktif id_keterangan")
                 .lean();
 
             res.render("pages/pelajar/siswa/update", {
@@ -525,6 +601,35 @@ pelajarSiswaRouter
                         placeholder: "Input rombel disini",
                         enable: true,
                     },
+                    {
+                        id: 8,
+                        name: "aktif",
+                        display: "Status",
+                        type: "select",
+                        value: [
+                            [
+                                [true, "Aktif"],
+                                [false, "Tidak Aktif"],
+                            ],
+                            itemObject.aktif,
+                        ],
+                        placeholder: "Input status disini",
+                        enable: true,
+                    },
+                    {
+                        id: 9,
+                        name: "id_keterangan",
+                        display: "Keterangan",
+                        type: "select",
+                        value: [
+                            (await Keterangan.find().select("keterangan").sort({ keterangan: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.keterangan];
+                            }),
+                            itemObject.id_keterangan,
+                        ],
+                        placeholder: "Input keterangan disini",
+                        enable: true,
+                    },
                 ],
             });
         } else if (dataExist == null) {
@@ -604,7 +709,7 @@ pelajarSiswaRouter
 
         if (dataExist != null) {
             const itemObject: any = await Siswa.findOne({ _id: id })
-                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_masuk id_rombel")
+                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_masuk id_rombel aktif id_keterangan")
                 .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
                 .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
@@ -614,6 +719,7 @@ pelajarSiswaRouter
                     populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
                     model: Rombel,
                 })
+                .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
                 .lean();
 
             res.render("pages/pelajar/siswa/delete", {
@@ -687,6 +793,24 @@ pelajarSiswaRouter
                         type: "text",
                         value: `${itemObject.id_rombel.rombel} - Tahun Rombel ${itemObject.id_rombel.id_tahun_rombel.tahun_rombel}`,
                         placeholder: "Input rombel disini",
+                        enable: false,
+                    },
+                    {
+                        id: 8,
+                        name: "aktif",
+                        display: "Status",
+                        type: "text",
+                        value: itemObject.aktif == true ? "Aktif" : "Tidak Aktif",
+                        placeholder: "Input status disini",
+                        enable: false,
+                    },
+                    {
+                        id: 9,
+                        name: "id_keterangan",
+                        display: "Keterangan",
+                        type: "text",
+                        value: itemObject.id_keterangan.keterangan,
+                        placeholder: "Input keterangan disini",
                         enable: false,
                     },
                 ],

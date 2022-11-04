@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Keterangan, Siswa, TahunMasuk } from "../../models";
+import { Keterangan, Siswa } from "../../models";
 
 export const pelajarKeteranganRouter = Router();
 

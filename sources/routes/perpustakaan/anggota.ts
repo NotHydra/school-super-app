@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Anggota, Peminjaman, Rombel, Siswa, TahunMasuk, TahunRombel } from "../../models";
+import { Anggota, Keterangan, Peminjaman, Rombel, Siswa, TahunMasuk, TahunRombel } from "../../models";
 
 export const perpustakaanAnggotaRouter = Router();
 
@@ -214,7 +214,7 @@ perpustakaanAnggotaRouter
                     value: [
                         (
                             await Siswa.find()
-                                .select("nisn nama_lengkap id_rombel id_tahun_masuk")
+                                .select("nisn nama_lengkap id_rombel id_tahun_masuk aktif id_keterangan")
                                 .populate({
                                     path: "id_rombel",
                                     select: "rombel id_tahun_rombel",
@@ -222,6 +222,7 @@ perpustakaanAnggotaRouter
                                     model: Rombel,
                                 })
                                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
+                                .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
                                 .sort({ nisn: 1 })
                                 .lean()
                         )
@@ -231,7 +232,13 @@ perpustakaanAnggotaRouter
                             .map((itemObject: any) => {
                                 return [
                                     itemObject._id,
-                                    `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - Tahun Rombel ${itemObject.id_rombel.id_tahun_rombel.tahun_rombel} - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk}`,
+                                    `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - Tahun Rombel ${
+                                        itemObject.id_rombel.id_tahun_rombel.tahun_rombel
+                                    } - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk} - ${
+                                        itemObject.aktif == true
+                                            ? "Aktif"
+                                            : "Tidak Aktif" + (itemObject.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_keterangan.keterangan)
+                                    }`,
                                 ];
                             }),
                         null,
@@ -328,7 +335,7 @@ perpustakaanAnggotaRouter
                         value: [
                             (
                                 await Siswa.find()
-                                    .select("nisn nama_lengkap id_rombel id_tahun_masuk")
+                                    .select("nisn nama_lengkap id_rombel id_tahun_masuk aktif id_keterangan")
                                     .populate({
                                         path: "id_rombel",
                                         select: "rombel id_tahun_rombel",
@@ -336,6 +343,7 @@ perpustakaanAnggotaRouter
                                         model: Rombel,
                                     })
                                     .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
+                                    .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
                                     .sort({ nisn: 1 })
                                     .lean()
                             )
@@ -345,7 +353,13 @@ perpustakaanAnggotaRouter
                                 .map((itemObject: any) => {
                                     return [
                                         itemObject._id,
-                                        `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - Tahun Rombel ${itemObject.id_rombel.id_tahun_rombel.tahun_rombel} - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk}`,
+                                        `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - Tahun Rombel ${
+                                            itemObject.id_rombel.id_tahun_rombel.tahun_rombel
+                                        } - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk} - ${
+                                            itemObject.aktif == true
+                                                ? "Aktif"
+                                                : "Tidak Aktif" + (itemObject.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_keterangan.keterangan)
+                                        }`,
                                     ];
                                 }),
                             itemObject.id_siswa,
@@ -424,7 +438,7 @@ perpustakaanAnggotaRouter
                 .select("nomor_anggota id_siswa")
                 .populate({
                     path: "id_siswa",
-                    select: "nisn nama_lengkap id_rombel id_tahun_masuk",
+                    select: "nisn nama_lengkap id_rombel id_tahun_masuk aktif id_keterangan",
                     populate: [
                         {
                             path: "id_rombel",
@@ -433,6 +447,7 @@ perpustakaanAnggotaRouter
                             model: Rombel,
                         },
                         { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+                        { path: "id_keterangan", select: "keterangan", model: Keterangan },
                     ],
                     model: Siswa,
                 })
@@ -460,7 +475,13 @@ perpustakaanAnggotaRouter
                         name: "id_siswa",
                         display: "Siswa",
                         type: "select",
-                        value: `${itemObject.id_siswa.nisn} - ${itemObject.id_siswa.nama_lengkap} - ${itemObject.id_siswa.id_rombel.rombel} - Tahun Rombel ${itemObject.id_siswa.id_rombel.id_tahun_rombel.tahun_rombel} - Tahun Masuk ${itemObject.id_siswa.id_tahun_masuk.tahun_masuk}`,
+                        value: `${itemObject.id_siswa.nisn} - ${itemObject.id_siswa.nama_lengkap} - ${itemObject.id_siswa.id_rombel.rombel} - Tahun Rombel ${
+                            itemObject.id_siswa.id_rombel.id_tahun_rombel.tahun_rombel
+                        } - Tahun Masuk ${itemObject.id_siswa.id_tahun_masuk.tahun_masuk} - ${
+                            itemObject.id_siswa.aktif == true
+                                ? "Aktif"
+                                : "Tidak Aktif" + (itemObject.id_siswa.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_siswa.id_keterangan.keterangan)
+                        }`,
                         placeholder: "Input siswa disini",
                         enable: false,
                     },
