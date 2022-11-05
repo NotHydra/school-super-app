@@ -4,7 +4,7 @@ import path from "path";
 import { app } from "../..";
 import { headTitle } from ".";
 
-import { localMoment } from "../../utility";
+import { localMoment, upperCaseFirst } from "../../utility";
 
 import { Indentitas } from "../../models";
 
@@ -99,7 +99,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 name: "diubah",
                 display: "Terakhir Diubah",
                 type: "text",
-                value: localMoment(itemObject.diubah).fromNow(),
+                value: upperCaseFirst(localMoment(itemObject.diubah).fromNow()),
                 placeholder: "Input terakhir diubah disini",
                 enable: false,
             },
