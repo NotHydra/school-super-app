@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 
+import { app } from "../..";
 import { headTitle } from ".";
 
 import { localMoment } from "../../utility";
@@ -22,6 +23,15 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
         detailedInputArray: [
             {
                 id: 1,
+                name: "nama_aplikasi",
+                display: "Nama Aplikasi",
+                type: "text",
+                value: itemObject.nama_aplikasi,
+                placeholder: "Input nama aplikasi disini",
+                enable: false,
+            },
+            {
+                id: 2,
                 name: "nama_sekolah",
                 display: "Nama Sekolah",
                 type: "text",
@@ -30,7 +40,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 2,
+                id: 3,
                 name: "nama_kepala_sekolah",
                 display: "Nama Kepala Sekolah",
                 type: "text",
@@ -39,7 +49,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 3,
+                id: 4,
                 name: "alamat",
                 display: "Alamat",
                 type: "text",
@@ -48,7 +58,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 4,
+                id: 5,
                 name: "provinsi",
                 display: "Provinsi",
                 type: "text",
@@ -57,7 +67,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 5,
+                id: 6,
                 name: "kabupaten",
                 display: "Kabupaten",
                 type: "text",
@@ -66,7 +76,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 6,
+                id: 7,
                 name: "kecamatan",
                 display: "Kecamatan",
                 type: "text",
@@ -75,7 +85,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 7,
+                id: 8,
                 name: "kelurahan",
                 display: "Kelurahan",
                 type: "text",
@@ -84,7 +94,7 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
                 enable: false,
             },
             {
-                id: 8,
+                id: 9,
                 name: "diubah",
                 display: "Terakhir Diubah",
                 type: "text",
@@ -99,7 +109,9 @@ sekolahIndentitasRouter.route("/").get(async (req, res) => {
 sekolahIndentitasRouter
     .route("/update")
     .get(async (req, res) => {
-        const itemObject = await Indentitas.findOne({ _id: 1 }).select("nama_sekolah nama_kepala_sekolah alamat provinsi kabupaten kecamatan kelurahan").lean();
+        const itemObject = await Indentitas.findOne({ _id: 1 })
+            .select("nama_aplikasi nama_sekolah nama_kepala_sekolah alamat provinsi kabupaten kecamatan kelurahan")
+            .lean();
 
         res.render("pages/sekolah/indentitas/update", {
             headTitle,
@@ -110,6 +122,15 @@ sekolahIndentitasRouter
             detailedInputArray: [
                 {
                     id: 1,
+                    name: "nama_aplikasi",
+                    display: "Nama Aplikasi",
+                    type: "text",
+                    value: itemObject.nama_aplikasi,
+                    placeholder: "Input nama aplikasi disini",
+                    enable: true,
+                },
+                {
+                    id: 2,
                     name: "nama_sekolah",
                     display: "Nama Sekolah",
                     type: "text",
@@ -118,7 +139,7 @@ sekolahIndentitasRouter
                     enable: true,
                 },
                 {
-                    id: 2,
+                    id: 3,
                     name: "nama_kepala_sekolah",
                     display: "Nama Kepala Sekolah",
                     type: "text",
@@ -127,7 +148,7 @@ sekolahIndentitasRouter
                     enable: true,
                 },
                 {
-                    id: 3,
+                    id: 4,
                     name: "alamat",
                     display: "Alamat",
                     type: "text",
@@ -136,7 +157,7 @@ sekolahIndentitasRouter
                     enable: true,
                 },
                 {
-                    id: 4,
+                    id: 5,
                     name: "provinsi",
                     display: "Provinsi",
                     type: "text",
@@ -145,7 +166,7 @@ sekolahIndentitasRouter
                     enable: true,
                 },
                 {
-                    id: 5,
+                    id: 6,
                     name: "kabupaten",
                     display: "Kabupaten",
                     type: "text",
@@ -154,7 +175,7 @@ sekolahIndentitasRouter
                     enable: true,
                 },
                 {
-                    id: 6,
+                    id: 7,
                     name: "kecamatan",
                     display: "Kecamatan",
                     type: "text",
@@ -163,7 +184,7 @@ sekolahIndentitasRouter
                     enable: true,
                 },
                 {
-                    id: 7,
+                    id: 8,
                     name: "kelurahan",
                     display: "Kelurahan",
                     type: "text",
@@ -176,6 +197,7 @@ sekolahIndentitasRouter
     })
     .post(async (req, res) => {
         const inputArray = [
+            req.body.nama_aplikasi,
             req.body.nama_sekolah,
             req.body.nama_kepala_sekolah,
             req.body.alamat,
@@ -190,6 +212,7 @@ sekolahIndentitasRouter
                 await Indentitas.updateOne(
                     { _id: 1 },
                     {
+                        nama_aplikasi: req.body.nama_aplikasi,
                         nama_sekolah: req.body.nama_sekolah,
                         nama_kepala_sekolah: req.body.nama_kepala_sekolah,
                         alamat: req.body.alamat,
@@ -201,6 +224,9 @@ sekolahIndentitasRouter
                         diubah: new Date(),
                     }
                 ).lean();
+
+                app.locals.applicationName = req.body.nama_aplikasi;
+
                 res.redirect("update?response=success");
             } catch (error: any) {
                 res.redirect("update?response=error");

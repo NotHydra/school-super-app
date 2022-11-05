@@ -22,6 +22,7 @@ import { penilaianRouter } from "./routes/penilaian";
 import { instansiRouter } from "./routes/instansi";
 import { perpustakaanRouter } from "./routes/perpustakaan";
 import { dataUmumRouter } from "./routes/data-umum";
+import { Indentitas } from "./models";
 
 declare module "express-session" {
     interface Session {
@@ -85,9 +86,10 @@ app.use((req, res) => {
     res.redirect("/");
 });
 
-mongoose.connect(mongoDBURI, () => {
+mongoose.connect(mongoDBURI, async () => {
     console.log("Connected to database");
 
+    app.locals.applicationName = (await Indentitas.findOne({ _id: 1 }).select("nama_aplikasi").lean())?.nama_aplikasi || "School Super App";
     app.listen(port, async () => {
         console.log(`Listening on http://localhost:${port}`);
     });

@@ -5,6 +5,10 @@ export const indentitasSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    nama_aplikasi: {
+        type: String,
+        required: true,
+    },
     nama_sekolah: {
         type: String,
         required: true,
