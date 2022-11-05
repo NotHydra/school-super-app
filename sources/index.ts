@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import session from "express-session";
+import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
@@ -47,6 +48,7 @@ app.locals.upperCaseFirst = upperCaseFirst;
 app.set("view engine", "ejs");
 app.set("views", "sources/views");
 app.use(express.static("sources/public"));
+app.use(fileUpload());
 app.use(
     session({
         secret: sessionSecret,

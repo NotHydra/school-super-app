@@ -1,4 +1,5 @@
 import express, { Router } from "express";
+import path from "path";
 
 import { app } from "../..";
 import { headTitle } from ".";
@@ -196,42 +197,59 @@ sekolahIndentitasRouter
         });
     })
     .post(async (req, res) => {
-        const inputArray = [
-            req.body.nama_aplikasi,
-            req.body.nama_sekolah,
-            req.body.nama_kepala_sekolah,
-            req.body.alamat,
-            req.body.provinsi,
-            req.body.kabupaten,
-            req.body.kecamatan,
-            req.body.kelurahan,
-        ];
+        try {
+            const inputArray = [
+                req.body.nama_aplikasi,
+                req.body.nama_sekolah,
+                req.body.nama_kepala_sekolah,
+                req.body.alamat,
+                req.body.provinsi,
+                req.body.kabupaten,
+                req.body.kecamatan,
+                req.body.kelurahan,
+            ];
 
-        if (!inputArray.includes(undefined)) {
-            try {
-                await Indentitas.updateOne(
-                    { _id: 1 },
-                    {
-                        nama_aplikasi: req.body.nama_aplikasi,
-                        nama_sekolah: req.body.nama_sekolah,
-                        nama_kepala_sekolah: req.body.nama_kepala_sekolah,
-                        alamat: req.body.alamat,
-                        provinsi: req.body.provinsi,
-                        kabupaten: req.body.kabupaten,
-                        kecamatan: req.body.kecamatan,
-                        kelurahan: req.body.kelurahan,
+            if (!inputArray.includes(undefined)) {
+                let logoIsValid = true;
 
-                        diubah: new Date(),
+                if (req.files) {
+                    const logo: any = req.files.logo;
+                    if (logo) {
+                        if (path.extname(logo.name) == ".png") {
+                            logo.mv(`sources/public/dist/img/app-logo.png`);
+                        } else if (!(path.extname(logo.name) == ".png")) {
+                            logoIsValid = false;
+                        }
                     }
-                ).lean();
+                }
 
-                app.locals.applicationName = req.body.nama_aplikasi;
+                if (logoIsValid) {
+                    await Indentitas.updateOne(
+                        { _id: 1 },
+                        {
+                            nama_aplikasi: req.body.nama_aplikasi,
+                            nama_sekolah: req.body.nama_sekolah,
+                            nama_kepala_sekolah: req.body.nama_kepala_sekolah,
+                            alamat: req.body.alamat,
+                            provinsi: req.body.provinsi,
+                            kabupaten: req.body.kabupaten,
+                            kecamatan: req.body.kecamatan,
+                            kelurahan: req.body.kelurahan,
 
-                res.redirect("update?response=success");
-            } catch (error: any) {
-                res.redirect("update?response=error");
+                            diubah: new Date(),
+                        }
+                    ).lean();
+
+                    app.locals.applicationName = req.body.nama_aplikasi;
+
+                    res.redirect("update?response=success");
+                } else if (!logoIsValid) {
+                    res.redirect("update?response=error&text=Logo harus png");
+                }
+            } else if (inputArray.includes(undefined)) {
+                res.redirect("update?response=error&text=Data tidak lengkap");
             }
-        } else if (inputArray.includes(undefined)) {
-            res.redirect("update?response=error&text=Data tidak lengkap");
+        } catch (error: any) {
+            res.redirect("update?response=error");
         }
     });

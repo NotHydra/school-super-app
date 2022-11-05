@@ -25,7 +25,19 @@
                                     <div class="card-body pt-0 pb-3">
                                         <%- include("./../../../partials/form-head.ejs", {extraTitle: "Ubah"}); -%>
 
-                                        <form action="/<%= pageItemCurrent.link %>/update" method="POST" onsubmit="return confirmModal('form', this);">
+                                        <form action="/<%= pageItemCurrent.link %>/update" method="POST" onsubmit="return confirmModal('form', this);" enctype="multipart/form-data">
+                                            <div class="form-group mt-3" style="display: flex; flex-direction: column; align-items: center;">
+                                                <img id="logo-image" src="dist/img/app-logo.png" alt="App Logo" style="width: 250px !important;">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Logo</label>
+                                                <div class="custom-file">
+                                                    <input type="file" name="logo" class="custom-file-input" id="customFile" accept="image/png" onchange="readURL(this);">
+                                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                                </div>
+                                            </div>
+
                                             <%- include("./../../../partials/input-detailed.ejs", {detailedInputArray}); -%>
 
                                             <button type="submit" class="btn btn-block btn-warning">Ubah</button>
@@ -43,6 +55,25 @@
         </div>
 
         <%- include("./../../../partials/script.ejs"); -%>
+
+        <script src="../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+        <script>
+            $(function () {
+                bsCustomFileInput.init();
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#logo-image').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
     </body>
 
     <%- include("./../../../partials/select-script.ejs"); -%>

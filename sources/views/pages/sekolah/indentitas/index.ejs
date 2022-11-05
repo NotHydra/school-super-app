@@ -26,6 +26,10 @@
                                         <%- include("./../../../partials/form-head.ejs"); -%>
 
                                         <form>
+                                            <div class="form-group mt-3" style="display: flex; flex-direction: column; align-items: center;">
+                                                <img src="dist/img/app-logo.png" alt="App Logo" style="width: 250px !important;">
+                                            </div>
+
                                             <%- include("./../../../partials/input-detailed.ejs", {detailedInputArray}); -%>
 
                                             <a type="button" href="/<%= pageItemCurrent.link %>/update" class="btn btn-block btn-warning">Ubah</a>
