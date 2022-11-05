@@ -14,6 +14,7 @@ import { requestCounter } from "./common/middleware/requestCounter";
 import { authenticationRouter } from "./authentication";
 import { utamaRouter } from "./routes/dashboard";
 import { penggunaRouter } from "./routes/pengguna";
+import { sekolahRouter } from "./routes/sekolah";
 import { pengajarRouter } from "./routes/pengajar";
 import { pelajarRouter } from "./routes/pelajar";
 import { lulusanRouter } from "./routes/lulusan";
@@ -65,6 +66,7 @@ app.use(roleGuard(1));
 app.use("/", utamaRouter);
 
 app.use(roleGuard(2));
+app.use("/sekolah", sekolahRouter);
 app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
