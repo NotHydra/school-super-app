@@ -4,6 +4,7 @@ import { userSchema } from "./pengguna/user";
 import { aktivitasSchema } from "./pengguna/aktivitas";
 
 import { indentitasSchema } from "./sekolah/indentitas";
+import { tahunAjaranSchema } from "./sekolah/tahun-ajaran";
 
 import { guruSchema } from "./pengajar/guru";
 import { jabatanSchema } from "./pengajar/jabatan";
@@ -42,6 +43,7 @@ export const Aktivitas = penggunaDatabase.model("aktivitas", aktivitasSchema, "a
 
 const sekolahDatabase = mongoose.connection.useDb("sekolah");
 export const Indentitas = sekolahDatabase.model("indentitas", indentitasSchema, "indentitas");
+export const TahunAjaran = sekolahDatabase.model("tahun_ajaran", tahunAjaranSchema, "tahun_ajaran");
 
 const pengajarDatabase = mongoose.connection.useDb("pengajar");
 export const Guru = pengajarDatabase.model("guru", guruSchema, "guru");
