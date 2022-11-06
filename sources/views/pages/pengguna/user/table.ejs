@@ -82,7 +82,7 @@
                                                                     <a type="button" class="btn btn-block btn-primary" href="/pengguna/aktivitas?type=user&user=<%= tableItemObject._id %>">Aktivitas</a>
 
                                                                     <% if (roleCheck(userObject.role, roleConvert(tableItemObject.role.toLowerCase()) + 1)) { %>
-                                                                        <a type="button" class="btn btn-block btn-<%= tableItemObject.aktif == 'Aktif' ? 'danger' : 'success' %>" href="/<%= pageItemCurrent.link %>/active?id=<%= tableItemObject._id %>"><%= tableItemObject.aktif == 'Aktif' ? 'Matikan' : 'Aktifkan' %></a>
+                                                                        <a type="button" class="btn btn-block btn-<%= tableItemObject.aktif == 'Aktif' ? 'danger' : 'success' %>" onclick="confirmModal('location', '/<%= pageItemCurrent.link %>/active?id=<%= tableItemObject._id %>');"><%= tableItemObject.aktif == 'Aktif' ? 'Matikan' : 'Aktifkan' %></a>
                                                                         <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/access?id=<%= tableItemObject._id %>">Ubah Akses</a>
                                                                         <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                         <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/update-password?id=<%= tableItemObject._id %>">Ubah Password</a>
