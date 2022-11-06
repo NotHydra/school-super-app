@@ -56,10 +56,10 @@ export const rombelSchema = new mongoose.Schema({
         required: true,
         ref: "jurusan",
     },
-    id_tahun_rombel: {
+    id_tahun_ajaran: {
         type: Number,
         required: true,
-        ref: "tahun_rombel",
+        ref: "tahun_ajaran",
     },
     semester: {
         type: Array,

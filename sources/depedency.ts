@@ -291,14 +291,6 @@ export const pageItemArray: pageItemType[] = [
                 level: 2,
                 confirm: false,
             },
-            {
-                id: 5,
-                title: "Tahun Rombel",
-                link: "instansi/tahun-rombel",
-                icon: "calendar-days",
-                level: 2,
-                confirm: false,
-            },
         ],
     },
     {

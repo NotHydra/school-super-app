@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Alumni, Keterangan, Pendidikan, Rombel, Siswa, TahunLulus, TahunMasuk, TahunRombel, Universitas } from "../../models";
+import { Alumni, Keterangan, Pendidikan, Rombel, Siswa, TahunAjaran, TahunLulus, TahunMasuk, Universitas } from "../../models";
 
 export const lulusanAlumniRouter = Router();
 
@@ -28,30 +28,36 @@ const tableAttributeArray = [
     },
     {
         id: 4,
+        label: "Tahun Ajaran",
+        value: ["id_siswa", "id_tahun_ajaran", "tahun_ajaran"],
+        type: "text",
+    },
+    {
+        id: 5,
         label: "Tahun Masuk",
         value: ["id_siswa", "id_tahun_masuk", "tahun_masuk"],
         type: "text",
     },
     {
-        id: 5,
+        id: 6,
         label: "Tahun Lulus",
         value: ["id_tahun_lulus", "tahun_lulus"],
         type: "text",
     },
     {
-        id: 6,
+        id: 7,
         label: "Universitas",
         value: ["id_universitas", "universitas"],
         type: "text",
     },
     {
-        id: 7,
+        id: 8,
         label: "Pendidikan",
         value: ["id_pendidikan", "singkatan"],
         type: "text",
     },
     {
-        id: 8,
+        id: 9,
         label: "Pekerjaan",
         value: ["pekerjaan"],
         type: "text",
@@ -63,6 +69,7 @@ lulusanAlumniRouter.use(express.urlencoded({ extended: false }));
 
 lulusanAlumniRouter.route("/").get(async (req, res) => {
     const rombelValue: any = req.query.rombel;
+    const tahunAjaranValue: any = req.query.tahunAjaran;
     const tahunMasukValue: any = req.query.tahunMasuk;
     const tahunLulusValue: any = req.query.tahunLulus;
     const universitasValue: any = req.query.universitas;
@@ -85,14 +92,15 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
         await Alumni.find(filterValue)
             .populate({
                 path: "id_siswa",
-                select: "nisn nama_lengkap id_rombel id_tahun_masuk",
+                select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk",
                 populate: [
                     {
                         path: "id_rombel",
-                        select: "rombel id_tahun_rombel",
-                        populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
+                        select: "rombel id_tahun_ajaran",
+                        populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
                         model: Rombel,
                     },
+                    { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
                     { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
                 ],
                 model: Siswa,
@@ -118,12 +126,20 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
             return a.id_siswa.nisn - b.id_siswa.nisn;
         })
         .sort((a: any, b: any) => {
-            return b.id_siswa.id_rombel.id_tahun_rombel.tahun_rombel - a.id_siswa.id_rombel.id_tahun_rombel.tahun_rombel;
+            return b.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran);
         });
 
     if (rombelValue != undefined && !isNaN(rombelValue)) {
         tableItemArray = tableItemArray.filter((tableItemObject: any) => {
             if (tableItemObject.id_siswa.id_rombel._id == rombelValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (tahunAjaranValue != undefined && !isNaN(tahunAjaranValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_tahun_ajaran._id == tahunAjaranValue) {
                 return tableItemObject;
             }
         });
@@ -140,7 +156,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
     tableItemArray = tableItemArray.map((tableItemObject: any) => {
         tableItemObject.id_siswa.id_rombel = {
             ...tableItemObject.id_siswa.id_rombel,
-            rombel: `${tableItemObject.id_siswa.id_rombel.rombel} - Tahun Rombel ${tableItemObject.id_siswa.id_rombel.id_tahun_rombel.tahun_rombel}`,
+            rombel: `${tableItemObject.id_siswa.id_rombel.rombel} ${tableItemObject.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran}`,
         };
 
         return tableItemObject;
@@ -206,23 +222,37 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                 value: rombelValue,
                 option: (
                     await Rombel.find()
-                        .select("rombel id_tahun_rombel")
-                        .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
+                        .select("rombel id_tahun_ajaran")
+                        .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
                         .sort({ rombel: 1 })
                         .lean()
                 )
                     .sort((a: any, b: any) => {
-                        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+                        return b.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_tahun_ajaran.tahun_ajaran);
                     })
                     .map((itemObject: any) => {
                         return {
                             value: itemObject._id,
-                            display: `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`,
+                            display: `${itemObject.rombel} ${itemObject.id_tahun_ajaran.tahun_ajaran}`,
                         };
                     }),
             },
             {
                 id: 2,
+                display: "Tahun Ajaran",
+                name: "tahun_ajaran",
+                query: "tahunAjaran",
+                placeholder: "Pilih tahun ajaran",
+                value: tahunAjaranValue,
+                option: (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_ajaran,
+                    };
+                }),
+            },
+            {
+                id: 3,
                 display: "Tahun Masuk",
                 name: "tahun_masuk",
                 query: "tahunMasuk",
@@ -236,7 +266,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                 }),
             },
             {
-                id: 3,
+                id: 4,
                 display: "Tahun Lulus",
                 name: "tahun_lulus",
                 query: "tahunLulus",
@@ -250,7 +280,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                 }),
             },
             {
-                id: 4,
+                id: 5,
                 display: "Universitas",
                 name: "universitas",
                 query: "universitas",
@@ -264,7 +294,7 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                 }),
             },
             {
-                id: 5,
+                id: 6,
                 display: "Pendidikan",
                 name: "pendidikan",
                 query: "pendidikan",
@@ -301,27 +331,28 @@ lulusanAlumniRouter
                     value: [
                         (
                             await Siswa.find()
-                                .select("nisn nama_lengkap id_rombel id_tahun_masuk aktif id_keterangan")
+                                .select("nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk aktif id_keterangan")
                                 .populate({
                                     path: "id_rombel",
-                                    select: "rombel id_tahun_rombel",
-                                    populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
+                                    select: "rombel id_tahun_ajaran",
+                                    populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
                                     model: Rombel,
                                 })
+                                .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
                                 .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
                                 .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
                                 .sort({ nisn: 1 })
                                 .lean()
                         )
                             .sort((a: any, b: any) => {
-                                return b.id_rombel.id_tahun_rombel.tahun_rombel - a.id_rombel.id_tahun_rombel.tahun_rombel;
+                                return b.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_tahun_ajaran.tahun_ajaran);
                             })
                             .map((itemObject: any) => {
                                 return [
                                     itemObject._id,
-                                    `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - Tahun Rombel ${
-                                        itemObject.id_rombel.id_tahun_rombel.tahun_rombel
-                                    } - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk} - ${
+                                    `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} ${
+                                        itemObject.id_rombel.id_tahun_ajaran.tahun_ajaran
+                                    } - Tahun Ajaran ${itemObject.id_tahun_ajaran.tahun_ajaran} - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk} - ${
                                         itemObject.aktif == true
                                             ? "Aktif"
                                             : "Tidak Aktif" + (itemObject.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_keterangan.keterangan)
@@ -452,27 +483,28 @@ lulusanAlumniRouter
                         value: [
                             (
                                 await Siswa.find()
-                                    .select("nisn nama_lengkap id_rombel id_tahun_masuk aktif id_keterangan")
+                                    .select("nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk aktif id_keterangan")
                                     .populate({
                                         path: "id_rombel",
-                                        select: "rombel id_tahun_rombel",
-                                        populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
+                                        select: "rombel id_tahun_ajaran",
+                                        populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
                                         model: Rombel,
                                     })
+                                    .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
                                     .populate({ path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk })
                                     .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
                                     .sort({ nisn: 1 })
                                     .lean()
                             )
                                 .sort((a: any, b: any) => {
-                                    return b.id_rombel.id_tahun_rombel.tahun_rombel - a.id_rombel.id_tahun_rombel.tahun_rombel;
+                                    return b.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_tahun_ajaran.tahun_ajaran);
                                 })
                                 .map((itemObject: any) => {
                                     return [
                                         itemObject._id,
-                                        `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} - Tahun Rombel ${
-                                            itemObject.id_rombel.id_tahun_rombel.tahun_rombel
-                                        } - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk} - ${
+                                        `${itemObject.nisn} - ${itemObject.nama_lengkap} - ${itemObject.id_rombel.rombel} ${
+                                            itemObject.id_rombel.id_tahun_ajaran.tahun_ajaran
+                                        } - Tahun Ajaran ${itemObject.id_tahun_ajaran.tahun_ajaran} - Tahun Masuk ${itemObject.id_tahun_masuk.tahun_masuk} - ${
                                             itemObject.aktif == true
                                                 ? "Aktif"
                                                 : "Tidak Aktif" + (itemObject.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_keterangan.keterangan)
@@ -598,14 +630,15 @@ lulusanAlumniRouter
                 .select("id_siswa id_tahun_lulus id_universitas id_pendidikan pekerjaan")
                 .populate({
                     path: "id_siswa",
-                    select: "nisn nama_lengkap id_rombel id_tahun_masuk aktif id_keterangan",
+                    select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk aktif id_keterangan",
                     populate: [
                         {
                             path: "id_rombel",
-                            select: "rombel id_tahun_rombel",
-                            populate: [{ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel }],
+                            select: "rombel id_tahun_ajaran",
+                            populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
                             model: Rombel,
                         },
+                        { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
                         { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
                         { path: "id_keterangan", select: "keterangan", model: Keterangan },
                     ],
@@ -640,9 +673,9 @@ lulusanAlumniRouter
                         name: "id_siswa",
                         display: "Siswa",
                         type: "text",
-                        value: `${itemObject.id_siswa.nisn} - ${itemObject.id_siswa.nama_lengkap} - ${itemObject.id_siswa.id_rombel.rombel} - Tahun Rombel ${
-                            itemObject.id_siswa.id_rombel.id_tahun_rombel.tahun_rombel
-                        } - Tahun Masuk ${itemObject.id_siswa.id_tahun_masuk.tahun_masuk}  - ${
+                        value: `${itemObject.id_siswa.nisn} - ${itemObject.id_siswa.nama_lengkap} - ${itemObject.id_siswa.id_rombel.rombel} ${
+                            itemObject.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran
+                        } - Tahun Ajaran ${itemObject.id_siswa.id_tahun_ajaran.tahun_ajaran} - Tahun Masuk ${itemObject.id_siswa.id_tahun_masuk.tahun_masuk}  - ${
                             itemObject.id_siswa.aktif == true
                                 ? "Aktif"
                                 : "Tidak Aktif" + (itemObject.id_siswa.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_siswa.id_keterangan.keterangan)

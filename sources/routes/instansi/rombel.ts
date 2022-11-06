@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Guru, Jurusan, Rombel, Siswa, TahunRombel, Tingkat } from "../../models";
+import { Guru, Jurusan, Rombel, Siswa, TahunAjaran, Tingkat } from "../../models";
 
 export const instansiRombelRouter = Router();
 
@@ -34,8 +34,8 @@ const tableAttributeArray = [
     },
     {
         id: 5,
-        label: "Tahun Rombel",
-        value: ["id_tahun_rombel", "tahun_rombel"],
+        label: "Tahun Ajaran",
+        value: ["id_tahun_ajaran", "tahun_ajaran"],
         type: "text",
     },
 ];
@@ -49,7 +49,7 @@ instansiRombelRouter.route("/").get(async (req, res) => {
 
     const tingkatValue: any = req.query.tingkat;
     const jurusanValue: any = req.query.jurusan;
-    const tahunRombelValue: any = req.query.tahunRombel;
+    const tahunAjaranValue: any = req.query.tahunAjaran;
     let filterValue = {};
 
     if (rombelValue != undefined && !isNaN(rombelValue)) {
@@ -64,8 +64,8 @@ instansiRombelRouter.route("/").get(async (req, res) => {
         filterValue = { ...filterValue, id_jurusan: jurusanValue };
     }
 
-    if (tahunRombelValue != undefined && !isNaN(tahunRombelValue)) {
-        filterValue = { ...filterValue, id_tahun_rombel: tahunRombelValue };
+    if (tahunAjaranValue != undefined && !isNaN(tahunAjaranValue)) {
+        filterValue = { ...filterValue, id_tahun_ajaran: tahunAjaranValue };
     }
 
     const tableItemArray = (
@@ -86,14 +86,14 @@ instansiRombelRouter.route("/").get(async (req, res) => {
                 model: Jurusan,
             })
             .populate({
-                path: "id_tahun_rombel",
-                select: "tahun_rombel",
-                model: TahunRombel,
+                path: "id_tahun_ajaran",
+                select: "tahun_ajaran",
+                model: TahunAjaran,
             })
             .sort({ rombel: 1 })
             .lean()
     ).sort((a: any, b: any) => {
-        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+        return b.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_tahun_ajaran.tahun_ajaran);
     });
 
     const documentCount = await Rombel.countDocuments().lean();
@@ -159,15 +159,15 @@ instansiRombelRouter.route("/").get(async (req, res) => {
             },
             {
                 id: 3,
-                display: "Tahun Rombel",
-                name: "tahun_rombel",
-                query: "tahunRombel",
-                placeholder: "Pilih tahun rombel",
-                value: tahunRombelValue,
-                option: (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
+                display: "Tahun Ajaran",
+                name: "tahun_ajaran",
+                query: "tahunAjaran",
+                placeholder: "Pilih tahun ajaran",
+                value: tahunAjaranValue,
+                option: (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()).map((itemObject) => {
                     return {
                         value: itemObject._id,
-                        display: itemObject.tahun_rombel,
+                        display: itemObject.tahun_ajaran,
                     };
                 }),
             },
@@ -242,16 +242,16 @@ instansiRombelRouter
                 },
                 {
                     id: 5,
-                    name: "id_tahun_rombel",
-                    display: "Tahun Rombel",
+                    name: "id_tahun_ajaran",
+                    display: "Tahun Ajaran",
                     type: "select",
                     value: [
-                        (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
-                            return [itemObject._id, itemObject.tahun_rombel];
+                        (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()).map((itemObject) => {
+                            return [itemObject._id, itemObject.tahun_ajaran];
                         }),
                         null,
                     ],
-                    placeholder: "Input tahun rombel disini",
+                    placeholder: "Input tahun ajaran disini",
                     enable: true,
                 },
             ],
@@ -306,7 +306,7 @@ instansiRombelRouter
         const dataExist = await Rombel.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            const itemObject = await Rombel.findOne({ _id: id }).select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_rombel").lean();
+            const itemObject = await Rombel.findOne({ _id: id }).select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_ajaran").lean();
 
             res.render("pages/instansi/rombel/update", {
                 headTitle,
@@ -369,16 +369,16 @@ instansiRombelRouter
                     },
                     {
                         id: 5,
-                        name: "id_tahun_rombel",
-                        display: "Tahun Rombel",
+                        name: "id_tahun_ajaran",
+                        display: "Tahun Ajaran",
                         type: "select",
                         value: [
-                            (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
-                                return [itemObject._id, itemObject.tahun_rombel];
+                            (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.tahun_ajaran];
                             }),
-                            itemObject.id_tahun_rombel,
+                            itemObject.id_tahun_ajaran,
                         ],
-                        placeholder: "Input tahun rombel disini",
+                        placeholder: "Input tahun ajaran disini",
                         enable: true,
                     },
                 ],
@@ -442,7 +442,7 @@ instansiRombelRouter
 
         if (dataExist != null) {
             const itemObject: any = await Rombel.findOne({ _id: id })
-                .select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_rombel")
+                .select("rombel id_wali_kelas id_tingkat id_jurusan id_tahun_ajaran")
                 .populate({
                     path: "id_wali_kelas",
                     select: "nip nama_lengkap",
@@ -459,9 +459,9 @@ instansiRombelRouter
                     model: Jurusan,
                 })
                 .populate({
-                    path: "id_tahun_rombel",
-                    select: "tahun_rombel",
-                    model: TahunRombel,
+                    path: "id_tahun_ajaran",
+                    select: "tahun_ajaran",
+                    model: TahunAjaran,
                 })
                 .lean();
 
@@ -511,11 +511,11 @@ instansiRombelRouter
                     },
                     {
                         id: 5,
-                        name: "id_tahun_rombel",
-                        display: "Tahun Rombel",
+                        name: "id_tahun_ajaran",
+                        display: "Tahun Ajaran",
                         type: "text",
-                        value: itemObject.id_tahun_rombel.tahun_rombel,
-                        placeholder: "Input tahun rombel disini",
+                        value: itemObject.id_tahun_ajaran.tahun_ajaran,
+                        placeholder: "Input tahun ajaran disini",
                         enable: false,
                     },
                 ],

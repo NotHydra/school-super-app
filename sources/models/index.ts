@@ -21,7 +21,6 @@ import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
 import { rombelMataPelajaranSchema, rombelSchema, rombelSemesterSchema } from "./instansi/rombel";
 import { tingkatSchema } from "./instansi/tingkat";
 import { jurusanSchema } from "./instansi/jurusan";
-import { tahunRombelSchema } from "./instansi/tahun-rombel";
 
 import { anggotaSchema } from "./perpustakaan/anggota";
 import { petugasSchema } from "./perpustakaan/petugas";
@@ -67,7 +66,6 @@ export const RombelSemester = instansiDatabase.model("rombel_semester", rombelSe
 export const RombelMataPelajaran = instansiDatabase.model("rombel_mata_pelajaran", rombelMataPelajaranSchema, "rombel_mata_pelajaran");
 export const Tingkat = instansiDatabase.model("tingkat", tingkatSchema, "tingkat");
 export const Jurusan = instansiDatabase.model("jurusan", jurusanSchema, "jurusan");
-export const TahunRombel = instansiDatabase.model("tahun_rombel", tahunRombelSchema, "tahun_rombel");
 
 const perpustakaanDatabase = mongoose.connection.useDb("perpustakaan");
 export const Anggota = perpustakaanDatabase.model("anggota", anggotaSchema, "anggota");

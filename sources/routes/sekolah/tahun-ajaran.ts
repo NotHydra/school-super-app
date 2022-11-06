@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { TahunAjaran } from "../../models";
+import { Rombel, Siswa, TahunAjaran } from "../../models";
 
 export const sekolahTahunAjaranRouter = Router();
 
@@ -214,15 +214,20 @@ sekolahTahunAjaranRouter
         }
     })
     .post(async (req, res) => {
-        const id = req.query.id;
+        const id: any = req.query.id;
         const dataExist = await TahunAjaran.exists({ _id: id }).lean();
 
         if (dataExist != null) {
-            try {
-                await TahunAjaran.deleteOne({ _id: id }).lean();
-                res.redirect("./?response=success");
-            } catch (error: any) {
-                res.redirect(`delete?id=${id}&response=error`);
+            const dataIsUsed = (await Siswa.exists({ id_tahun_ajaran: id }).lean()) || (await Rombel.exists({ id_tahun_ajaran: id }).lean());
+            if (dataIsUsed == null) {
+                try {
+                    await TahunAjaran.deleteOne({ _id: id }).lean();
+                    res.redirect("./?response=success");
+                } catch (error: any) {
+                    res.redirect(`delete?id=${id}&response=error`);
+                }
+            } else if (dataIsUsed != null) {
+                res.redirect(`delete?id=${id}&response=error&text=Data digunakan di data lain`);
             }
         } else if (dataExist == null) {
             res.redirect("./?response=error&text=Data tidak valid");

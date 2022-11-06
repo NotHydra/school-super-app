@@ -28,6 +28,11 @@ export const siswaSchema = new mongoose.Schema({
         required: true,
         ref: "jenis_kelamin",
     },
+    id_tahun_ajaran: {
+        type: Number,
+        required: true,
+        ref: "tahun_ajaran",
+    },
     id_tahun_masuk: {
         type: Number,
         required: true,

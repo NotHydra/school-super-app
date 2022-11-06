@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 class Utility:
     nisnObject = {}
     tingkatToTahunRombel = {1: 5, 2: 4, 3: 3}
+    tingkatToTahunAjaran = {1: 5, 2: 4, 3: 3}
     tingkatToTahunMasuk = {1: 5, 2: 4, 3: 3}
     tingkatToSemesterCount = {"X": 1, "XI": 3, "XII": 5}
 
@@ -26,6 +27,11 @@ class Utility:
 
 
 class Dependency:
+    class Sekolah:
+        tahunAjaranArray = Utility.readJSON(
+            "scripts/json/dependency/sekolah/tahun_ajaran.json"
+        )
+
     class Pengajar:
         jabatanArray = Utility.readJSON("scripts/json/dependency/pengajar/jabatan.json")
 
@@ -48,9 +54,6 @@ class Dependency:
         rombelArray = Utility.readJSON("scripts/json/dependency/instansi/rombel.json")
         tingkatArray = Utility.readJSON("scripts/json/dependency/instansi/tingkat.json")
         jurusanArray = Utility.readJSON("scripts/json/dependency/instansi/jurusan.json")
-        tahunRombelArray = Utility.readJSON(
-            "scripts/json/dependency/instansi/tahun_rombel.json"
-        )
 
     class DataUmum:
         tempatLahirArray = Utility.readJSON(
@@ -70,6 +73,8 @@ class Dependency:
         )
 
     namaArray = Utility.readJSON("scripts/json/dependency/nama.json")
+
+    tahunAjaranArray = Utility.readJSON("scripts/json/sekolah/tahun_ajaran.json")
 
     guruArray = Utility.readJSON("scripts/json/pengajar/guru.json")
 
@@ -150,6 +155,27 @@ class Random:
         return phoneNumber
 
 
+class Sekolah:
+    def main():
+        Sekolah.tahunAjaran()
+
+    def tahunAjaran():
+        tahunAjaranArray = []
+        for tahunAjaranIndex, tahunAjaran in enumerate(
+            Dependency.Sekolah.tahunAjaranArray
+        ):
+            tahunAjaranObject = {
+                "_id": tahunAjaranIndex + 1,
+                "tahun_ajaran": tahunAjaran,
+                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
+                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
+            }
+
+            tahunAjaranArray.append(tahunAjaranObject)
+
+        Utility.writeJSON("scripts/json/sekolah/tahun_ajaran.json", tahunAjaranArray)
+
+
 class Pengajar:
     def main():
         Pengajar.guru()
@@ -200,7 +226,7 @@ class Pengajar:
 class Pelajar:
     def main():
         Pelajar.siswa()
-        # Pelajar.tahunMasuk()
+        Pelajar.tahunMasuk()
 
     def siswa():
         siswaArray = []
@@ -233,6 +259,9 @@ class Pelajar:
                         }
                     },
                     "id_jenis_kelamin": Random.jenisKelamin(),
+                    "id_tahun_ajaran": Utility.tingkatToTahunAjaran[
+                        rombel["id_tingkat"]
+                    ],
                     "id_tahun_masuk": Utility.tingkatToTahunMasuk[rombel["id_tingkat"]],
                     "id_rombel": rombel["_id"],
                     "aktif": True,
@@ -317,7 +346,6 @@ class Instansi:
         Instansi.rombel()
         Instansi.tingkat()
         Instansi.jurusan()
-        Instansi.tahunRombel()
 
     def rombel():
         rombelArray = []
@@ -373,7 +401,7 @@ class Instansi:
                     "id_wali_kelas": randomWaliKelas[rombelCount]["_id"],
                     "id_tingkat": tingkat["_id"],
                     "id_jurusan": validJurusan,
-                    "id_tahun_rombel": Utility.tingkatToTahunRombel[tingkat["_id"]],
+                    "id_tahun_ajaran": Utility.tingkatToTahunAjaran[tingkat["_id"]],
                     "semester": semesterArray,
                     "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
                     "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
@@ -412,22 +440,6 @@ class Instansi:
             jurusanArray.append(jurusanObject)
 
         Utility.writeJSON("scripts/json/instansi/jurusan.json", jurusanArray)
-
-    def tahunRombel():
-        tahunRombelArray = []
-        for tahunRombelIndex, tahunRombel in enumerate(
-            Dependency.Instansi.tahunRombelArray
-        ):
-            tahunRombelObject = {
-                "_id": tahunRombelIndex + 1,
-                "tahun_rombel": tahunRombel,
-                "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
-                "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
-            }
-
-            tahunRombelArray.append(tahunRombelObject)
-
-        Utility.writeJSON("scripts/json/instansi/tahun_rombel.json", tahunRombelArray)
 
 
 class DataUmum:
@@ -507,11 +519,12 @@ class DataUmum:
 
 class Main:
     def main():
+        # Sekolah.main()
         # Pengajar.main()
-        Pelajar.main()
+        # Pelajar.main()
         # Lulusan.main()
         # Penilaian.main()
-        # Instansi.main()
+        Instansi.main()
         # DataUmum.main()
 
 

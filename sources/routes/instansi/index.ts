@@ -1,13 +1,12 @@
 import { Router } from "express";
 
-import { Jurusan, Rombel, TahunRombel, Tingkat } from "../../models";
+import { Jurusan, Rombel, TahunAjaran, Tingkat } from "../../models";
 
 import { blueColorPattern, datasetYear } from "../../utility";
 
 import { instansiRombelRouter } from "./rombel";
 import { instansiTingkatRouter } from "./tingkat";
 import { instansiJurusanRouter } from "./jurusan";
-import { instansiTahunRombelRouter } from "./tahun-rombel";
 
 export const instansiRouter = Router();
 export const headTitle = "Instansi";
@@ -19,11 +18,10 @@ instansiRouter.get("/", async (req, res) => {
     const rombelChartData: any = await datasetYear(Rombel, currentYear);
     const tingkatChartData: any = await datasetYear(Tingkat, currentYear);
     const jurusanChartData: any = await datasetYear(Jurusan, currentYear);
-    const tahunRombelChartData: any = await datasetYear(TahunRombel, currentYear);
 
     const tingkatTotal = await Tingkat.countDocuments().lean();
     const jurusanTotal = await Jurusan.countDocuments().lean();
-    const tahunRombelTotal = await TahunRombel.countDocuments().lean();
+    const tahunAjaranTotal = await TahunAjaran.countDocuments().lean();
 
     res.render("pages/index", {
         headTitle,
@@ -52,13 +50,6 @@ instansiRouter.get("/", async (req, res) => {
                         icon: "wrench",
                         value: await Jurusan.countDocuments().lean(),
                         link: "instansi/jurusan",
-                    },
-                    {
-                        id: 4,
-                        title: "Tahun Rombel",
-                        icon: "calendar-days",
-                        value: await TahunRombel.countDocuments().lean(),
-                        link: "instansi/tahun-rombel",
                     },
                 ],
             },
@@ -91,13 +82,8 @@ instansiRouter.get("/", async (req, res) => {
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
                     },
-                ],
-            },
-            {
-                id: 1,
-                lineChartChild: [
                     {
-                        id: 1,
+                        id: 3,
                         title: "Statistik Jurusan Baru",
                         link: { link: "instansi/jurusan", title: "Jurusan", subTitle: "Instansi" },
                         value: jurusanChartData.currentYearValue,
@@ -105,18 +91,6 @@ instansiRouter.get("/", async (req, res) => {
                         percentage: jurusanChartData.percentageIncrease,
                         timeRange: "Sejak Tahun Lalu",
                         dataset: jurusanChartData.dataset,
-                        firstLegend: "Tahun Ini",
-                        secondLegend: "Tahun Lalu",
-                    },
-                    {
-                        id: 2,
-                        title: "Statistik Tahun Rombel Baru",
-                        link: { link: "instansi/tahun-rombel", title: "Tahun Rombel", subTitle: "Instansi" },
-                        value: tahunRombelChartData.currentYearValue,
-                        text: "Tahun Rombel Baru",
-                        percentage: tahunRombelChartData.percentageIncrease,
-                        timeRange: "Sejak Tahun Lalu",
-                        dataset: tahunRombelChartData.dataset,
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
                     },
@@ -161,24 +135,19 @@ instansiRouter.get("/", async (req, res) => {
                             })
                         ),
                     },
-                ],
-            },
-            {
-                id: 2,
-                donutChartChild: [
                     {
-                        id: 1,
-                        title: "Statistik Rombel Berdasarkan Tahun Rombel",
+                        id: 3,
+                        title: "Statistik Rombel Berdasarkan Tahun Ajaran",
                         link: { link: "instansi/rombel", title: "Rombel", subTitle: "Instansi" },
                         dataset: await Promise.all(
                             (
-                                await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()
+                                await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: 1 }).lean()
                             ).map(async (itemObject, itemIndex) => {
                                 return {
                                     id: itemIndex + 1,
-                                    label: itemObject.tahun_rombel,
-                                    value: await Rombel.countDocuments({ id_tahun_rombel: itemObject._id }).lean(),
-                                    color: blueColorPattern(itemIndex + 1, tahunRombelTotal),
+                                    label: itemObject.tahun_ajaran,
+                                    value: await Rombel.countDocuments({ id_tahun_ajaran: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tahunAjaranTotal),
                                 };
                             })
                         ),
@@ -192,4 +161,3 @@ instansiRouter.get("/", async (req, res) => {
 instansiRouter.use("/rombel", instansiRombelRouter);
 instansiRouter.use("/tingkat", instansiTingkatRouter);
 instansiRouter.use("/jurusan", instansiJurusanRouter);
-instansiRouter.use("/tahun-rombel", instansiTahunRombelRouter);

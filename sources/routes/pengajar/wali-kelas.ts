@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Guru, Rombel, TahunRombel } from "../../models";
+import { Guru, Rombel, TahunAjaran } from "../../models";
 
 export const pengajarWaliKelasRouter = Router();
 
@@ -28,8 +28,8 @@ const tableAttributeArray = [
     },
     {
         id: 4,
-        label: "Tahun Rombel",
-        value: ["id_tahun_rombel", "tahun_rombel"],
+        label: "Tahun Ajaran Rombel",
+        value: ["id_tahun_ajaran", "tahun_ajaran"],
         type: "text",
     },
 ];
@@ -41,34 +41,34 @@ pengajarWaliKelasRouter.route("/").get(async (req, res) => {
     const typeValue: any = req.query.type;
     const waliKelasValue: any = req.query.waliKelas;
 
-    const tahunRombelValue: any = req.query.tahunRombel;
+    const tahunAjaranValue: any = req.query.tahunAjaran;
     let filterValue = {};
 
     if (waliKelasValue != undefined && !isNaN(waliKelasValue)) {
         filterValue = { ...filterValue, id_wali_kelas: waliKelasValue };
     }
 
-    if (tahunRombelValue != undefined && !isNaN(tahunRombelValue)) {
-        filterValue = { ...filterValue, id_tahun_rombel: tahunRombelValue };
+    if (tahunAjaranValue != undefined && !isNaN(tahunAjaranValue)) {
+        filterValue = { ...filterValue, id_tahun_ajaran: tahunAjaranValue };
     }
 
     let tableItemArray = (
         await Rombel.find(filterValue)
+            .select("rombel id_wali_kelas id_tahun_ajaran")
             .populate({
                 path: "id_wali_kelas",
                 select: "nip nama_lengkap",
                 model: Guru,
             })
             .populate({
-                path: "id_tahun_rombel",
-                select: "tahun_rombel",
-                model: TahunRombel,
+                path: "id_tahun_ajaran",
+                select: "tahun_ajaran",
+                model: TahunAjaran,
             })
-            .select("rombel id_wali_kelas id_tahun_rombel")
             .sort({ rombel: 1 })
             .lean()
     ).sort((a: any, b: any) => {
-        return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
+        return b.id_tahun_ajaran.tahun_ajaran - a.id_tahun_ajaran.tahun_ajaran;
     });
 
     const uniqueWaliKelasId: number[] = [
@@ -116,15 +116,15 @@ pengajarWaliKelasRouter.route("/").get(async (req, res) => {
             },
             {
                 id: 2,
-                display: "Tahun Rombel",
-                name: "tahun_rombel",
-                query: "tahunRombel",
-                placeholder: "Pilih tahun rombel",
-                value: tahunRombelValue,
-                option: (await TahunRombel.find().select("tahun_rombel").sort({ tahun_rombel: -1 }).lean()).map((itemObject) => {
+                display: "Tahun Ajaran Rombel",
+                name: "tahun_ajaran",
+                query: "tahunAjaran",
+                placeholder: "Pilih tahun ajaran rombel",
+                value: tahunAjaranValue,
+                option: (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()).map((itemObject) => {
                     return {
                         value: itemObject._id,
-                        display: itemObject.tahun_rombel,
+                        display: itemObject.tahun_ajaran,
                     };
                 }),
             },

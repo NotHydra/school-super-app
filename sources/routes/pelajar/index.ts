@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { blueColorPattern, datasetYear } from "../../utility";
 
-import { JenisKelamin, Keterangan, Rombel, Siswa, TahunMasuk, TahunRombel, TempatLahir } from "../../models";
+import { JenisKelamin, Keterangan, Rombel, Siswa, TahunAjaran, TahunMasuk, TempatLahir } from "../../models";
 
 import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
@@ -21,6 +21,7 @@ pelajarRouter.get("/", async (req, res) => {
 
     const jenisKelaminTotal = await JenisKelamin.countDocuments().lean();
     const tempatLahirTotal = await TempatLahir.countDocuments().lean();
+    const tahunAjaranTotal = await TahunAjaran.countDocuments().lean();
     const tahunMasukTotal = await TahunMasuk.countDocuments().lean();
     const rombelTotal = await Rombel.countDocuments().lean();
     const keteranganTotal = await Keterangan.countDocuments().lean();
@@ -144,6 +145,23 @@ pelajarRouter.get("/", async (req, res) => {
                 donutChartChild: [
                     {
                         id: 1,
+                        title: "Statistik Siswa Berdasarkan Tahun Ajaran",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
+                        dataset: await Promise.all(
+                            (
+                                await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()
+                            ).map(async (itemObject, itemIndex) => {
+                                return {
+                                    id: itemIndex + 1,
+                                    label: itemObject.tahun_ajaran,
+                                    value: await Siswa.countDocuments({ id_tahun_ajaran: itemObject._id }).lean(),
+                                    color: blueColorPattern(itemIndex + 1, tahunAjaranTotal),
+                                };
+                            })
+                        ),
+                    },
+                    {
+                        id: 2,
                         title: "Statistik Siswa Berdasarkan Tahun Masuk",
                         link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
@@ -159,31 +177,6 @@ pelajarRouter.get("/", async (req, res) => {
                             })
                         ),
                     },
-                    {
-                        id: 2,
-                        title: "Statistik Siswa Berdasarkan Rombel",
-                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
-                        dataset: await Promise.all(
-                            (
-                                await Rombel.find()
-                                    .select("rombel id_tahun_rombel")
-                                    .populate({ path: "id_tahun_rombel", select: "tahun_rombel", model: TahunRombel })
-                                    .sort({ rombel: 1 })
-                                    .lean()
-                            )
-                                .sort((a: any, b: any) => {
-                                    return b.id_tahun_rombel.tahun_rombel - a.id_tahun_rombel.tahun_rombel;
-                                })
-                                .map(async (itemObject: any, itemIndex) => {
-                                    return {
-                                        id: itemIndex + 1,
-                                        label: `${itemObject.rombel} - Tahun Rombel ${itemObject.id_tahun_rombel.tahun_rombel}`,
-                                        value: await Siswa.countDocuments({ id_rombel: itemObject._id }).lean(),
-                                        color: blueColorPattern(itemIndex + 1, rombelTotal),
-                                    };
-                                })
-                        ),
-                    },
                 ],
             },
             {
@@ -191,6 +184,31 @@ pelajarRouter.get("/", async (req, res) => {
                 donutChartChild: [
                     {
                         id: 1,
+                        title: "Statistik Siswa Berdasarkan Rombel",
+                        link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
+                        dataset: await Promise.all(
+                            (
+                                await Rombel.find()
+                                    .select("rombel id_tahun_ajaran")
+                                    .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
+                                    .sort({ rombel: 1 })
+                                    .lean()
+                            )
+                                .sort((a: any, b: any) => {
+                                    return b.id_tahun_ajaran.tahun_ajaran - a.id_tahun_ajaran.tahun_ajaran;
+                                })
+                                .map(async (itemObject: any, itemIndex) => {
+                                    return {
+                                        id: itemIndex + 1,
+                                        label: `${itemObject.rombel} ${itemObject.id_tahun_ajaran.tahun_ajaran}`,
+                                        value: await Siswa.countDocuments({ id_rombel: itemObject._id }).lean(),
+                                        color: blueColorPattern(itemIndex + 1, rombelTotal),
+                                    };
+                                })
+                        ),
+                    },
+                    {
+                        id: 2,
                         title: "Statistik Siswa Berdasarkan Status",
                         link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: [
@@ -208,8 +226,13 @@ pelajarRouter.get("/", async (req, res) => {
                             },
                         ],
                     },
+                ],
+            },
+            {
+                id: 4,
+                donutChartChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Statistik Siswa Berdasarkan Keterangan",
                         link: { link: "pelajar/siswa", title: "Siswa", subTitle: "Pelajar" },
                         dataset: await Promise.all(
