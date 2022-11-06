@@ -648,7 +648,9 @@ penggunaUserRouter
 
             if (roleIsValid) {
                 try {
+                    await Aktivitas.deleteMany({ id_user: id }).lean();
                     await User.deleteOne({ _id: id }).lean();
+
                     res.redirect("./?response=success");
                 } catch (error: any) {
                     res.redirect(`delete?id=${id}&response=error`);
