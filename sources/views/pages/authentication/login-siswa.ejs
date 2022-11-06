@@ -9,15 +9,7 @@
     <body class="hold-transition dark-mode" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <div class="login-box" id="login-form">
             <div class="card">
-                <div class="card-header text-center white-border-bottom" style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="mb-3" style="width: 70% !important;">
-                        <img class="img-fluid" src="dist/img/app-logo.png" alt="RPL Logo">
-                    </div>
-
-                    <div>
-                        <a href="/" class="h2"><b><%= applicationName %></b></a>
-                    </div>
-                </div>
+                <%- include("./../../partials/authentication/brand.ejs"); -%>
 
                 <div class="card-body">
                     <form action="/login-siswa" method="post" class="mb-2" onsubmit="return confirmModal('form', this, 'login-form');">
@@ -53,7 +45,7 @@
             </div>
         </div>
 
-        <div class="title is-6 m-1 p-0"><b>© 2022 Rizky Irswanda Ramadhana</b></div>
+        <%- include("./../../partials/authentication/copyright.ejs"); -%>
 
         <%- include("./../../partials/script.ejs"); -%>
     </body>
