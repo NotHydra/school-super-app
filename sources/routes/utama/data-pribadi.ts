@@ -6,7 +6,7 @@ import { localMoment, upperCaseFirst } from "../../utility";
 import { app } from "../..";
 import { headTitle } from ".";
 
-import { JenisKelamin, Rombel, Siswa, TahunMasuk, TempatLahir, User } from "../../models";
+import { JenisKelamin, Rombel, Siswa, TahunAjaran, TahunMasuk, TempatLahir, User } from "../../models";
 
 export const utamaDataPribadiRouter = Router();
 
@@ -138,6 +138,15 @@ utamaDataPribadiRouter.get("/", async (req, res) => {
                 },
                 {
                     id: 6,
+                    name: "id_tahun_ajaran",
+                    display: "Tahun Ajaran",
+                    type: "text",
+                    value: itemObject.id_tahun_ajaran.tahun_ajaran,
+                    placeholder: "Input tahun ajaran disini",
+                    enable: false,
+                },
+                {
+                    id: 7,
                     name: "id_tahun_masuk",
                     display: "Tahun Masuk",
                     type: "text",
@@ -146,16 +155,16 @@ utamaDataPribadiRouter.get("/", async (req, res) => {
                     enable: false,
                 },
                 {
-                    id: 7,
+                    id: 8,
                     name: "id_rombel",
                     display: "Rombel",
                     type: "text",
-                    value: itemObject.id_rombel.rombel,
+                    value: `${itemObject.id_rombel.rombel} ${itemObject.id_rombel.id_tahun_ajaran.tahun_ajaran}`,
                     placeholder: "Input rombel disini",
                     enable: false,
                 },
                 {
-                    id: 8,
+                    id: 9,
                     name: "aktif",
                     display: "Status",
                     type: "text",
@@ -164,7 +173,7 @@ utamaDataPribadiRouter.get("/", async (req, res) => {
                     enable: false,
                 },
                 {
-                    id: 9,
+                    id: 10,
                     name: "id_keterangan",
                     display: "Keterangan",
                     type: "text",
@@ -302,6 +311,20 @@ utamaDataPribadiRouter
                     },
                     {
                         id: 6,
+                        name: "id_tahun_ajaran",
+                        display: "Tahun Ajaran",
+                        type: "select",
+                        value: [
+                            (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: 1 }).lean()).map((itemObject: any) => {
+                                return [itemObject._id, itemObject.tahun_ajaran];
+                            }),
+                            itemObject.id_tahun_ajaran._id,
+                        ],
+                        placeholder: "Input tahun ajaran disini",
+                        enable: true,
+                    },
+                    {
+                        id: 7,
                         name: "id_tahun_masuk",
                         display: "Tahun Masuk",
                         type: "select",
@@ -315,14 +338,24 @@ utamaDataPribadiRouter
                         enable: true,
                     },
                     {
-                        id: 7,
+                        id: 8,
                         name: "id_rombel",
                         display: "Rombel",
                         type: "select",
                         value: [
-                            (await Rombel.find().select("rombel").sort({ rombel: 1 }).lean()).map((itemObject: any) => {
-                                return [itemObject._id, itemObject.rombel];
-                            }),
+                            (
+                                await Rombel.find()
+                                    .select("rombel id_tahun_ajaran")
+                                    .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
+                                    .sort({ rombel: 1 })
+                                    .lean()
+                            )
+                                .sort((a: any, b: any) => {
+                                    return b.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_tahun_ajaran.tahun_ajaran);
+                                })
+                                .map((itemObject: any) => {
+                                    return [itemObject._id, `${itemObject.rombel} ${itemObject.id_tahun_ajaran.tahun_ajaran}`];
+                                }),
                             itemObject.id_rombel._id,
                         ],
                         placeholder: "Input rombel disini",
@@ -367,6 +400,7 @@ utamaDataPribadiRouter
                     req.body.id_tempat_lahir,
                     req.body.tanggal_lahir,
                     req.body.id_jenis_kelamin,
+                    req.body.id_tahun_ajaran,
                     req.body.id_tahun_masuk,
                     req.body.id_rombel,
                 ];
@@ -395,6 +429,7 @@ utamaDataPribadiRouter
                                 id_tempat_lahir: req.body.id_tempat_lahir,
                                 tanggal_lahir: req.body.tanggal_lahir,
                                 id_jenis_kelamin: req.body.id_jenis_kelamin,
+                                id_tahun_ajaran: req.body.id_tahun_ajaran,
                                 id_tahun_masuk: req.body.id_tahun_masuk,
                                 id_rombel: req.body.id_rombel,
 

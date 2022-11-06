@@ -13,7 +13,7 @@ import { sessionData } from "./common/middleware/sessionData";
 import { requestCounter } from "./common/middleware/requestCounter";
 
 import { authenticationRouter } from "./authentication";
-import { utamaRouter } from "./routes/dashboard";
+import { utamaRouter } from "./routes/utama";
 import { penggunaRouter } from "./routes/pengguna";
 import { sekolahRouter } from "./routes/sekolah";
 import { pengajarRouter } from "./routes/pengajar";
