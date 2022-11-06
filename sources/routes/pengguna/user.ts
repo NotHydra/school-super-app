@@ -51,7 +51,7 @@ const tableAttributeArray = [
 ];
 
 penggunaUserRouter.use(express.static("sources/public"));
-penggunaUserRouter.use(express.urlencoded({ extended: false }));
+penggunaUserRouter.use(express.urlencoded({ extended: true }));
 
 penggunaUserRouter.route("/").get(async (req, res) => {
     const roleValue: any = req.query.role;
@@ -340,6 +340,63 @@ penggunaUserRouter.route("/active").get(async (req, res) => {
         res.redirect("./?response=error&text=Data tidak valid");
     }
 });
+
+penggunaUserRouter
+    .route("/access")
+    .get(async (req, res) => {
+        const id = req.query.id;
+        const dataExist = await User.exists({ _id: id }).lean();
+
+        if (dataExist != null) {
+            const itemObject = await User.findOne({ _id: id }).select("role akses").lean();
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert(itemObject.role) + 1);
+
+            if (roleIsValid) {
+                res.render("pages/pengguna/user/access", {
+                    headTitle,
+                    navActive,
+                    toastResponse: req.query.response,
+                    toastTitle: req.query.response == "success" ? "Data Berhasil Diubah" : "Data Gagal Diubah",
+                    toastText: req.query.text,
+                    id,
+                    itemObject,
+                });
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
+            }
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    })
+    .post(async (req, res) => {
+        const id: any = req.query.id;
+        const dataExist = await User.exists({ _id: id }).lean();
+
+        if (dataExist != null) {
+            const roleIsValid = roleCheck(app.locals.userObject.role, roleConvert((await User.findOne({ _id: id }).select("role").lean()).role) + 1);
+
+            if (roleIsValid) {
+                try {
+                    await User.updateOne(
+                        { _id: id },
+                        {
+                            akses: req.body.accessArray || [],
+
+                            diubah: new Date(),
+                        }
+                    ).lean();
+
+                    res.redirect(`access?id=${id}&response=success`);
+                } catch (error: any) {
+                    res.redirect(`access?id=${id}&response=error`);
+                }
+            } else if (!roleIsValid) {
+                res.redirect("./?response=error&text=Data tidak valid");
+            }
+        } else if (dataExist == null) {
+            res.redirect("./?response=error&text=Data tidak valid");
+        }
+    });
 
 penggunaUserRouter
     .route("/update")

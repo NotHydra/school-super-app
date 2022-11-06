@@ -1,0 +1,81 @@
+<% const pageItemCurrent = findPageItemChild(navActive[0], navActive[1]); %>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include("./../../../partials/head.ejs"); -%>
+        <%- include("./../../../partials/sweet-alert-head.ejs"); -%>
+        <%- include("./../../../partials/confirm-modal.ejs"); -%>
+    </head>
+
+    <body class="hold-transition sidebar-mini dark-mode layout-navbar-fixed layout-fixed text-smq">
+        <div class="wrapper">
+            <%- include("./../../../partials/nav.ejs"); -%>
+            <%- include("./../../../partials/side.ejs"); -%>
+
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+                        <br>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card py-2">
+                                    <div class="card-body pt-0 pb-3">
+                                        <%- include("./../../../partials/form-head.ejs", {extraTitle: "Ubah Akses"}); -%>
+
+                                        <form action="/<%= pageItemCurrent.link %>/access?id=<%= id; %>" method="POST" onsubmit="return confirmModal('form', this);">
+                                            <ul class="form-group mt-3" style="padding: 0 !important; list-style: none !important;">
+                                                <%
+                                                    pageItemArray.slice(0, -1).forEach((pageItemObject, pageItemIndex) => { 
+                                                        if (roleCheck(itemObject.role, pageItemObject.level)) {
+                                                %>
+                                                    <li class="mb-2">
+                                                        <div><i class="nav-icon fas fa-<%= pageItemObject.icon %>" style="width: 2rem !important; text-align: center !important;"></i><b><%= pageItemObject.title %></b></div>
+
+                                                        <ul style="padding: 0.5rem !important; list-style: none !important;">
+                                                            <% 
+                                                                pageItemObject.child.forEach((pageItemChildObject, pageItemChildIndex) => { 
+                                                                    if (roleCheck(itemObject.role, pageItemChildObject.level)) {   
+                                                            %>
+                                                                        <li class="custom-control custom-checkbox mb-2">
+
+                                                                            <% if (itemObject.akses.includes(pageItemChildObject.link)) { %>
+                                                                                <input class="custom-control-input" type="checkbox" id="access-<%= pageItemIndex + 1 %>-<%= pageItemChildIndex + 1 %>" name="accessArray[]" value="<%= pageItemChildObject.link %>" checked>
+                                                                            <% } else if (!(itemObject.akses.includes(pageItemChildObject.link))) { %>
+                                                                                <input class="custom-control-input" type="checkbox" id="access-<%= pageItemIndex + 1 %>-<%= pageItemChildIndex + 1 %>" name="accessArray[]" value="<%= pageItemChildObject.link %>">
+                                                                            <% } %>
+                                                                            
+                                                                            <label for="access-<%= pageItemIndex + 1 %>-<%= pageItemChildIndex + 1 %>" class="custom-control-label"><i class="nav-icon fas fa-<%= pageItemChildObject.icon %>" style="width: 2rem !important; text-align: center !important;"></i><%= pageItemChildObject.title %></label>
+                                                                        </li>
+                                                            <% 
+                                                                    }
+                                                                });
+                                                            %>
+                                                        </ul>
+                                                    </li>
+                                                <% 
+                                                        }
+                                                    }); 
+                                                %>
+                                            </ul>
+
+                                            <button type="submit" class="btn btn-block btn-warning">Ubah Akses</button>
+                                            <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '.')">Kembali</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include("./../../../partials/footer.ejs"); -%>
+        </div>
+
+        <%- include("./../../../partials/script.ejs"); -%>
+    </body>
+
+    <%- include("./../../../partials/toast-script.ejs"); -%>
+</html>

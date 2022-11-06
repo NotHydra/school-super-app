@@ -37,6 +37,10 @@ export const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
+    akses: {
+        type: Array,
+        required: true,
+    },
     dibuat: {
         type: Date,
         required: true,

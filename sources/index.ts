@@ -9,6 +9,7 @@ import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, zeroPad }
 import { roleCheck, roleConvert, roleGuard } from "./authentication/guard/role.guard";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";
 import { isActive } from "./common/middleware/isActive";
+import { isAccessible } from "./common/middleware/isAccessible";
 import { sessionData } from "./common/middleware/sessionData";
 import { requestCounter } from "./common/middleware/requestCounter";
 
@@ -62,6 +63,7 @@ app.use(authenticationRouter);
 
 app.use(isAuthenticated);
 app.use(isActive);
+app.use(isAccessible);
 app.use(sessionData);
 app.use(requestCounter);
 

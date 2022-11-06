@@ -20,6 +20,8 @@ authenticationLogoutRouter.route("/").get(async (req, res) => {
                 res.redirect("/login?type=exist&response=error");
             } else if (typeValue == "active") {
                 res.redirect("/login?type=active&response=error");
+            } else if (typeValue == "access") {
+                res.redirect("/login?type=access&response=error");
             }
         });
     });
