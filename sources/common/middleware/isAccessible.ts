@@ -12,8 +12,6 @@ export async function isAccessible(req: Request, res: Response, next: NextFuncti
                 if (userObject.akses.length >= 1) {
                     let path = req.path;
 
-                    console.log(path);
-
                     if (path.charAt(0) == "/") {
                         path = path.slice(1);
                     }
