@@ -223,7 +223,7 @@ perpustakaanPetugasRouter
                     id: 6,
                     name: "nomor_telepon",
                     display: "Nomor Telepon",
-                    type: "text",
+                    type: "number",
                     value: null,
                     placeholder: "Input nomor telepon disini",
                     enable: true,
@@ -255,13 +255,7 @@ perpustakaanPetugasRouter
                 await itemObject.save();
                 res.redirect("create?response=success");
             } catch (error: any) {
-                if (error.code == 11000) {
-                    if (error.keyPattern.nomor_telepon) {
-                        res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
-                    }
-                } else {
-                    res.redirect("create?response=error");
-                }
+                res.redirect("create?response=error");
             }
         } else if (inputArray.includes(undefined)) {
             res.redirect("create?response=error&text=Data tidak lengkap");
@@ -356,7 +350,7 @@ perpustakaanPetugasRouter
                         id: 6,
                         name: "nomor_telepon",
                         display: "Nomor Telepon",
-                        type: "text",
+                        type: "number",
                         value: itemObject.nomor_telepon,
                         placeholder: "Input nomor telepon disini",
                         enable: true,
@@ -402,13 +396,7 @@ perpustakaanPetugasRouter
                     ).lean();
                     res.redirect(`update?id=${id}&response=success${queryString}`);
                 } catch (error: any) {
-                    if (error.code == 11000) {
-                        if (error.keyPattern.nomor_telepon) {
-                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${queryString}`);
-                        }
-                    } else {
-                        res.redirect(`update?id=${id}&response=error${queryString}`);
-                    }
+                    res.redirect(`update?id=${id}&response=error${queryString}`);
                 }
             } else if (inputArray.includes(undefined)) {
                 res.redirect(`update?id=${id}&response=error&text=Data tidak lengkap${queryString}`);
@@ -496,7 +484,7 @@ perpustakaanPetugasRouter
                         id: 6,
                         name: "nomor_telepon",
                         display: "Nomor Telepon",
-                        type: "text",
+                        type: "number",
                         value: itemObject.nomor_telepon,
                         placeholder: "Input nomor telepon disini",
                         enable: false,

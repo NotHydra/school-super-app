@@ -52,6 +52,10 @@ export const siswaSchema = new mongoose.Schema({
         required: true,
         ref: "keterangan",
     },
+    nomor_telepon: {
+        type: String,
+        required: true,
+    },
     dibuat: {
         type: Date,
         required: true,

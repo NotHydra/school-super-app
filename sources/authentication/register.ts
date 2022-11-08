@@ -49,8 +49,6 @@ authenticationRegisterRouter
                 if (error.code == 11000) {
                     if (error.keyPattern.username) {
                         res.redirect("register?response=error&text=Username sudah digunakan");
-                    } else if (error.keyPattern.nomor_telepon) {
-                        res.redirect("register?response=error&text=Nomor telepon sudah digunakan");
                     } else if (error.keyPattern.email) {
                         res.redirect("register?response=error&text=Email sudah digunakan");
                     }

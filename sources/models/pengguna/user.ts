@@ -21,7 +21,6 @@ export const userSchema = new mongoose.Schema({
     nomor_telepon: {
         type: String,
         required: true,
-        unique: true,
     },
     email: {
         type: String,

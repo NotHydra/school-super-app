@@ -444,8 +444,6 @@ utamaDataPribadiRouter
                         if (type == "user") {
                             if (error.keyPattern.username) {
                                 res.redirect("update?response=error&text=Username sudah digunakan");
-                            } else if (error.keyPattern.nomor_telepon) {
-                                res.redirect("update?response=error&text=Nomor telepon sudah digunakan");
                             } else if (error.keyPattern.email) {
                                 res.redirect("update?response=error&text=Email sudah digunakan");
                             }

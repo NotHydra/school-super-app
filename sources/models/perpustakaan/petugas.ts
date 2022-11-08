@@ -30,7 +30,6 @@ export const petugasSchema = new mongoose.Schema({
     nomor_telepon: {
         type: String,
         required: true,
-        unique: true,
     },
     dibuat: {
         type: Date,

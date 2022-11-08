@@ -152,7 +152,7 @@ class Random:
             phoneNumberLength
         )
 
-        return phoneNumber
+        return "0"
 
 
 class Sekolah:
@@ -179,7 +179,7 @@ class Sekolah:
 class Pengajar:
     def main():
         Pengajar.guru()
-        Pengajar.jabatan()
+        # Pengajar.jabatan()
 
     def guru():
         guruArray = []
@@ -226,7 +226,7 @@ class Pengajar:
 class Pelajar:
     def main():
         Pelajar.siswa()
-        Pelajar.tahunMasuk()
+        # Pelajar.tahunMasuk()
 
     def siswa():
         siswaArray = []
@@ -266,6 +266,7 @@ class Pelajar:
                     "id_rombel": rombel["_id"],
                     "aktif": True,
                     "id_keterangan": 1,
+                    "nomor_telepon": Random.nomorTelepon(),
                     "dibuat": {"$date": {"$numberLong": Utility.currentDate()}},
                     "diubah": {"$date": {"$numberLong": Utility.currentDate()}},
                 }
@@ -520,11 +521,11 @@ class DataUmum:
 class Main:
     def main():
         # Sekolah.main()
-        # Pengajar.main()
-        # Pelajar.main()
+        Pengajar.main()
+        Pelajar.main()
         # Lulusan.main()
         # Penilaian.main()
-        Instansi.main()
+        # Instansi.main()
         # DataUmum.main()
 
 

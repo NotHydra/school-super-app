@@ -70,6 +70,12 @@ const tableAttributeArray = [
         value: ["id_keterangan", "keterangan"],
         type: "text",
     },
+    {
+        id: 11,
+        label: "Nomor Telepon",
+        value: ["nomor_telepon"],
+        type: "text",
+    },
 ];
 
 pelajarSiswaRouter.use(express.static("sources/public"));
@@ -462,6 +468,15 @@ pelajarSiswaRouter
                     placeholder: "Input keterangan disini",
                     enable: true,
                 },
+                {
+                    id: 11,
+                    name: "nomor_telepon",
+                    display: "Nomor Telepon",
+                    type: "number",
+                    value: null,
+                    placeholder: "Input nomor telepon disini",
+                    enable: true,
+                },
             ],
             typeValue,
             rombelValue,
@@ -534,7 +549,7 @@ pelajarSiswaRouter
 
         if (dataExist != null) {
             const itemObject = await Siswa.findOne({ _id: id })
-                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_ajaran id_tahun_masuk id_rombel aktif id_keterangan")
+                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_ajaran id_tahun_masuk id_rombel aktif id_keterangan nomor_telepon")
                 .lean();
 
             res.render("pages/pelajar/siswa/update", {
@@ -684,6 +699,15 @@ pelajarSiswaRouter
                         placeholder: "Input keterangan disini",
                         enable: true,
                     },
+                    {
+                        id: 11,
+                        name: "nomor_telepon",
+                        display: "Nomor Telepon",
+                        type: "number",
+                        value: itemObject.nomor_telepon,
+                        placeholder: "Input nomor telepon disini",
+                        enable: true,
+                    },
                 ],
             });
         } else if (dataExist == null) {
@@ -763,7 +787,7 @@ pelajarSiswaRouter
 
         if (dataExist != null) {
             const itemObject: any = await Siswa.findOne({ _id: id })
-                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_ajaran id_tahun_masuk id_rombel aktif id_keterangan")
+                .select("nisn nama_lengkap id_tempat_lahir tanggal_lahir id_jenis_kelamin id_tahun_ajaran id_tahun_masuk id_rombel aktif id_keterangan nomor_telepon")
                 .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
                 .populate({ path: "id_jenis_kelamin", select: "jenis_kelamin", model: JenisKelamin })
                 .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
@@ -875,6 +899,15 @@ pelajarSiswaRouter
                         type: "text",
                         value: itemObject.id_keterangan.keterangan,
                         placeholder: "Input keterangan disini",
+                        enable: false,
+                    },
+                    {
+                        id: 11,
+                        name: "nomor_telepon",
+                        display: "Nomor Telepon",
+                        type: "number",
+                        value: itemObject.nomor_telepon,
+                        placeholder: "Input nomor telepon disini",
                         enable: false,
                     },
                 ],

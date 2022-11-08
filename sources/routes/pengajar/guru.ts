@@ -359,7 +359,7 @@ pengajarGuruRouter
                     id: 9,
                     name: "nomor_telepon",
                     display: "Nomor Telepon",
-                    type: "text",
+                    type: "number",
                     value: null,
                     placeholder: "Input nomor telepon disini",
                     enable: true,
@@ -394,8 +394,6 @@ pengajarGuruRouter
                 if (error.code == 11000) {
                     if (error.keyPattern.nip) {
                         res.redirect("create?response=error&text=NIP sudah digunakan");
-                    } else if (error.keyPattern.nomor_telepon) {
-                        res.redirect("create?response=error&text=Nomor telepon sudah digunakan");
                     }
                 } else {
                     res.redirect("create?response=error");
@@ -536,7 +534,7 @@ pengajarGuruRouter
                         id: 9,
                         name: "nomor_telepon",
                         display: "Nomor Telepon",
-                        type: "text",
+                        type: "number",
                         value: itemObject.nomor_telepon,
                         placeholder: "Input nomor telepon disini",
                         enable: true,
@@ -588,8 +586,6 @@ pengajarGuruRouter
                     if (error.code == 11000) {
                         if (error.keyPattern.nip) {
                             res.redirect(`update?id=${id}&response=error&text=NIP sudah digunakan${queryString}`);
-                        } else if (error.keyPattern.nomor_telepon) {
-                            res.redirect(`update?id=${id}&response=error&text=Nomor telepon sudah digunakan${queryString}`);
                         }
                     } else {
                         res.redirect(`update?id=${id}&response=error${queryString}`);
@@ -703,7 +699,7 @@ pengajarGuruRouter
                         id: 9,
                         name: "nomor_telepon",
                         display: "Nomor Telepon",
-                        type: "text",
+                        type: "number",
                         value: itemObject.nomor_telepon,
                         placeholder: "Input nomor telepon disini",
                         enable: false,
