@@ -295,7 +295,7 @@ perpustakaanPeminjamanRouter
             if (kuantitasIsValid) {
                 if (stockIsValid) {
                     const itemObject = new Peminjaman({
-                        _id: (await Peminjaman.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
+                        _id: (await Peminjaman.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1,
 
                         id_anggota: attributeArray.id_anggota,
                         id_petugas: attributeArray.id_petugas,

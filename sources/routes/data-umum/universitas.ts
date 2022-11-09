@@ -104,7 +104,7 @@ dataUmumUniversitasRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Universitas({
-                _id: (await Universitas.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
+                _id: (await Universitas.findOne().select("_id").sort({ _id: -1 })?.lean())._id + 1 || 1,
 
                 ...attributeArray,
 

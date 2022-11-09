@@ -28,7 +28,7 @@ authenticationRegisterRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new User({
-                _id: (await User.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
+                _id: (await User.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1,
 
                 username: req.body.username,
                 nama_lengkap: req.body.nama_lengkap,

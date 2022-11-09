@@ -94,7 +94,7 @@ pelajarTahunMasukRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new TahunMasuk({
-                _id: (await TahunMasuk.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
+                _id: (await TahunMasuk.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1,
 
                 ...attributeArray,
 

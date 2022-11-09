@@ -379,7 +379,7 @@ pengajarGuruRouter
 
         if (!inputArray.includes(undefined)) {
             const itemObject = new Guru({
-                _id: (await Guru.findOne().select("_id").sort({ _id: -1 }).lean())._id + 1 || 1,
+                _id: (await Guru.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1,
 
                 ...attributeArray,
 
