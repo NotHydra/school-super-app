@@ -287,11 +287,11 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                 value: aktifValue,
                 option: [
                     {
-                        value: true,
+                        value: "true",
                         display: "Aktif",
                     },
                     {
-                        value: false,
+                        value: "false",
                         display: "Tidak Aktif",
                     },
                 ],
