@@ -163,14 +163,14 @@ export const pageItemArray: pageItemType[] = [
                 level: 2,
                 confirm: false,
             },
-            {
-                id: 4,
-                title: "Keterangan",
-                link: "pelajar/keterangan",
-                icon: "clipboard",
-                level: 2,
-                confirm: false,
-            },
+            // {
+            //     id: 4,
+            //     title: "Keterangan",
+            //     link: "pelajar/keterangan",
+            //     icon: "clipboard",
+            //     level: 2,
+            //     confirm: false,
+            // },
         ],
     },
     {

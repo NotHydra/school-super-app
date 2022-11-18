@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../../models";
 
-const pathActionArray = ["/update-password", "/active", "/create", "/access", "/update", "/delete"];
+const pathActionArray = ["/update-password", "/active", "/status", "/create", "/access", "/update", "/delete"];
 
 export async function isAccessible(req: Request, res: Response, next: NextFunction) {
     if (req.session.userType == "user") {

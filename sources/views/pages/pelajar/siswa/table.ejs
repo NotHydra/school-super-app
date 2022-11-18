@@ -83,7 +83,23 @@
                                                                 <td class="td-custom"><%= moment(tableItemObject.dibuat).format("DD-MM-YYYY") %></td>
                                                                 <td class="td-custom"><%= moment(tableItemObject.diubah).fromNow() %></td>
                                                                 <td class="td-custom">
-                                                                    <% if (typeValue == undefined) { %>
+                                                                    <% 
+                                                                        if (typeValue == undefined || typeValue == "rombel") {
+                                                                            if (tableItemObject.aktif == "Aktif") {
+                                                                    %>
+                                                                                <a type="button" class="btn btn-block btn-success" onclick="confirmModal('location', '/<%= pageItemCurrent.link %>/status?id=<%= tableItemObject._id %>&keterangan=lulus<%= typeValue == `rombel` ? `&type=${typeValue}&rombel=${rombelValue}` : `` %>', {text: 'Data alumni akan secara otomatis dibuat'});">Lulus</a>
+                                                                                <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/<%= pageItemCurrent.link %>/status?id=<%= tableItemObject._id %>&keterangan=pindah<%= typeValue == `rombel` ? `&type=${typeValue}&rombel=${rombelValue}` : `` %>');">Pindah</a>
+                                                                                <a type="button" class="btn btn-block btn-danger" onclick="confirmModal('location', '/<%= pageItemCurrent.link %>/status?id=<%= tableItemObject._id %>&keterangan=dropout<%= typeValue == `rombel` ? `&type=${typeValue}&rombel=${rombelValue}` : `` %>');">Dropout</a>
+                                                                    <% 
+                                                                            } else if (tableItemObject.aktif == "Tidak Aktif") { 
+                                                                    %>
+                                                                                <a type="button" class="btn btn-block btn-success" onclick="confirmModal('location', '/<%= pageItemCurrent.link %>/status?id=<%= tableItemObject._id %>&keterangan=aktif<%= typeValue == `rombel` ? `&type=${typeValue}&rombel=${rombelValue}` : `` %>', {text: eval('<%= tableItemObject.id_keterangan.keterangan == `Lulus` %>') ? 'Data alumni akan secara otomatis dihapus' : undefined});">Aktifkan</a>
+                                                                    <% 
+                                                                            }
+                                                                        }
+                                                                    %>
+
+                                                                    <% if (typeValue == undefined) { %>                                                                        
                                                                         <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                         <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                     <% } else if (typeValue == "anggota" || typeValue == "alumni") { %>

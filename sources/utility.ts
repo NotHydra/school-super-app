@@ -8,6 +8,13 @@ import { pageItemType, pageItemChildType } from "./typings/types/nav-item";
 export const localMoment = moment;
 localMoment.locale("id");
 
+export const keteranganToId: any = {
+    aktif: 1,
+    dropout: 2,
+    lulus: 3,
+    pindah: 4,
+};
+
 export function readJSON(path: string) {
     return JSON.parse(fs.readFileSync(path, "utf-8"));
 }

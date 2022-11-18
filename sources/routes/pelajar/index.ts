@@ -6,7 +6,7 @@ import { JenisKelamin, Keterangan, Rombel, Siswa, TahunAjaran, TahunMasuk, Tempa
 
 import { pelajarSiswaRouter } from "./siswa";
 import { pelajarTahunMasukRouter } from "./tahun-masuk";
-import { pelajarKeteranganRouter } from "./keterangan";
+// import { pelajarKeteranganRouter } from "./keterangan";
 
 export const pelajarRouter = Router();
 export const headTitle = "Pelajar";
@@ -17,7 +17,7 @@ pelajarRouter.get("/", async (req, res) => {
 
     const siswaChartData: any = await datasetYear(Siswa, currentYear);
     const tahunMasukChartData: any = await datasetYear(TahunMasuk, currentYear);
-    const keteranganChartData: any = await datasetYear(Keterangan, currentYear);
+    // const keteranganChartData: any = await datasetYear(Keterangan, currentYear);
 
     const jenisKelaminTotal = await JenisKelamin.countDocuments().lean();
     const tempatLahirTotal = await TempatLahir.countDocuments().lean();
@@ -47,13 +47,13 @@ pelajarRouter.get("/", async (req, res) => {
                         value: await TahunMasuk.countDocuments().lean(),
                         link: "pelajar/tahun-masuk",
                     },
-                    {
-                        id: 3,
-                        title: "Keterangan",
-                        icon: "clipboard",
-                        value: await Keterangan.countDocuments().lean(),
-                        link: "pelajar/keterangan",
-                    },
+                    // {
+                    //     id: 3,
+                    //     title: "Keterangan",
+                    //     icon: "clipboard",
+                    //     value: await Keterangan.countDocuments().lean(),
+                    //     link: "pelajar/keterangan",
+                    // },
                 ],
             },
         ],
@@ -85,18 +85,18 @@ pelajarRouter.get("/", async (req, res) => {
                         firstLegend: "Tahun Ini",
                         secondLegend: "Tahun Lalu",
                     },
-                    {
-                        id: 3,
-                        title: "Statistik Keterangan Baru",
-                        link: { link: "pelajar/keterangan", title: "Keterangan", subTitle: "Pelajar" },
-                        value: keteranganChartData.currentYearValue,
-                        text: "Keterangan Baru",
-                        percentage: keteranganChartData.percentageIncrease,
-                        timeRange: "Sejak Tahun Lalu",
-                        dataset: keteranganChartData.dataset,
-                        firstLegend: "Tahun Ini",
-                        secondLegend: "Tahun Lalu",
-                    },
+                    // {
+                    //     id: 3,
+                    //     title: "Statistik Keterangan Baru",
+                    //     link: { link: "pelajar/keterangan", title: "Keterangan", subTitle: "Pelajar" },
+                    //     value: keteranganChartData.currentYearValue,
+                    //     text: "Keterangan Baru",
+                    //     percentage: keteranganChartData.percentageIncrease,
+                    //     timeRange: "Sejak Tahun Lalu",
+                    //     dataset: keteranganChartData.dataset,
+                    //     firstLegend: "Tahun Ini",
+                    //     secondLegend: "Tahun Lalu",
+                    // },
                 ],
             },
         ],
@@ -256,4 +256,4 @@ pelajarRouter.get("/", async (req, res) => {
 
 pelajarRouter.use("/siswa", pelajarSiswaRouter);
 pelajarRouter.use("/tahun-masuk", pelajarTahunMasukRouter);
-pelajarRouter.use("/keterangan", pelajarKeteranganRouter);
+// pelajarRouter.use("/keterangan", pelajarKeteranganRouter);

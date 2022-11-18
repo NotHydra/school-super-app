@@ -2,9 +2,9 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { localMoment } from "../../utility";
+import { keteranganToId, localMoment } from "../../utility";
 
-import { Alumni, Anggota, JenisKelamin, Keterangan, Rombel, Siswa, TahunAjaran, TahunMasuk, TempatLahir } from "../../models";
+import { Alumni, Anggota, JenisKelamin, Keterangan, Rombel, Siswa, TahunAjaran, TahunLulus, TahunMasuk, TempatLahir } from "../../models";
 
 export const pelajarSiswaRouter = Router();
 
@@ -441,21 +441,6 @@ pelajarSiswaRouter
                 },
                 {
                     id: 9,
-                    name: "aktif",
-                    display: "Status",
-                    type: "select",
-                    value: [
-                        [
-                            [true, "Aktif"],
-                            [false, "Tidak Aktif"],
-                        ],
-                        null,
-                    ],
-                    placeholder: "Input status disini",
-                    enable: true,
-                },
-                {
-                    id: 10,
                     name: "id_keterangan",
                     display: "Keterangan",
                     type: "select",
@@ -469,7 +454,7 @@ pelajarSiswaRouter
                     enable: true,
                 },
                 {
-                    id: 11,
+                    id: 10,
                     name: "nomor_telepon",
                     display: "Nomor Telepon",
                     type: "number",
@@ -496,9 +481,17 @@ pelajarSiswaRouter
         const inputArray = tableAttributeArray.map((tableAttributeObject) => {
             const attributeCurrent = tableAttributeObject.value[0];
 
-            attributeArray[attributeCurrent] = req.body[attributeCurrent];
+            if (attributeCurrent != "aktif") {
+                attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-            return req.body[attributeCurrent];
+                return req.body[attributeCurrent];
+            } else if (attributeCurrent == "aktif") {
+                const idKeterangan = req.body.id_keterangan;
+
+                attributeArray.aktif = idKeterangan == 1 ? true : false;
+
+                return idKeterangan == 1 ? true : false;
+            }
         });
 
         if (!inputArray.includes(undefined)) {
@@ -513,6 +506,7 @@ pelajarSiswaRouter
 
             try {
                 await itemObject.save();
+
                 res.redirect(`create?response=success${queryString}`);
             } catch (error: any) {
                 if (error.code == 11000) {
@@ -527,6 +521,65 @@ pelajarSiswaRouter
             res.redirect(`create?response=error&text=Data tidak lengkap${queryString}`);
         }
     });
+
+pelajarSiswaRouter.route("/status").get(async (req, res) => {
+    const id: any = req.query.id;
+    const keterangan: any = req.query.keterangan;
+
+    const typeValue: any = req.query.type;
+    const rombelValue: any = req.query.rombel;
+
+    let queryString = "";
+
+    if (typeValue == "rombel") {
+        queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+    }
+
+    const dataExist = await Siswa.exists({ _id: id }).lean();
+
+    if (dataExist != null) {
+        try {
+            await Siswa.updateOne(
+                { _id: id },
+                {
+                    aktif: keterangan == "aktif" ? true : false,
+                    id_keterangan: keteranganToId[keterangan],
+
+                    diubah: new Date(),
+                }
+            ).lean();
+
+            if (keterangan == "lulus") {
+                await new Alumni({
+                    _id: (await Alumni.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1,
+
+                    id_siswa: id,
+                    id_tahun_lulus: (await TahunLulus.findOne().select("_id").sort({ tahun_lulus: -1 }).lean())._id,
+                    id_universitas: 1,
+                    id_pendidikan: 1,
+                    pekerjaan: "-",
+
+                    dibuat: new Date(),
+                    diubah: new Date(),
+                }).save();
+            } else if (keterangan == "aktif") {
+                await Alumni.deleteOne({ id_siswa: id }).lean();
+            }
+
+            res.redirect(`./?response=success${queryString}`);
+        } catch (error: any) {
+            if (error.code == 11000) {
+                if (error.keyPattern.id_siswa) {
+                    res.redirect(`./?response=error&text=Siswa sudah lulus${queryString}`);
+                }
+            } else {
+                res.redirect(`./?response=error${queryString}`);
+            }
+        }
+    } else if (dataExist == null) {
+        res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
+    }
+});
 
 pelajarSiswaRouter
     .route("/update")
@@ -672,35 +725,6 @@ pelajarSiswaRouter
                     },
                     {
                         id: 9,
-                        name: "aktif",
-                        display: "Status",
-                        type: "select",
-                        value: [
-                            [
-                                [true, "Aktif"],
-                                [false, "Tidak Aktif"],
-                            ],
-                            itemObject.aktif,
-                        ],
-                        placeholder: "Input status disini",
-                        enable: true,
-                    },
-                    {
-                        id: 10,
-                        name: "id_keterangan",
-                        display: "Keterangan",
-                        type: "select",
-                        value: [
-                            (await Keterangan.find().select("keterangan").sort({ keterangan: 1 }).lean()).map((itemObject: any) => {
-                                return [itemObject._id, itemObject.keterangan];
-                            }),
-                            itemObject.id_keterangan,
-                        ],
-                        placeholder: "Input keterangan disini",
-                        enable: true,
-                    },
-                    {
-                        id: 11,
                         name: "nomor_telepon",
                         display: "Nomor Telepon",
                         type: "number",
@@ -732,12 +756,14 @@ pelajarSiswaRouter
 
         if (dataExist != null) {
             const attributeArray: any = {};
-            const inputArray = tableAttributeArray.map((tableAttributeObject) => {
+            const inputArray = tableAttributeArray.filter((tableAttributeObject) => {
                 const attributeCurrent = tableAttributeObject.value[0];
 
-                attributeArray[attributeCurrent] = req.body[attributeCurrent];
+                if (!["aktif", "id_keterangan"].includes(attributeCurrent)) {
+                    attributeArray[attributeCurrent] = req.body[attributeCurrent];
 
-                return req.body[attributeCurrent];
+                    return req.body[attributeCurrent];
+                }
             });
 
             if (!inputArray.includes(undefined)) {
