@@ -25,6 +25,7 @@ export async function sessionData(req: Request, res: Response, next: NextFunctio
             .lean();
 
         userObject.role = "user";
+        userObject.akses = ["data-pribadi"];
     }
 
     if (userObject != null) {
