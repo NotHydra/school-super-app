@@ -12,7 +12,7 @@
                 <%- include("./../../partials/authentication/brand.ejs"); -%>
 
                 <div class="card-body">
-                    <form action="/register" method="post" class="mb-2" onsubmit="return confirmModal('form', this, 'register-form');">
+                    <form action="/register" method="post" class="mb-2" onsubmit="return confirmModal('form', this, {elementId: 'register-form'});">
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" name="username" placeholder="Username" required/>
                             <div class="input-group-append">

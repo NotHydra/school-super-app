@@ -12,7 +12,7 @@
                 <%- include("./../../partials/authentication/brand.ejs"); -%>
 
                 <div class="card-body">
-                    <form action="/login-siswa" method="post" class="mb-2" onsubmit="return confirmModal('form', this, 'login-form');">
+                    <form action="/login-siswa" method="post" class="mb-2" onsubmit="return confirmModal('form', this, {elementId: 'login-form'});">
                         <div class="input-group mb-3">
                             <input type="number" class="form-control" name="nisn" placeholder="NISN" required/>
                             <div class="input-group-append">
