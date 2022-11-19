@@ -2,7 +2,7 @@ import express, { Router } from "express";
 
 import { headTitle } from ".";
 
-import { Guru, Jurusan, Rombel, Siswa, TahunAjaran, Tingkat } from "../../models";
+import { Alumni, Guru, Jurusan, Rombel, Siswa, TahunAjaran, TahunLulus, Tingkat } from "../../models";
 
 export const instansiRombelRouter = Router();
 
@@ -288,6 +288,65 @@ instansiRombelRouter
             res.redirect("create?response=error&text=Data tidak lengkap");
         }
     });
+
+instansiRombelRouter.route("/update-lulus").get(async (req, res) => {
+    const id: any = req.query.id;
+
+    const typeValue: any = req.query.type;
+    const rombelValue: any = req.query.rombel;
+
+    let queryString: any = "";
+
+    if (typeValue == "wali-kelas") {
+        queryString = `&type=${typeValue}&rombel=${rombelValue}`;
+    }
+
+    const dataExist = await Rombel.exists({ _id: id }).lean();
+
+    if (dataExist != null) {
+        try {
+            const siswaCount = await Siswa.countDocuments({ id_rombel: id }).lean();
+            const siswaArray = await Siswa.find({ id_rombel: id, aktif: true, id_keterangan: 1 }).select("_id").lean();
+            const alumniLatestId = (await Alumni.findOne().select("_id").sort({ _id: -1 }).lean())?._id + 1 || 1;
+            const tahunLulusLatestId = (await TahunLulus.findOne().select("_id").sort({ tahun_lulus: -1 }).lean())._id;
+
+            await Siswa.updateMany(
+                { id_rombel: id, aktif: true, id_keterangan: 1 },
+                {
+                    aktif: false,
+                    id_keterangan: 3,
+
+                    diubah: new Date(),
+                }
+            ).lean();
+
+            await Alumni.insertMany(
+                await Promise.all(
+                    siswaArray.map(async (siswaObject, siswaIndex) => {
+                        return {
+                            _id: alumniLatestId + siswaIndex,
+
+                            id_siswa: siswaObject._id,
+                            id_tahun_lulus: tahunLulusLatestId,
+                            id_universitas: 1,
+                            id_pendidikan: 1,
+                            pekerjaan: "-",
+
+                            dibuat: new Date(),
+                            diubah: new Date(),
+                        };
+                    })
+                )
+            );
+
+            res.redirect(`./?response=success${queryString}&text=${siswaArray.length} dari ${siswaCount} siswa diluluskan`);
+        } catch (error: any) {
+            res.redirect(`./?response=error${queryString}`);
+        }
+    } else if (dataExist == null) {
+        res.redirect(`./?response=error&text=Data tidak valid${queryString}`);
+    }
+});
 
 instansiRombelRouter
     .route("/update")

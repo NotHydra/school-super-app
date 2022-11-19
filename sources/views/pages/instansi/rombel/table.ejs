@@ -83,6 +83,7 @@
                                                                     <% if (typeValue == undefined) { %>
                                                                         <a type="button" class="btn btn-block btn-primary" href="/pengajar/wali-kelas?type=rombel&waliKelas=<%= tableItemObject.id_wali_kelas._id %>">Wali Kelas</a>
                                                                         <a type="button" class="btn btn-block btn-primary" href="/pelajar/siswa?type=rombel&rombel=<%= tableItemObject._id %>">Siswa</a>
+                                                                        <a type="button" class="btn btn-block btn-success" onclick="confirmModal('location', '/<%= pageItemCurrent.link %>/update-lulus?id=<%= tableItemObject._id %>', {text: 'Data alumni akan secara otomatis dibuat'});">Lulus</a>
                                                                         <a type="button" class="btn btn-block btn-warning" href="/<%= pageItemCurrent.link %>/update?id=<%= tableItemObject._id %>">Ubah</a>
                                                                         <a type="button" class="btn btn-block btn-danger" href="/<%= pageItemCurrent.link %>/delete?id=<%= tableItemObject._id %>">Hapus</a>
                                                                     <% } else if (typeValue == "wali-kelas") { %>
