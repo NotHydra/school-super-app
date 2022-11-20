@@ -12,6 +12,8 @@ export async function sessionData(req: Request, res: Response, next: NextFunctio
     if (req.session.userType == "user") {
         userObject = await User.findOne({ _id: req.session.userId }).lean();
 
+        userObject.fullDisplay = userObject.nama_lengkap;
+        userObject.usernameDisplay = userObject.username;
         userObject.roleDisplay = upperCaseFirst(userObject.role);
     } else if (req.session.userType == "siswa") {
         userObject = await Siswa.findOne({ _id: req.session.userId })
@@ -28,9 +30,11 @@ export async function sessionData(req: Request, res: Response, next: NextFunctio
             .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
             .lean();
 
-        userObject.username = userObject.nama_lengkap;
-        userObject.role = "user";
+        userObject.fullDisplay = userObject.nama_lengkap;
+        userObject.usernameDisplay = userObject.nama_lengkap;
         userObject.roleDisplay = "Siswa";
+
+        userObject.role = "user";
         userObject.akses = ["data-pribadi"];
     } else if (req.session.userType == "alumni") {
         userObject = await Alumni.findOne({ _id: req.session.userId })
@@ -67,9 +71,11 @@ export async function sessionData(req: Request, res: Response, next: NextFunctio
             })
             .lean();
 
-        userObject.username = userObject.id_siswa.nama_lengkap;
-        userObject.role = "user";
+        userObject.fullDisplay = userObject.id_siswa.nama_lengkap;
+        userObject.usernameDisplay = userObject.id_siswa.nama_lengkap;
         userObject.roleDisplay = "Alumni";
+
+        userObject.role = "user";
         userObject.akses = ["data-pribadi"];
     }
 
