@@ -6,7 +6,7 @@ import { localMoment, upperCaseFirst } from "../../utility";
 import { app } from "../..";
 import { headTitle } from ".";
 
-import { JenisKelamin, Rombel, Siswa, TahunAjaran, TahunMasuk, TempatLahir, User } from "../../models";
+import { Alumni, JenisKelamin, Pendidikan, Rombel, Siswa, TahunAjaran, TahunLulus, TahunMasuk, TempatLahir, Universitas, User } from "../../models";
 
 export const utamaDataPribadiRouter = Router();
 
@@ -25,6 +25,8 @@ utamaDataPribadiRouter.get("/", async (req, res) => {
         dataExist = await User.exists({ _id: id }).lean();
     } else if (type == "siswa") {
         dataExist = await Siswa.exists({ _id: id }).lean();
+    } else if (type == "alumni") {
+        dataExist = await Alumni.exists({ _id: id }).lean();
     }
 
     if (dataExist != null) {
@@ -182,6 +184,60 @@ utamaDataPribadiRouter.get("/", async (req, res) => {
                     enable: false,
                 },
             ];
+        } else if (type == "alumni") {
+            detailedInputArray = [
+                {
+                    id: 1,
+                    name: "id_siswa",
+                    display: "Siswa",
+                    type: "text",
+                    value: `${itemObject.id_siswa.nisn} - ${itemObject.id_siswa.nama_lengkap} - ${itemObject.id_siswa.id_rombel.rombel} ${
+                        itemObject.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran
+                    } - Tahun Ajaran ${itemObject.id_siswa.id_tahun_ajaran.tahun_ajaran} - Tahun Masuk ${itemObject.id_siswa.id_tahun_masuk.tahun_masuk}  - ${
+                        itemObject.id_siswa.aktif == true
+                            ? "Aktif"
+                            : "Tidak Aktif" + (itemObject.id_siswa.id_keterangan.keterangan == "-" ? "" : " - " + itemObject.id_siswa.id_keterangan.keterangan)
+                    }`,
+                    placeholder: "Input siswa disini",
+                    enable: false,
+                },
+                {
+                    id: 2,
+                    name: "id_tahun_lulus",
+                    display: "Tahun Lulus",
+                    type: "text",
+                    value: itemObject.id_tahun_lulus.tahun_lulus,
+                    placeholder: "Input tahun lulus disini",
+                    enable: false,
+                },
+                {
+                    id: 3,
+                    name: "id_universitas",
+                    display: "Universitas",
+                    type: "text",
+                    value: itemObject.id_universitas.universitas,
+                    placeholder: "Input universitas disini",
+                    enable: false,
+                },
+                {
+                    id: 4,
+                    name: "id_pendidikan",
+                    display: "Pendidikan",
+                    type: "text",
+                    value: `${itemObject.id_pendidikan.pendidikan} - ${itemObject.id_pendidikan.singkatan}`,
+                    placeholder: "Input pendidikan disini",
+                    enable: false,
+                },
+                {
+                    id: 5,
+                    name: "pekerjaan",
+                    display: "Pekerjaan",
+                    type: "text",
+                    value: itemObject.pekerjaan,
+                    placeholder: "Input pekerjaan disini",
+                    enable: false,
+                },
+            ];
         }
 
         res.render("pages/dashboard/data-pribadi/index", {
@@ -206,6 +262,8 @@ utamaDataPribadiRouter
             dataExist = await User.exists({ _id: id }).lean();
         } else if (type == "siswa") {
             dataExist = await Siswa.exists({ _id: id }).lean();
+        } else if (type == "alumni") {
+            dataExist = await Alumni.exists({ _id: id }).lean();
         }
 
         if (dataExist != null) {
@@ -362,6 +420,60 @@ utamaDataPribadiRouter
                         enable: true,
                     },
                 ];
+            } else if (type == "alumni") {
+                detailedInputArray = [
+                    {
+                        id: 1,
+                        name: "id_tahun_lulus",
+                        display: "Tahun Lulus",
+                        type: "select",
+                        value: [
+                            (await TahunLulus.find().select("tahun_lulus").sort({ tahun_lulus: -1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.tahun_lulus];
+                            }),
+                            itemObject.id_tahun_lulus._id,
+                        ],
+                        placeholder: "Input tahun lulus disini",
+                        enable: true,
+                    },
+                    {
+                        id: 2,
+                        name: "id_universitas",
+                        display: "Universitas",
+                        type: "select",
+                        value: [
+                            (await Universitas.find().select("universitas").sort({ universitas: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, itemObject.universitas];
+                            }),
+                            itemObject.id_universitas._id,
+                        ],
+                        placeholder: "Input universitas disini",
+                        enable: true,
+                    },
+                    {
+                        id: 3,
+                        name: "id_pendidikan",
+                        display: "Pendidikan",
+                        type: "select",
+                        value: [
+                            (await Pendidikan.find().select("pendidikan singkatan").sort({ pendidikan: 1 }).lean()).map((itemObject) => {
+                                return [itemObject._id, `${itemObject.pendidikan} - ${itemObject.singkatan}`];
+                            }),
+                            itemObject.id_pendidikan._id,
+                        ],
+                        placeholder: "Input pendidikan disini",
+                        enable: true,
+                    },
+                    {
+                        id: 4,
+                        name: "pekerjaan",
+                        display: "Pekerjaan",
+                        type: "text",
+                        value: itemObject.pekerjaan,
+                        placeholder: "Input pekerjaan disini",
+                        enable: true,
+                    },
+                ];
             }
 
             res.render("pages/dashboard/data-pribadi/update", {
@@ -386,6 +498,8 @@ utamaDataPribadiRouter
             dataExist = await User.exists({ _id: id }).lean();
         } else if (type == "siswa") {
             dataExist = await Siswa.exists({ _id: id }).lean();
+        } else if (type == "alumni") {
+            dataExist = await Alumni.exists({ _id: id }).lean();
         }
 
         if (dataExist != null) {
@@ -404,6 +518,8 @@ utamaDataPribadiRouter
                     req.body.id_tahun_masuk,
                     req.body.id_rombel,
                 ];
+            } else if (type == "alumni") {
+                inputArray = [req.body.id_tahun_lulus, req.body.id_universitas, req.body.id_pendidikan, req.body.pekerjaan];
             }
 
             if (!inputArray.includes(undefined)) {
@@ -432,6 +548,18 @@ utamaDataPribadiRouter
                                 id_tahun_ajaran: req.body.id_tahun_ajaran,
                                 id_tahun_masuk: req.body.id_tahun_masuk,
                                 id_rombel: req.body.id_rombel,
+
+                                diubah: new Date(),
+                            }
+                        ).lean();
+                    } else if (type == "alumni") {
+                        await Alumni.updateOne(
+                            { _id: id },
+                            {
+                                id_tahun_lulus: req.body.id_tahun_lulus,
+                                id_universitas: req.body.id_universitas,
+                                id_pendidikan: req.body.id_pendidikan,
+                                pekerjaan: req.body.pekerjaan,
 
                                 diubah: new Date(),
                             }

@@ -38,7 +38,7 @@ export async function isAccessible(req: Request, res: Response, next: NextFuncti
         } else if (!(!req.originalUrl.includes("dist") && !req.originalUrl.includes("plugins") && !req.originalUrl.includes("css"))) {
             next();
         }
-    } else if (req.session.userType == "siswa") {
+    } else if (["siswa", "alumni"].includes(req.session.userType)) {
         next();
     }
 }

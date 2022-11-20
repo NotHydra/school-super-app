@@ -14,7 +14,7 @@ export async function isActive(req: Request, res: Response, next: NextFunction) 
         } else if (userObject == null) {
             res.redirect("/logout?type=exist");
         }
-    } else if (req.session.userType == "siswa") {
+    } else if (["siswa", "alumni"].includes(req.session.userType)) {
         next();
     }
 }

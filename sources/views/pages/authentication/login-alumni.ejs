@@ -12,42 +12,34 @@
                 <%- include("./../../partials/authentication/brand.ejs"); -%>
 
                 <div class="card-body">
-                    <form action="/login" method="post" class="mb-2" onsubmit="return confirmModal('form', this, {elementId: 'login-form'});">
+                    <form action="/login-alumni" method="post" class="mb-2" onsubmit="return confirmModal('form', this, {elementId: 'login-form'});">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="username" placeholder="Username" required/>
+                            <input type="number" class="form-control" name="nisn" placeholder="NISN" required/>
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span class="fas fa-user"></span>
+                                    <span class="fas fa-address-card"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="input-group mb-3">
-                            <input type="password" class="form-control" name="password" placeholder="Password" required/>
+                            <input type="date" class="form-control" name="tanggal_lahir" placeholder="Tanggal Lahir" required/>
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span class="fas fa-lock"></span>
+                                    <span class="fas fa-calendar-days"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-sm">
-                                <button type="submit" class="btn btn-primary btn-block">Login User</button>
+                                <button type="submit" class="btn btn-primary btn-block">Login Alumni</button>
                             </div>
                         </div>
                     </form>
 
-                    <p class="m-0 p-0 mb-1">
-                        <a href="/login-siswa">Login sebagai siswa?</a>
-                    </p>
-
-                    <p class="m-0 p-0 mb-1">
-                        <a href="/login-alumni">Login sebagai alumni?</a>
-                    </p>
-
                     <p class="m-0 p-0">
-                        <a href="/register">Belum punya akun?</a>
+                        <a href="/login">Login sebagai user?</a>
                     </p>
                 </div>
             </div>

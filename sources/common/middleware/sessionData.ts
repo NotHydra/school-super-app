@@ -2,13 +2,17 @@ import { NextFunction, Request, Response } from "express";
 
 import { app } from "../..";
 
-import { JenisKelamin, Keterangan, Rombel, Siswa, TahunAjaran, TahunMasuk, TempatLahir, User } from "../../models";
+import { upperCaseFirst } from "../../utility";
+
+import { Alumni, JenisKelamin, Keterangan, Pendidikan, Rombel, Siswa, TahunAjaran, TahunLulus, TahunMasuk, TempatLahir, Universitas, User } from "../../models";
 
 export async function sessionData(req: Request, res: Response, next: NextFunction) {
     let userObject: any = null;
 
     if (req.session.userType == "user") {
         userObject = await User.findOne({ _id: req.session.userId }).lean();
+
+        userObject.roleDisplay = upperCaseFirst(userObject.role);
     } else if (req.session.userType == "siswa") {
         userObject = await Siswa.findOne({ _id: req.session.userId })
             .populate({ path: "id_tempat_lahir", select: "tempat_lahir", model: TempatLahir })
@@ -24,7 +28,48 @@ export async function sessionData(req: Request, res: Response, next: NextFunctio
             .populate({ path: "id_keterangan", select: "keterangan", model: Keterangan })
             .lean();
 
+        userObject.username = userObject.nama_lengkap;
         userObject.role = "user";
+        userObject.roleDisplay = "Siswa";
+        userObject.akses = ["data-pribadi"];
+    } else if (req.session.userType == "alumni") {
+        userObject = await Alumni.findOne({ _id: req.session.userId })
+            .populate({
+                path: "id_siswa",
+                select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk aktif id_keterangan",
+                populate: [
+                    {
+                        path: "id_rombel",
+                        select: "rombel id_tahun_ajaran",
+                        populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
+                        model: Rombel,
+                    },
+                    { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
+                    { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+                    { path: "id_keterangan", select: "keterangan", model: Keterangan },
+                ],
+                model: Siswa,
+            })
+            .populate({
+                path: "id_tahun_lulus",
+                select: "tahun_lulus",
+                model: TahunLulus,
+            })
+            .populate({
+                path: "id_universitas",
+                select: "universitas",
+                model: Universitas,
+            })
+            .populate({
+                path: "id_pendidikan",
+                select: "pendidikan singkatan",
+                model: Pendidikan,
+            })
+            .lean();
+
+        userObject.username = userObject.id_siswa.nama_lengkap;
+        userObject.role = "user";
+        userObject.roleDisplay = "Alumni";
         userObject.akses = ["data-pribadi"];
     }
 
