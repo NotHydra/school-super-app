@@ -23,7 +23,16 @@ authenticationLoginSiswaRouter
         });
     })
     .post(async (req, res) => {
-        const siswaObject = await Siswa.findOne({ nisn: req.body.nisn, tanggal_lahir: new Date(`${req.body.tanggal_lahir} 24:00:00`) })
+        const tanggalLahirStart = new Date(`${req.body.tanggal_lahir}`);
+        const tanggalLahirEnd = new Date(new Date(`${req.body.tanggal_lahir}`).setDate(new Date(`${req.body.tanggal_lahir}`).getDate() + 1));
+
+        const siswaObject = await Siswa.findOne({
+            nisn: req.body.nisn,
+            tanggal_lahir: {
+                $gte: tanggalLahirStart,
+                $lt: tanggalLahirEnd,
+            },
+        })
             .select("_id")
             .lean();
 
