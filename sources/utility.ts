@@ -2,8 +2,11 @@ import moment from "moment";
 import fs from "fs";
 
 import { pageItemArray } from "./depedency";
-
 import { pageItemType, pageItemChildType } from "./typings/types/nav-item";
+
+import { roleCheck } from "./authentication/guard/role.guard";
+
+import { User } from "./models";
 
 export const localMoment = moment;
 localMoment.locale("id");
@@ -158,4 +161,22 @@ export function findPageItemChild(parentId: number, childId: number): pageItemCh
     });
 
     return pageItemChildObject;
+}
+
+export async function userAccessAll(id: number) {
+    const userObject = await User.findOne({ _id: id }).select("role").lean();
+
+    if (userObject != null) {
+        const accessArray: string[] = [];
+
+        pageItemArray.slice(0, -1).forEach((pageItemObject: pageItemType) => {
+            pageItemObject.child.forEach((pageItemChildObject: pageItemChildType) => {
+                if (roleCheck(userObject.role, pageItemChildObject.level)) {
+                    accessArray.push(pageItemChildObject.link);
+                }
+            });
+        });
+
+        await User.updateOne({ _id: id }, { akses: accessArray, diubah: new Date() });
+    }
 }
