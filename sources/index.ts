@@ -72,12 +72,12 @@ app.use("/", utamaRouter);
 
 app.use(roleGuard(2));
 app.use("/sekolah", sekolahRouter);
+app.use("/instansi", instansiRouter);
+app.use("/perpustakaan", perpustakaanRouter);
 app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
 app.use("/penilaian", penilaianRouter);
-app.use("/instansi", instansiRouter);
-app.use("/perpustakaan", perpustakaanRouter);
 app.use("/data-umum", dataUmumRouter);
 
 app.use(roleGuard(3));
