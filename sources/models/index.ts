@@ -6,18 +6,6 @@ import { aktivitasSchema } from "./pengguna/aktivitas";
 import { indentitasSchema } from "./sekolah/indentitas";
 import { tahunAjaranSchema } from "./sekolah/tahun-ajaran";
 
-import { guruSchema } from "./pengajar/guru";
-import { jabatanSchema } from "./pengajar/jabatan";
-
-import { siswaSchema } from "./pelajar/siswa";
-import { tahunMasukSchema } from "./pelajar/tahun-masuk";
-import { keteranganSchema } from "./pelajar/keterangan";
-
-import { alumniSchema } from "./lulusan/alumni";
-import { tahunLulusSchema } from "./lulusan/tahun-lulus";
-
-import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
-
 import { rombelMataPelajaranSchema, rombelSchema, rombelSemesterSchema } from "./instansi/rombel";
 import { tingkatSchema } from "./instansi/tingkat";
 import { jurusanSchema } from "./instansi/jurusan";
@@ -31,6 +19,22 @@ import { penerbitSchema } from "./perpustakaan/penerbit";
 import { peminjamanBukuSchema, peminjamanSchema } from "./perpustakaan/peminjaman";
 import { pengembalianSchema } from "./perpustakaan/pengembalian";
 
+import { guruSchema } from "./pengajar/guru";
+import { jabatanSchema } from "./pengajar/jabatan";
+
+import { siswaSchema } from "./pelajar/siswa";
+import { tahunMasukSchema } from "./pelajar/tahun-masuk";
+import { keteranganSchema } from "./pelajar/keterangan";
+
+import { alumniSchema } from "./lulusan/alumni";
+import { tahunLulusSchema } from "./lulusan/tahun-lulus";
+
+import { mataPelajaranSchema } from "./penilaian/mata-pelajaran";
+
+import { pelanggarSchema } from "./pelanggaran/pelanggar";
+import { tipeSchema } from "./pelanggaran/tipe";
+import { klasifikasiSchema } from "./pelanggaran/klasifikasi";
+
 import { tempatLahirSchema } from "./data-umum/tempat-lahir";
 import { jenisKelaminSchema } from "./data-umum/jenis-kelamin";
 import { universitasSchema } from "./data-umum/universitas";
@@ -43,22 +47,6 @@ export const Aktivitas = penggunaDatabase.model("aktivitas", aktivitasSchema, "a
 const sekolahDatabase = mongoose.connection.useDb("sekolah");
 export const Indentitas = sekolahDatabase.model("indentitas", indentitasSchema, "indentitas");
 export const TahunAjaran = sekolahDatabase.model("tahun_ajaran", tahunAjaranSchema, "tahun_ajaran");
-
-const pengajarDatabase = mongoose.connection.useDb("pengajar");
-export const Guru = pengajarDatabase.model("guru", guruSchema, "guru");
-export const Jabatan = pengajarDatabase.model("jabatan", jabatanSchema, "jabatan");
-
-const pelajarDatabase = mongoose.connection.useDb("pelajar");
-export const Siswa = pelajarDatabase.model("siswa", siswaSchema, "siswa");
-export const TahunMasuk = pelajarDatabase.model("tahun_masuk", tahunMasukSchema, "tahun_masuk");
-export const Keterangan = pelajarDatabase.model("keterangan", keteranganSchema, "keterangan");
-
-const lulusanDatabase = mongoose.connection.useDb("lulusan");
-export const Alumni = lulusanDatabase.model("alumni", alumniSchema, "alumni");
-export const TahunLulus = lulusanDatabase.model("tahun_lulus", tahunLulusSchema, "tahun_lulus");
-
-const penilaianDatabase = mongoose.connection.useDb("penilaian");
-export const MataPelajaran = penilaianDatabase.model("mata_pelajaran", mataPelajaranSchema, "mata_pelajaran");
 
 const instansiDatabase = mongoose.connection.useDb("instansi");
 export const Rombel = instansiDatabase.model("rombel", rombelSchema, "rombel");
@@ -77,6 +65,27 @@ export const Penerbit = perpustakaanDatabase.model("penerbit", penerbitSchema, "
 export const Peminjaman = perpustakaanDatabase.model("peminjaman", peminjamanSchema, "peminjaman");
 export const PeminjamanBuku = perpustakaanDatabase.model("peminjaman_buku", peminjamanBukuSchema, "peminjaman_buku");
 export const Pengembalian = perpustakaanDatabase.model("pengembalian", pengembalianSchema, "pengembalian");
+
+const pengajarDatabase = mongoose.connection.useDb("pengajar");
+export const Guru = pengajarDatabase.model("guru", guruSchema, "guru");
+export const Jabatan = pengajarDatabase.model("jabatan", jabatanSchema, "jabatan");
+
+const pelajarDatabase = mongoose.connection.useDb("pelajar");
+export const Siswa = pelajarDatabase.model("siswa", siswaSchema, "siswa");
+export const TahunMasuk = pelajarDatabase.model("tahun_masuk", tahunMasukSchema, "tahun_masuk");
+export const Keterangan = pelajarDatabase.model("keterangan", keteranganSchema, "keterangan");
+
+const lulusanDatabase = mongoose.connection.useDb("lulusan");
+export const Alumni = lulusanDatabase.model("alumni", alumniSchema, "alumni");
+export const TahunLulus = lulusanDatabase.model("tahun_lulus", tahunLulusSchema, "tahun_lulus");
+
+const penilaianDatabase = mongoose.connection.useDb("penilaian");
+export const MataPelajaran = penilaianDatabase.model("mata_pelajaran", mataPelajaranSchema, "mata_pelajaran");
+
+const pelanggaranDatabase = mongoose.connection.useDb("pelanggaran");
+export const Pelanggar = pelanggaranDatabase.model("pelanggar", pelanggarSchema, "pelanggar");
+export const Tipe = pelanggaranDatabase.model("tipe", tipeSchema, "tipe");
+export const Klasifikasi = pelanggaranDatabase.model("klasifikasi", klasifikasiSchema, "klasifikasi");
 
 const dataUmumDatabase = mongoose.connection.useDb("data-umum");
 export const TempatLahir = dataUmumDatabase.model("tempat_lahir", tempatLahirSchema, "tempat_lahir");
