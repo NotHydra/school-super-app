@@ -10,6 +10,11 @@
   white-space: nowrap;
 }
 
+.td-textarea {
+  text-align: justify;
+  white-space: pre;
+}
+
 .full-width {
   width: 100%;
 }

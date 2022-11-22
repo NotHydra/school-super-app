@@ -75,9 +75,15 @@
                                                                             <td><%= (tableAttributeObject.type != "date" && tableItemValue != null) || (tableAttributeObject.type == "date" && tableItemValue != "Invalid date") ? tableItemValue : "Tidak Ada" %></td>
                                                                 <%  
                                                                         } else if (tableAttributeObject.label != "Aktivitas") {
+                                                                            if (tableAttributeObject.type != "textarea") {
                                                                 %>
-                                                                            <td class="td-custom"><%= (tableAttributeObject.type != "date" && tableItemValue != null) || (tableAttributeObject.type == "date" && tableItemValue != "Invalid date") ? tableItemValue : "Tidak Ada" %></td>
-                                                                <%      
+                                                                                <td class="td-custom"><%= (tableAttributeObject.type != "date" && tableItemValue != null) || (tableAttributeObject.type == "date" && tableItemValue != "Invalid date") ? tableItemValue : "Tidak Ada" %></td>
+                                                                <%
+                                                                            } else if (tableAttributeObject.type == "textarea") {
+                                                                %>
+                                                                                <td class="td-textarea"><%= (tableAttributeObject.type != "date" && tableItemValue != null) || (tableAttributeObject.type == "date" && tableItemValue != "Invalid date") ? tableItemValue : "Tidak Ada" %></td>
+                                                                <%
+                                                                            }   
                                                                         } 
                                                                     });  
                                                                 %>
