@@ -17,13 +17,15 @@ import { authenticationRouter } from "./authentication";
 import { utamaRouter } from "./routes/utama";
 import { penggunaRouter } from "./routes/pengguna";
 import { sekolahRouter } from "./routes/sekolah";
+import { instansiRouter } from "./routes/instansi";
+import { perpustakaanRouter } from "./routes/perpustakaan";
 import { pengajarRouter } from "./routes/pengajar";
 import { pelajarRouter } from "./routes/pelajar";
 import { lulusanRouter } from "./routes/lulusan";
 import { penilaianRouter } from "./routes/penilaian";
-import { instansiRouter } from "./routes/instansi";
-import { perpustakaanRouter } from "./routes/perpustakaan";
+import { pelanggaranRouter } from "./routes/pelanggaran";
 import { dataUmumRouter } from "./routes/data-umum";
+
 import { Indentitas } from "./models";
 
 declare module "express-session" {
@@ -78,6 +80,7 @@ app.use("/pengajar", pengajarRouter);
 app.use("/pelajar", pelajarRouter);
 app.use("/lulusan", lulusanRouter);
 app.use("/penilaian", penilaianRouter);
+app.use("/pelanggaran", pelanggaranRouter);
 app.use("/data-umum", dataUmumRouter);
 
 app.use(roleGuard(3));
