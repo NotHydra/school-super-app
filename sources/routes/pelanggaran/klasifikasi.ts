@@ -26,7 +26,14 @@ pelanggaranKlasifikasiRouter.use(express.static("sources/public"));
 pelanggaranKlasifikasiRouter.use(express.urlencoded({ extended: false }));
 
 pelanggaranKlasifikasiRouter.route("/").get(async (req, res) => {
-    const tableItemArray = (await Klasifikasi.find().populate({ path: "id_tipe", select: "tipe", model: Tipe }).sort({ klasifikasi: 1 }).lean()).sort(
+    const tipeValue: any = req.query.tipe;
+    let filterValue = {};
+
+    if (tipeValue != undefined && !isNaN(tipeValue)) {
+        filterValue = { ...filterValue, id_tipe: tipeValue };
+    }
+
+    const tableItemArray = (await Klasifikasi.find(filterValue).populate({ path: "id_tipe", select: "tipe", model: Tipe }).sort({ klasifikasi: 1 }).lean()).sort(
         (a: any, b: any) => {
             return a.id_tipe.tipe.localeCompare(b.id_tipe.tipe);
         }
@@ -74,7 +81,22 @@ pelanggaranKlasifikasiRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Tipe",
+                name: "tipe",
+                query: "tipe",
+                placeholder: "Pilih tipe",
+                value: tipeValue,
+                option: (await Tipe.find().select("tipe").sort({ tipe: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tipe,
+                    };
+                }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
     });
