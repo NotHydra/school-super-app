@@ -2,8 +2,9 @@ import { Router } from "express";
 
 import { blueColorPattern, datasetYear } from "../../utility";
 
-import { JenisKelamin, Keterangan, Klasifikasi, Pelanggar, Rombel, Siswa, TahunAjaran, TahunMasuk, TempatLahir, Tipe } from "../../models";
+import { Keterangan, Klasifikasi, Pelanggar, Rombel, Siswa, TahunAjaran, Tipe } from "../../models";
 
+import { pelanggaranSkorRouter } from "./skor";
 import { pelanggaranPelanggarRouter } from "./pelanggar";
 import { pelanggaranTipeRouter } from "./tipe";
 import { pelanggaranKlasifikasiRouter } from "./klasifikasi";
@@ -199,6 +200,7 @@ pelanggaranRouter.get("/", async (req, res) => {
     });
 });
 
+pelanggaranRouter.use("/skor", pelanggaranSkorRouter);
 pelanggaranRouter.use("/pelanggar", pelanggaranPelanggarRouter);
 pelanggaranRouter.use("/tipe", pelanggaranTipeRouter);
 pelanggaranRouter.use("/klasifikasi", pelanggaranKlasifikasiRouter);

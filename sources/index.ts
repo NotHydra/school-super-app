@@ -4,7 +4,7 @@ import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
-import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, zeroPad } from "./utility";
+import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, userAccessAll, zeroPad } from "./utility";
 
 import { roleCheck, roleConvert, roleGuard } from "./authentication/guard/role.guard";
 import { isAuthenticated } from "./common/middleware/isAuthenticated";

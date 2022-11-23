@@ -372,6 +372,14 @@ export const pageItemArray: pageItemType[] = [
                 confirm: false,
             },
             {
+                id: 5,
+                title: "Skor",
+                link: "pelanggaran/skor",
+                icon: "chart-bar",
+                level: 2,
+                confirm: false,
+            },
+            {
                 id: 2,
                 title: "Pelanggar",
                 link: "pelanggaran/pelanggar",
