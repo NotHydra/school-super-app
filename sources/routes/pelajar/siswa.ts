@@ -55,7 +55,7 @@ const tableAttributeArray = [
     {
         id: 8,
         label: "Rombel",
-        value: ["id_rombel", "rombel"],
+        value: ["id_rombel", "rombelFull"],
         type: "text",
     },
     {
@@ -122,7 +122,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
         filterValue = { ...filterValue, aktif: aktifValue };
     }
 
-    if (keteranganValue != undefined) {
+    if (keteranganValue != undefined && !isNaN(rombelValue)) {
         filterValue = { ...filterValue, id_keterangan: keteranganValue };
     }
 
@@ -146,11 +146,7 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
             return b.id_rombel.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_rombel.id_tahun_ajaran.tahun_ajaran);
         })
         .map((tableItemObject: any) => {
-            tableItemObject.id_rombel = {
-                ...tableItemObject.id_rombel,
-                rombel: `${tableItemObject.id_rombel.rombel} ${tableItemObject.id_rombel.id_tahun_ajaran.tahun_ajaran}`,
-            };
-
+            tableItemObject.id_rombel.rombelFull = `${tableItemObject.id_rombel.rombel} ${tableItemObject.id_rombel.id_tahun_ajaran.tahun_ajaran}`;
             tableItemObject.aktif = tableItemObject.aktif == true ? "Aktif" : "Tidak Aktif";
 
             return tableItemObject;
