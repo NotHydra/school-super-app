@@ -23,7 +23,7 @@ const tableAttributeArray = [
     {
         id: 3,
         label: "Rombel",
-        value: ["id_siswa", "id_rombel", "rombel"],
+        value: ["id_siswa", "id_rombel", "rombelFull"],
         type: "text",
     },
     {
@@ -56,30 +56,36 @@ pelanggaranPelanggarRouter.use(express.static("sources/public"));
 pelanggaranPelanggarRouter.use(express.urlencoded({ extended: false }));
 
 pelanggaranPelanggarRouter.route("/").get(async (req, res) => {
-    const tableItemArray = await Pelanggar.find()
-        .populate({
-            path: "id_siswa",
-            select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk",
-            populate: [
-                {
-                    path: "id_rombel",
-                    select: "rombel id_tahun_ajaran",
-                    populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
-                    model: Rombel,
-                },
-                { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
-                { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
-            ],
-            model: Siswa,
-        })
-        .populate({
-            path: "id_klasifikasi",
-            select: "id_tipe klasifikasi",
-            populate: [{ path: "id_tipe", select: "tipe", model: Tipe }],
-            model: Klasifikasi,
-        })
-        .sort({ dibuat: -1 })
-        .lean();
+    const tableItemArray = (
+        await Pelanggar.find()
+            .populate({
+                path: "id_siswa",
+                select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk",
+                populate: [
+                    {
+                        path: "id_rombel",
+                        select: "rombel id_tahun_ajaran",
+                        populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
+                        model: Rombel,
+                    },
+                    { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
+                    { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+                ],
+                model: Siswa,
+            })
+            .populate({
+                path: "id_klasifikasi",
+                select: "id_tipe klasifikasi",
+                populate: [{ path: "id_tipe", select: "tipe", model: Tipe }],
+                model: Klasifikasi,
+            })
+            .sort({ dibuat: -1 })
+            .lean()
+    ).map((tableItemObject: any) => {
+        tableItemObject.id_siswa.id_rombel.rombelFull = `${tableItemObject.id_siswa.id_rombel.rombel} ${tableItemObject.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran}`;
+
+        return tableItemObject;
+    });
 
     const documentCount = await Pelanggar.countDocuments().lean();
     res.render("pages/table", {
