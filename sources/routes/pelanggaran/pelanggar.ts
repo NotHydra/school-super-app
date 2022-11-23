@@ -56,32 +56,79 @@ pelanggaranPelanggarRouter.use(express.static("sources/public"));
 pelanggaranPelanggarRouter.use(express.urlencoded({ extended: false }));
 
 pelanggaranPelanggarRouter.route("/").get(async (req, res) => {
-    const tableItemArray = (
-        await Pelanggar.find()
-            .populate({
-                path: "id_siswa",
-                select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk",
-                populate: [
-                    {
-                        path: "id_rombel",
-                        select: "rombel id_tahun_ajaran",
-                        populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
-                        model: Rombel,
-                    },
-                    { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
-                    { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
-                ],
-                model: Siswa,
-            })
-            .populate({
-                path: "id_klasifikasi",
-                select: "id_tipe klasifikasi",
-                populate: [{ path: "id_tipe", select: "tipe", model: Tipe }],
-                model: Klasifikasi,
-            })
-            .sort({ dibuat: -1 })
-            .lean()
-    ).map((tableItemObject: any) => {
+    const rombelValue: any = req.query.rombel;
+    const tahunAjaranValue: any = req.query.tahunAjaran;
+    const tahunMasukValue: any = req.query.tahunMasuk;
+    const tipeValue: any = req.query.tipe;
+    const klasifikasiValue: any = req.query.klasifikasi;
+    let filterValue = {};
+
+    let tableItemArray = await Pelanggar.find(filterValue)
+        .populate({
+            path: "id_siswa",
+            select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk",
+            populate: [
+                {
+                    path: "id_rombel",
+                    select: "rombel id_tahun_ajaran",
+                    populate: [{ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran }],
+                    model: Rombel,
+                },
+                { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
+                { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+            ],
+            model: Siswa,
+        })
+        .populate({
+            path: "id_klasifikasi",
+            select: "id_tipe klasifikasi",
+            populate: [{ path: "id_tipe", select: "tipe", model: Tipe }],
+            model: Klasifikasi,
+        })
+        .sort({ dibuat: -1 })
+        .lean();
+
+    if (rombelValue != undefined && !isNaN(rombelValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_rombel._id == rombelValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (tahunAjaranValue != undefined && !isNaN(tahunAjaranValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_tahun_ajaran._id == tahunAjaranValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (tahunMasukValue != undefined && !isNaN(tahunMasukValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_tahun_masuk._id == tahunMasukValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (tipeValue != undefined && !isNaN(tipeValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_klasifikasi.id_tipe._id == tipeValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (klasifikasiValue != undefined && !isNaN(klasifikasiValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_klasifikasi._id == klasifikasiValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    tableItemArray = tableItemArray.map((tableItemObject: any) => {
         tableItemObject.id_siswa.id_rombel.rombelFull = `${tableItemObject.id_siswa.id_rombel.rombel} ${tableItemObject.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran}`;
 
         return tableItemObject;
@@ -137,7 +184,98 @@ pelanggaranPelanggarRouter.route("/").get(async (req, res) => {
                 ],
             },
         ],
-        filterArray: [],
+        filterArray: [
+            {
+                id: 1,
+                display: "Rombel",
+                name: "rombel",
+                query: "rombel",
+                placeholder: "Pilih rombel",
+                value: rombelValue,
+                option: (
+                    await Rombel.find()
+                        .select("rombel id_tahun_ajaran")
+                        .populate({ path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran })
+                        .sort({ rombel: 1 })
+                        .lean()
+                )
+                    .sort((a: any, b: any) => {
+                        return b.id_tahun_ajaran.tahun_ajaran.localeCompare(a.id_tahun_ajaran.tahun_ajaran);
+                    })
+                    .map((itemObject: any) => {
+                        return {
+                            value: itemObject._id,
+                            display: `${itemObject.rombel} ${itemObject.id_tahun_ajaran.tahun_ajaran}`,
+                        };
+                    }),
+            },
+            {
+                id: 2,
+                display: "Tahun Ajaran",
+                name: "tahun_ajaran",
+                query: "tahunAjaran",
+                placeholder: "Pilih tahun ajaran",
+                value: tahunAjaranValue,
+                option: (await TahunAjaran.find().select("tahun_ajaran").sort({ tahun_ajaran: -1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_ajaran,
+                    };
+                }),
+            },
+            {
+                id: 3,
+                display: "Tahun Masuk",
+                name: "tahun_masuk",
+                query: "tahunMasuk",
+                placeholder: "Pilih tahun masuk",
+                value: tahunMasukValue,
+                option: (await TahunMasuk.find().select("tahun_masuk").sort({ tahun_masuk: -1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tahun_masuk,
+                    };
+                }),
+            },
+            {
+                id: 4,
+                display: "Tipe",
+                name: "tipe",
+                query: "tipe",
+                placeholder: "Pilih tipe",
+                value: tipeValue,
+                option: (await Tipe.find().select("tipe").sort({ tipe: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.tipe,
+                    };
+                }),
+            },
+            {
+                id: 5,
+                display: "Klasifikasi",
+                name: "klasifikasi",
+                query: "klasifikasi",
+                placeholder: "Pilih klasifikasi",
+                value: klasifikasiValue,
+                option: (
+                    await Klasifikasi.find(tipeValue != undefined && !isNaN(tipeValue) ? { id_tipe: tipeValue } : {})
+                        .select("id_tipe klasifikasi")
+                        .populate({ path: "id_tipe", select: "tipe", model: Tipe })
+                        .sort({ klasifikasi: 1 })
+                        .lean()
+                )
+                    .sort((a: any, b: any) => {
+                        return a.id_tipe.tipe.localeCompare(b.id_tipe.tipe);
+                    })
+                    .map((itemObject: any) => {
+                        return {
+                            value: itemObject._id,
+                            display: `Tipe ${itemObject.id_tipe.tipe} - ${itemObject.klasifikasi}`,
+                        };
+                    }),
+            },
+        ],
         tableAttributeArray,
         tableItemArray,
     });
