@@ -17,7 +17,6 @@ dataUmumRouter.get("/", async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const tempatLahirChartData: any = await datasetYear(TempatLahir, currentYear);
-    const jenisKelaminChartData: any = await datasetYear(JenisKelamin, currentYear);
     const universitasChartData: any = await datasetYear(Universitas, currentYear);
     const pendidikanChartData: any = await datasetYear(Pendidikan, currentYear);
 
@@ -37,20 +36,13 @@ dataUmumRouter.get("/", async (req, res) => {
                     },
                     {
                         id: 2,
-                        title: "Jenis Kelamin",
-                        icon: "venus-mars",
-                        value: await JenisKelamin.countDocuments().lean(),
-                        link: "data-umum/jenis-kelamin",
-                    },
-                    {
-                        id: 3,
                         title: "Universitas",
                         icon: "school",
                         value: await Universitas.countDocuments().lean(),
                         link: "data-umum/universitas",
                     },
                     {
-                        id: 4,
+                        id: 3,
                         title: "Pendidikan",
                         icon: "tag",
                         value: await Pendidikan.countDocuments().lean(),
@@ -77,23 +69,6 @@ dataUmumRouter.get("/", async (req, res) => {
                     },
                     {
                         id: 2,
-                        title: "Statistik Jenis Kelamin Baru",
-                        link: { link: "data-umum/jenis-kelamin", title: "Jenis Kelamin", subTitle: "Data Umum" },
-                        value: jenisKelaminChartData.currentYearValue,
-                        text: "Jenis Kelamin Baru",
-                        percentage: jenisKelaminChartData.percentageIncrease,
-                        timeRange: "Sejak Tahun Lalu",
-                        dataset: jenisKelaminChartData.dataset,
-                        firstLegend: "Tahun Ini",
-                        secondLegend: "Tahun Lalu",
-                    },
-                ],
-            },
-            {
-                id: 2,
-                lineChartChild: [
-                    {
-                        id: 1,
                         title: "Statistik Universitas Baru",
                         link: { link: "data-umum/universitas", title: "Universitas", subTitle: "Data Umum" },
                         value: universitasChartData.currentYearValue,
@@ -105,7 +80,7 @@ dataUmumRouter.get("/", async (req, res) => {
                         secondLegend: "Tahun Lalu",
                     },
                     {
-                        id: 2,
+                        id: 3,
                         title: "Statistik Pendidikan Baru",
                         link: { link: "data-umum/pendidikan", title: "Pendidikan", subTitle: "Data Umum" },
                         value: pendidikanChartData.currentYearValue,
