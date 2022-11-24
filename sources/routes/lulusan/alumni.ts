@@ -176,8 +176,13 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                         icon: "user-graduate",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value:
@@ -191,8 +196,13 @@ lulusanAlumniRouter.route("/").get(async (req, res) => {
                                   ).id_siswa.nama_lengkap
                                 : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value:

@@ -39,14 +39,24 @@ dataUmumTempatLahirRouter.route("/").get(async (req, res) => {
                         icon: "city",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await TempatLahir.findOne().select("tempat_lahir").sort({ dibuat: -1 }).lean()).tempat_lahir : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await TempatLahir.findOne().select("tempat_lahir").sort({ diubah: -1 }).lean()).tempat_lahir : "Tidak Ada",

@@ -178,14 +178,19 @@ pelajarSiswaRouter.route("/").get(async (req, res) => {
                             .countDocuments()
                             .lean()}`,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await Siswa.findOne().select("nisn").sort({ dibuat: -1 }).lean()).nisn : "Tidak Ada",
                     },
                     {
-                        id: 3,
+                        id: 2,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await Siswa.findOne().select("nisn").sort({ diubah: -1 }).lean()).nisn : "Tidak Ada",

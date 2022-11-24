@@ -102,14 +102,24 @@ penggunaUserRouter.route("/").get(async (req, res) => {
                         icon: "user",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await User.findOne().select("username").sort({ dibuat: -1 }).lean()).username : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await User.findOne().select("username").sort({ diubah: -1 }).lean()).username : "Tidak Ada",

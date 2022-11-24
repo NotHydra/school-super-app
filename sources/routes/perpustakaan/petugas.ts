@@ -102,14 +102,24 @@ perpustakaanPetugasRouter.route("/").get(async (req, res) => {
                         icon: "user-tie",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await Petugas.findOne().select("nama").sort({ dibuat: -1 }).lean()).nama : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await Petugas.findOne().select("nama").sort({ diubah: -1 }).lean()).nama : "Tidak Ada",

@@ -39,14 +39,24 @@ perpustakaanPenulisRouter.route("/").get(async (req, res) => {
                         icon: "pen-nib",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await Penulis.findOne().select("penulis").sort({ dibuat: -1 }).lean()).penulis : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await Penulis.findOne().select("penulis").sort({ diubah: -1 }).lean()).penulis : "Tidak Ada",

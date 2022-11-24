@@ -126,14 +126,24 @@ perpustakaanBukuRouter.route("/").get(async (req, res) => {
                         icon: "book",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await Buku.findOne().select("kode").sort({ dibuat: -1 }).lean()).kode : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await Buku.findOne().select("kode").sort({ diubah: -1 }).lean()).kode : "Tidak Ada",

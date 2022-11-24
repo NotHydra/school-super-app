@@ -39,14 +39,24 @@ dataUmumJenisKelaminRouter.route("/").get(async (req, res) => {
                         icon: "venus-mars",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value: documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ dibuat: -1 }).lean()).jenis_kelamin : "Tidak Ada",
                     },
+                ],
+            },
+            {
+                id: 3,
+                cardItemChild: [
                     {
-                        id: 3,
+                        id: 1,
                         title: "Diubah",
                         icon: "circle-exclamation",
                         value: documentCount >= 1 ? (await JenisKelamin.findOne().select("jenis_kelamin").sort({ diubah: -1 }).lean()).jenis_kelamin : "Tidak Ada",

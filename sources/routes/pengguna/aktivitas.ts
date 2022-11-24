@@ -71,8 +71,13 @@ penggunaAktivitasRouter.route("/").get(async (req, res) => {
                         icon: "eye",
                         value: documentCount,
                     },
+                ],
+            },
+            {
+                id: 2,
+                cardItemChild: [
                     {
-                        id: 2,
+                        id: 1,
                         title: "Dibuat",
                         icon: "circle-plus",
                         value:
