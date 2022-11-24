@@ -44,6 +44,18 @@ const tableAttributeArray = [
         value: ["id_siswa", "id_tahun_masuk", "tahun_masuk"],
         type: "text",
     },
+    {
+        id: 7,
+        label: "Status",
+        value: ["id_siswa", "aktifStatus"],
+        type: "text",
+    },
+    {
+        id: 8,
+        label: "Keterangan",
+        value: ["id_siswa", "id_keterangan", "keterangan"],
+        type: "text",
+    },
 ];
 
 perpustakaanAnggotaRouter.use(express.static("sources/public"));
@@ -56,6 +68,8 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
     const rombelValue: any = req.query.rombel;
     const tahunAjaranValue: any = req.query.tahunAjaran;
     const tahunMasukValue: any = req.query.tahunMasuk;
+    const aktifValue: any = req.query.aktif;
+    const keteranganValue: any = req.query.keterangan;
     let filterValue = {};
 
     if (anggotaValue != undefined && !isNaN(anggotaValue)) {
@@ -65,7 +79,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
     let tableItemArray = await Anggota.find(filterValue)
         .populate({
             path: "id_siswa",
-            select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk",
+            select: "nisn nama_lengkap id_rombel id_tahun_ajaran id_tahun_masuk aktif id_keterangan",
             populate: [
                 {
                     path: "id_rombel",
@@ -75,6 +89,7 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
                 },
                 { path: "id_tahun_ajaran", select: "tahun_ajaran", model: TahunAjaran },
                 { path: "id_tahun_masuk", select: "tahun_masuk", model: TahunMasuk },
+                { path: "id_keterangan", select: "keterangan", model: Keterangan },
             ],
             model: Siswa,
         })
@@ -105,8 +120,25 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
         });
     }
 
+    if (aktifValue != undefined) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (`${tableItemObject.id_siswa.aktif}` == aktifValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
+    if (keteranganValue != undefined && !isNaN(keteranganValue)) {
+        tableItemArray = tableItemArray.filter((tableItemObject: any) => {
+            if (tableItemObject.id_siswa.id_keterangan._id == keteranganValue) {
+                return tableItemObject;
+            }
+        });
+    }
+
     tableItemArray = tableItemArray.map((tableItemObject: any) => {
         tableItemObject.id_siswa.id_rombel.rombelFull = `${tableItemObject.id_siswa.id_rombel.rombel} ${tableItemObject.id_siswa.id_rombel.id_tahun_ajaran.tahun_ajaran}`;
+        tableItemObject.id_siswa.aktifStatus = tableItemObject.id_siswa.aktif == true ? "Aktif" : "Tidak Aktif";
 
         return tableItemObject;
     });
@@ -203,6 +235,38 @@ perpustakaanAnggotaRouter.route("/").get(async (req, res) => {
                     return {
                         value: itemObject._id,
                         display: itemObject.tahun_masuk,
+                    };
+                }),
+            },
+            {
+                id: 4,
+                display: "Status",
+                name: "aktif",
+                query: "aktif",
+                placeholder: "Pilih status",
+                value: aktifValue,
+                option: [
+                    {
+                        value: "true",
+                        display: "Aktif",
+                    },
+                    {
+                        value: "false",
+                        display: "Tidak Aktif",
+                    },
+                ],
+            },
+            {
+                id: 5,
+                display: "Keterangan",
+                name: "keterangan",
+                query: "keterangan",
+                placeholder: "Pilih keterangan",
+                value: keteranganValue,
+                option: (await Keterangan.find().select("keterangan").sort({ keterangan: 1 }).lean()).map((itemObject) => {
+                    return {
+                        value: itemObject._id,
+                        display: itemObject.keterangan,
                     };
                 }),
             },
