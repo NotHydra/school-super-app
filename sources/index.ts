@@ -36,7 +36,7 @@ declare module "express-session" {
 }
 
 export const app: Express = express();
-const port: number = 3000;
+const port: any = process.env.PORT || 3000;
 
 app.locals.moment = localMoment;
 app.locals.pageItemArray = pageItemArray;
