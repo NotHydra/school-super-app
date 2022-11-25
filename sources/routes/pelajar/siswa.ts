@@ -4,7 +4,7 @@ import { headTitle } from ".";
 
 import { keteranganToId, localMoment } from "../../utility";
 
-import { Alumni, Anggota, JenisKelamin, Keterangan, Rombel, Siswa, TahunAjaran, TahunLulus, TahunMasuk, TempatLahir } from "../../models";
+import { Alumni, Anggota, JenisKelamin, Keterangan, Pelanggar, Rombel, Siswa, TahunAjaran, TahunLulus, TahunMasuk, TempatLahir } from "../../models";
 
 export const pelajarSiswaRouter = Router();
 
@@ -957,7 +957,8 @@ pelajarSiswaRouter
         }
 
         if (dataExist != null) {
-            const dataIsUsed = (await Alumni.exists({ id_siswa: id }).lean()) || (await Anggota.exists({ id_siswa: id }).lean());
+            const dataIsUsed =
+                (await Alumni.exists({ id_siswa: id }).lean()) || (await Anggota.exists({ id_siswa: id }).lean()) || (await Pelanggar.exists({ id_siswa: id }).lean());
             if (dataIsUsed == null) {
                 try {
                     await Siswa.deleteOne({ _id: id }).lean();
