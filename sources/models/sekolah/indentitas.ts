@@ -37,6 +37,7 @@ export const indentitasSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    aktif: { type: Boolean, required: true },
     dibuat: {
         type: Date,
         required: true,
