@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import session from "express-session";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
+import path from "path";
 
 import { mongoDBURI, pageItemArray, sessionSecret } from "./depedency";
 import { findPageItem, findPageItemChild, localMoment, upperCaseFirst, userAccessAll, zeroPad } from "./utility";
@@ -50,8 +51,8 @@ app.locals.zeroPad = zeroPad;
 app.locals.upperCaseFirst = upperCaseFirst;
 
 app.set("view engine", "ejs");
-app.set("views", "sources/views");
-app.use(express.static("sources/public"));
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(fileUpload());
 app.use(
     session({

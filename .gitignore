@@ -1,6 +1,7 @@
 /.VSCodeCounter
-/node_modules
 /dist
+/node_modules
+/pkg
 
 /scripts/json/**/*.json
 
