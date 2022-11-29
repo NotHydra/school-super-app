@@ -27,6 +27,7 @@ import { pelanggaranRouter } from "./routes/pelanggaran";
 import { dataUmumRouter } from "./routes/data-umum";
 
 import { Indentitas } from "./models";
+import { serverIsActive } from "./common/middleware/serverIsActive";
 
 declare module "express-session" {
     interface Session {
@@ -60,6 +61,8 @@ app.use(
         cookie: { maxAge: 3600000 },
     })
 );
+
+app.use(serverIsActive);
 
 app.use(authenticationRouter);
 
@@ -96,8 +99,20 @@ app.use((req, res) => {
 mongoose.connect(mongoDBURI, async () => {
     console.log("Connected to database");
 
-    app.locals.applicationName = (await Indentitas.findOne({ _id: 1 }).select("nama_aplikasi").lean())?.nama_aplikasi || "School Super App";
-    app.listen(port, async () => {
-        console.log(`Listening on http://localhost:${port}`);
-    });
+    const indentitasObject = await Indentitas.findOne({ _id: 1 }).select("nama_aplikasi aktif").lean();
+
+    if (indentitasObject != null) {
+        if (indentitasObject.aktif) {
+            app.locals.applicationName = indentitasObject.nama_aplikasi || "School Super App";
+            app.listen(port, async () => {
+                console.log(`Listening on http://localhost:${port}`);
+            });
+        } else if (!indentitasObject.aktif) {
+            console.log("Server is deactivated");
+            process.exit();
+        }
+    } else if (indentitasObject == null) {
+        console.log("Server is deactivated");
+        process.exit();
+    }
 });
